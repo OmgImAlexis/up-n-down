@@ -1,0 +1,93 @@
+doctype html
+html
+  head
+    meta(charset="utf-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1")
+    title=title
+    link(rel='stylesheet', href='/cillmit99b/style.css')
+    link(rel="icon" href="/images/favicon-32.png" sizes="32x32")
+    block head
+
+    if maxWidth !== null
+      style.
+        body {
+          background: #e7e5df;
+        }
+
+        #body2 {
+          max-width: #{maxWidth}px;
+          max-width: #{maxWidth/16}rem;
+          margin: 0 auto;
+          background: #fefefe;
+          padding: 10px;
+          padding: .625rem;
+        }
+
+        @media(max-width: #{(maxWidth + 40)/16}em) {
+          body {
+            background: #fefefe;
+          }
+
+          #body2 {
+            padding: 0;
+            max-width: 100%;
+          }
+        }
+    else
+      style.
+        body {
+          background: #fefefe;
+        }
+
+  body
+    div#body2
+      header
+        h1.main-logo
+          a(href="/")
+            img(src="/images/mlogo.png" width="64" height="32")
+            span(id="peaches") Peaches
+            | 
+            |'n'
+            | 
+            span(id="stink") Stink
+        nav.main-nav
+          ul
+            li
+              a(href="/") home
+
+            if user
+              li
+                a(href="/new") new post
+              li
+                a(href="/following") following
+              li
+                a(href="/inbox") inbox
+              li
+                a(href="/settings") settings
+              li
+                a(href="/manual") manual
+              li
+                a(href="/logout") log out
+              li #{user.username}
+            else
+              li
+                a(href="/sign-up") sign up
+              li
+                a(href="/login") log in
+              li
+                a(href="/settings") settings
+              li
+                a(href="/manual") manual
+      main
+        block content
+      footer.main-footer
+        nav.main-footer-nav
+          ul
+            li
+              a(href="/privacy-policy") privacy policy
+            li
+              a(href="/contact-us") contact us
+            li
+              a(href="/api") API
+            li
+              a(href="https://github.com/ferg1e/peaches-n-stink") GitHub

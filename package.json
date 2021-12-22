@@ -2,8 +2,9 @@
   "name": "peaches-n-stink",
   "version": "0.3.0",
   "private": false,
+  "type": "module",
   "scripts": {
-    "start": "npx nodemon app.js"
+    "dev": "nodemon ./src/app.js"
   },
   "dependencies": {
     "argon2": "^0.25.1",
@@ -12,18 +13,25 @@
     "debug": "~2.6.9",
     "dotenv": "^8.2.0",
     "express": "~4.16.1",
+    "express-promise-router": "^4.1.1",
     "express-session": "^1.17.0",
     "express-validator": "^6.3.1",
     "http-errors": "~1.6.3",
     "morgan": "~1.9.1",
     "multer": "^1.4.2",
-    "pg": "^7.15.1",
     "pug": "2.0.0-beta11",
     "redis": "^2.8.0",
     "shortid": "^2.2.15",
     "uuid": "^3.3.3"
   },
   "devDependencies": {
-    "nodemon": "^2.0.2"
+    "@types/express": "^4.17.13",
+    "@types/node": "^17.0.0",
+    "@types/pg": "^8.6.3",
+    "nanoid": "^3.1.30",
+    "nodemon": "^2.0.2",
+    "pg": "^8.7.1",
+    "postgres-migrations": "^5.3.0",
+    "postgresql-tag": "^0.1.0"
   }
 }

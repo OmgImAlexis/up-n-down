@@ -1,0 +1,29 @@
+extends layout
+
+append head
+    link(rel='stylesheet', href='/cillmit99b/new-post2.css')
+
+block content
+    h2.pageh1= heading
+
+    if error
+        | #{error.message}
+    form(method="post")
+        div
+            label(for="title") Title
+            textarea(name="title" id="title")=title
+
+        div
+            label(for="link") Link (optional)
+            input(name="link" id="link" value=`${link}`)
+
+        div
+            label(for="text_content") Content (optional)
+            textarea(name="text_content" id="text_content") #{textContent}
+
+        div
+            label(for="tags") Group (optional, separate multiple with commas)
+            input(name="tags" id="tags" value=`${tags}`)
+
+        div
+            input(type="submit" value=submitLabel)

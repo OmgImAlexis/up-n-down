@@ -1,0 +1,19 @@
+extends layout
+
+append head
+    link(rel='stylesheet', href='/cillmit99b/login.css')
+
+block content
+    h2.pageh1 Log In
+
+    if error
+        | error: #{error.message}
+    form(method="post")
+        div
+            label(for="username") Username
+            input(name="username" id="username")
+        div
+            label(for="password") Password
+            input(name="password" id="password" type="password")
+        div
+            input(type="submit" value="Log In")
