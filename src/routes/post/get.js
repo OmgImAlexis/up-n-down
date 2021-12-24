@@ -5,7 +5,7 @@ import { getCurrentCommentReplyMode } from '../../common/get-current-comment-rep
 import { getCurrentEyesId } from '../../common/get-current-eyes-id.js';
 import { getPostWithPublic2 } from '../../common/get-post-with-public-2.js';
 import { isUserAllowedToViewPost } from '../../common/post/is-user-allowed-to-view-post.js';
-import { getPostComments } from '../../common/post/comment/get-post-comments.js';
+import { getPostComments } from '../../common/comment/get-post-comments.js';
 
 /**
  * Render a post
@@ -15,7 +15,7 @@ import { getPostComments } from '../../common/post/comment/get-post-comments.js'
  * @returns {void | import('express').Response}
  */
 export const getPost = async (req, res) => {
-    const postPublicId = req.params[0];
+    const postPublicId = req.params.postId;
     const finalUserId = req.session.user ? req.session.user.user_id : -1;
     const filterUserId = await getCurrentEyesId(req);
 

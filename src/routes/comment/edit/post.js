@@ -1,6 +1,6 @@
-import { processComment } from '../../../../common/process-comment.js';
-import { getCommentWithPublicId } from '../../../../common/post/comment/get-comment-with-public-id.js';
-import { updateComment } from '../../../../common/post/comment/update-comment.js';
+import { processComment } from '../../../common/process-comment.js';
+import { getCommentWithPublicId } from '../../../common/comment/get-comment-with-public-id.js';
+import { updateComment } from '../../../common/comment/update-comment.js';
 
 /**
  * Edit a comment.
@@ -9,9 +9,9 @@ import { updateComment } from '../../../../common/post/comment/update-comment.js
  * @param {import('express').Response} res 
  * @returns 
  */
-export const postPostCommentEdit = async (req, res) => {
+export const postCommentEdit = async (req, res) => {
     try {
-        const commentPublicId = req.params[0];
+        const commentPublicId = req.params.commentId;
         const { comment_id, user_id } = await getCommentWithPublicId(commentPublicId);
         if (!comment_id) throw new Error('Unknown comment.');
         if (user_id !== req.session.user.user_id) throw new Error('Permission denied!');
@@ -21,8 +21,7 @@ export const postPostCommentEdit = async (req, res) => {
     } catch (error) {
         res.render('edit-comment', {
             html_title: 'Edit Comment',
-            error,
-            textContent: ''
+            error
         });
     }
 };

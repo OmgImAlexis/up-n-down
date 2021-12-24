@@ -8,7 +8,7 @@ import { getPostWithPublic } from '../../../common/get-post-with-public.js';
  * @returns 
  */
 export const getPostEdit = async (req, res) => {
-    const postPublicId = req.params[0];
+    const postPublicId = req.params.postId;
     const post = await getPostWithPublic(postPublicId);
     if (!post) throw new Error('Unknown post.');
     if (post.user_id !== req.session.user.user_id) throw new Error('Permission denied!');

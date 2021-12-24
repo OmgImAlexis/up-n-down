@@ -13,9 +13,9 @@ import { generateNanoId } from '../generate-nano-id.js';
  */
 export const createPost = async (userId, title, textContent, link, domainNameId) => query(postgres`
     INSERT INTO tpost
-        (public_id, user_id, title, text_content, link, domain_name_id)
+        (user_id, title, text_content, link, domain_name_id)
     VALUES
-        (${generateNanoId()}, ${userId}, ${title}, ${textContent.trim() || null}, ${link || null}, ${domainNameId})
+        (${userId}, ${title}, ${textContent.trim() || null}, ${link || null}, ${domainNameId})
     RETURNING
         post_id, public_id
 `).then(({ rows: [row]}) => ({

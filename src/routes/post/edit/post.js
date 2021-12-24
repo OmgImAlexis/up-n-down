@@ -1,6 +1,6 @@
 export const postPostEdit = async (req, res) => {
         //
-        const postPublicId = req.params[0]
+        const postPublicId = req.params.postId;
         const {rows} = await db.getPostWithPublic(postPublicId)
 
         //

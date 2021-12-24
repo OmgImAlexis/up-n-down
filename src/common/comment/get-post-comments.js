@@ -1,6 +1,6 @@
 import postgres from 'postgresql-tag';
-import { query } from '../../../db/index.js';
-import { commentsPerPage } from '../../../config/index.js';
+import { query } from '../../db/index.js';
+import { commentsPerPage } from '../../config/index.js';
 
 export const getPostComments = (postId, timeZone, userId, isDiscoverMode, filterUserId, page) => {
     const limit = commentsPerPage

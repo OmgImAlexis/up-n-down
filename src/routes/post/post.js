@@ -5,9 +5,9 @@ import { getCurrentCommentReplyMode } from '../../common/get-current-comment-rep
 import { getCurrentEyesId } from '../../common/get-current-eyes-id.js';
 import { getPostWithPublic2 } from '../../common/get-post-with-public-2.js';
 import { isUserAllowedToViewPost } from '../../common/post/is-user-allowed-to-view-post.js';
-import { getPostComments } from '../../common/post/comment/get-post-comments.js';
+import { getPostComments } from '../../common/comment/get-post-comments.js';
 import { processComment } from '../../common/process-comment.js';
-import { createPostComment } from '../../common/post/comment/create-post-comment.js';
+import { createPostComment } from '../../common/comment/create-post-comment.js';
 import { commentsPerPage } from '../../config/index.js';
 
 /**
@@ -18,7 +18,7 @@ import { commentsPerPage } from '../../config/index.js';
  * @returns 
  */
 export const postPost = async (req, res) => {
-    const postPublicId = req.params[0];
+    const postPublicId = req.params.postId;
     const userId = req.session.user ? req.session.user.user_id : -1;
     const filterUserId = await getCurrentEyesId(req);
     const post = await getPostWithPublic2(postPublicId, getCurrentTimezone(req), userId, filterUserId);
