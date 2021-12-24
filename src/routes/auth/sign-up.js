@@ -1,6 +1,6 @@
 import { validationResult } from 'express-validator';
-import { createUser } from '../common/user/create-user.js';
-import { getCurrentSiteMaxWidth } from '../common/get-current-site-max-width.js';
+import { createUser } from '../../common/user/create-user.js';
+import { getCurrentSiteMaxWidth } from '../../common/get-current-site-max-width.js';
 
 const title = 'Sign Up';
 

@@ -11,22 +11,6 @@ const pool = new Pool();
 
 export const query = (query, params) => pool.query(query, params);
 
-// function numToOrderedAlpha(num) {
-//     var first = Math.ceil(num/676)
-
-//     var second = Math.ceil(num/26)%26
-//     second = second ? second : 26
-
-//     var third = Math.ceil(num%26)
-//     third = third ? third : 26
-
-//     return String.fromCharCode(96 + first) +
-//         String.fromCharCode(96 + second) +
-//         String.fromCharCode(96 + third)
-// }
-
-
-
 
 
 // exports.getUsersWithoutPublicId = () => {
@@ -38,9 +22,6 @@ export const query = (query, params) => pool.query(query, params);
 //         where
 //             public_id = ''`)
 // }
-
-
-
 
 
 // //
@@ -188,44 +169,6 @@ export const query = (query, params) => pool.query(query, params);
 //     )
 // }
 
-// exports.getPostWithPublic = (publicId) => {
-//     return query(`
-//         select
-//             p.post_id,
-//             p.user_id,
-//             p.title,
-//             p.text_content,
-//             p.link,
-//             array(
-//                 select
-//                     t.tag
-//                 from
-//                     ttag t
-//                 join
-//                     tposttag pt on pt.tag_id = t.tag_id
-//                 where
-//                     pt.post_id = p.post_id
-//             ) as tags,
-//             array(
-//                 select
-//                     pg.name
-//                 from
-//                     tprivategroup pg
-//                 join
-//                     ttag t on t.tag = pg.name
-//                 join
-//                     tposttag pt on pt.tag_id = t.tag_id
-//                 where
-//                     pt.post_id = p.post_id
-//             ) as private_group_names
-//         from
-//             tpost p
-//         where
-//             p.public_id = $1`,
-//         [publicId]
-//     )
-// }
-
 
 // exports.getPostLinks = () => {
 //     return query(`
@@ -255,16 +198,6 @@ export const query = (query, params) => pool.query(query, params);
 //         [title, finalLink, finalTextContent, domainNameId, postId])
 // }
 
-// exports.incPostNumComments = (postId) => {
-//     return query(`
-//         update
-//             tpost
-//         set
-//             num_comments = num_comments +1
-//         where
-//             post_id = $1`,
-//         [postId])
-// }
 
 // exports.updatePostDomainNameId = (postId, domainNameId) => {
 //     return query(`
@@ -307,35 +240,7 @@ export const query = (query, params) => pool.query(query, params);
 
 
 
-// //comment
-// exports.createPostComment = (postId, userId, content) => {
 
-//     /*TODO: figure out how to put this postId in
-//     the query as a query param, currently
-//     concat returns type 'text' which the ~
-//     operator doesn't accept*/
-//     let lQuery = parseInt(postId) + '.*{1}'
-
-//     /*TODO: this might need an SQL transaction*/
-//     return query(`
-//         select
-//             count(1) as count
-//         from
-//             ttest
-//         where
-//             path ~ $1`,
-//         [lQuery]).then(res => query(`
-//         insert into ttest
-//             (post_id, user_id, text_content, path, public_id)
-//         values
-//             ($1, $2, $3, $4, $5)
-//         returning
-//             public_id`,
-//         [postId, userId, content,
-//             postId + '.' + numToOrderedAlpha(parseInt(res.rows[0].count) + 1),
-//             generateNanoId(nanoidAlphabet, nanoidLen)])
-//     )
-// }
 
 // exports.createCommentComment = (postId, userId, content, parentPath, timeZone) => {
 //     let lQuery = parentPath + '.*{1}'
@@ -579,19 +484,6 @@ export const query = (query, params) => pool.query(query, params);
 //         [textContent, commentId])
 // }
 
-
-
-
-
-// exports.removeFollower = (userId, followeeUserId) => {
-//     return query(`
-//         delete from
-//             tfollower
-//         where
-//             user_id = $1 and
-//             followee_user_id = $2`,
-//         [userId, followeeUserId])
-// }
 
 // //tags
 // exports.createTag = (tagName) => {

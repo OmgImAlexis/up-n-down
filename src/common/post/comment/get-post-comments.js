@@ -1,10 +1,10 @@
 import postgres from 'postgresql-tag';
-import { query } from '../../db/index.js';
-import { commentsPerPage } from '../../config/index.js';
+import { query } from '../../../db/index.js';
+import { commentsPerPage } from '../../../config/index.js';
 
 export const getPostComments = (postId, timeZone, userId, isDiscoverMode, filterUserId, page) => {
     const limit = commentsPerPage
-    const offset = (page - 1) * commentsPerPage
+    const offset = (page - 1) * commentsPerPage;
 
     return query(postgres`
         SELECT
@@ -56,5 +56,5 @@ export const getPostComments = (postId, timeZone, userId, isDiscoverMode, filter
             ${limit}
         OFFSET
             ${offset}
-    `);
+    `).then(({ rows }) => rows);
 };

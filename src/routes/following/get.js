@@ -1,7 +1,8 @@
 import { getUserFollowees } from '../../common/user/get-user-followees.js';
 import { getUserWithPublicId } from '../../common/user/get-user-with-public-id.js';
-import { isUserFollowing } from '../../common/is-user-following.js';
-import { addFollower } from '../../common/add-follower.js';
+import { isUserFollowing } from '../../common/user/is-user-following.js';
+import { addFollower } from '../../common/user/add-follower.js';
+import { removeFollower } from '../../common/user/remove-follower.js';
 
 export const getFollowing = async (req, res) => {
     // Redirect to signup if the user isn't signed in
@@ -11,7 +12,7 @@ export const getFollowing = async (req, res) => {
 
     try {
         switch (true) {
-            case req.query.follow !== '': {
+            case req.query.follow !== undefined: {
                 const userPublicId = req.query.follow;
 
                 // Check if the user exists
@@ -32,7 +33,7 @@ export const getFollowing = async (req, res) => {
                 return res.redirect(req.query.goto ?? `/following?followed=${user.username}`);
             }
 
-            case req.query.unfollow !== '': {
+            case req.query.unfollow !== undefined: {
                 const userPublicId = req.query.unfollow;
 
                 // Check if user exists
@@ -53,7 +54,7 @@ export const getFollowing = async (req, res) => {
                 return res.redirect(req.query.goto ?? `/following?unfollowed=${user.username}`);
             }
 
-            case req.query.followed !== '': {
+            case req.query.followed !== undefined: {
                 // Render success page
                 res.render('following', {
                     html: {
@@ -67,7 +68,7 @@ export const getFollowing = async (req, res) => {
                 });
             }
 
-            case req.query.unfollowed !== '': {
+            case req.query.unfollowed !== undefined: {
                 // Render success page
                 res.render('following', {
                     html: {
@@ -103,4 +104,4 @@ export const getFollowing = async (req, res) => {
             formUsername
         });
     }
-}
+};

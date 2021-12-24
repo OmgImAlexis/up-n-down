@@ -1,5 +1,5 @@
 import postgres from 'postgresql-tag';
-import { query } from '../db/index.js';
+import { query } from '../../db/index.js';
 
 export const isUserFollowing = (userId, followeeUserId) => query(postgres`
     SELECT
@@ -9,4 +9,4 @@ export const isUserFollowing = (userId, followeeUserId) => query(postgres`
     WHERE
         f.user_id = ${userId} and
         f.followee_user_id = ${followeeUserId}
-`).then(({ rows: [row] }) => row === 1);
+`).then(({ rows: [row] }) => row);

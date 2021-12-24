@@ -5,22 +5,22 @@ import { getCurrentCommentReplyMode } from '../../common/get-current-comment-rep
 import { getCurrentEyesId } from '../../common/get-current-eyes-id.js';
 import { getPostWithPublic2 } from '../../common/get-post-with-public-2.js';
 import { isUserAllowedToViewPost } from '../../common/post/is-user-allowed-to-view-post.js';
-import { getPostComments } from '../../common/post/get-post-comments.js';
+import { getPostComments } from '../../common/post/comment/get-post-comments.js';
 
 /**
- * Render a single post by it's ID
+ * Render a post
  * 
  * @param {import('express').Request} req 
  * @param {import('express').Response} res 
  * @returns {void | import('express').Response}
  */
-export const getDisplaySinglePost = async (req, res) => {
+export const getPost = async (req, res) => {
     const postPublicId = req.params[0];
     const finalUserId = req.session.user ? req.session.user.user_id : -1;
     const filterUserId = await getCurrentEyesId(req);
 
     // Fetch the current post
-    const { rows: [post] } = await getPostWithPublic2(postPublicId, getCurrentTimezone(req), finalUserId, filterUserId);
+    const post = await getPostWithPublic2(postPublicId, getCurrentTimezone(req), finalUserId, filterUserId);
 
     // Bail if we didn't get a post back
     if(!post) return res.send('not found');
@@ -43,7 +43,7 @@ export const getDisplaySinglePost = async (req, res) => {
     const isDiscoverModeEnabled = isDiscover(req);
 
     // Get the comments for this post
-    const { rows: comments } = await getPostComments(post.post_id, getCurrentTimezone(req), finalUserId, isDiscoverModeEnabled, filterUserId, page);
+    const comments = await getPostComments(post.post_id, getCurrentTimezone(req), finalUserId, isDiscoverModeEnabled, filterUserId, page);
 
     // Set the title to depending on the user's permissions
     const title = post.is_visible ? post.title : 'Post #' + post.public_id;

@@ -26,7 +26,7 @@ block content
                 a(href=`/settings?viewmode=discover&goto=/inbox`) Show all
                 |.
 
-    if comments.length
+    if comments && comments.length > 1
         .comments
             ul
                 for c in comments

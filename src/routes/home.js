@@ -1,4 +1,4 @@
-import { getPosts } from '../common/get-posts.js';
+import { getPosts } from '../common/post/get-posts.js';
 import { getPostSort } from '../common/get-post-sort.js';
 import { isDiscover } from '../common/is-discover.js';
 import { getCurrentTimezone } from '../common/get-current-timezone.js';

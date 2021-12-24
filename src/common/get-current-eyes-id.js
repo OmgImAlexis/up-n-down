@@ -1,4 +1,4 @@
-import { getUserWithUsername } from './get-user-with-username.js';
+import { getUserWithUsername } from './user/get-user-with-username.js';
 import { eyesDefaultUsername } from '../config/index.js';
 
 /**

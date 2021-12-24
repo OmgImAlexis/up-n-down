@@ -1,5 +1,5 @@
 import postgres from 'postgresql-tag';
-import { query } from '../db/index.js';
+import { query } from '../../db/index.js';
 
 /**
  * Get a user from the database based on it's user_id

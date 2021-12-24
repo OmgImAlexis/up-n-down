@@ -1,5 +1,5 @@
 import postgres from 'postgresql-tag';
-import { query } from '../db/index.js';
+import { query } from '../../db/index.js';
 
 export const updateUserViewMode = async (userId, postMode) => query(postgres`
     update

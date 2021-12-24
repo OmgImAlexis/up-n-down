@@ -6,13 +6,19 @@ import { postSettings } from './routes/settings/post.js';
 import { getSettingsUsername } from './routes/settings/username/get.js';
 import { postSettingsUsername } from './routes/settings/username/post.js';
 import { renderPage } from './common/render-page.js';
-import { getLogin, postLogin } from './routes/login.js';
-import { getSignup, postSignup } from './routes/sign-up.js';
+import { getLogin, postLogin } from './routes/auth/login.js';
+import { getSignup, postSignup } from './routes/auth/sign-up.js';
 import { getNew } from './routes/new/get.js';
 import { postNew } from './routes/new/post.js';
-import { getDisplaySinglePost } from './routes/display-single-post/get.js';
+import { getPost } from './routes/post/get.js';
 import { getFollowing } from './routes/following/get.js';
+import { postFollowing } from './routes/following/post.js';
+import { postPost } from './routes/post/post.js';
+import { getPostEdit } from './routes/post/edit/get.js';
+import { postPostEdit } from './routes/post/edit/post.js';
+import { getInbox } from './routes/inbox/get.js';
 
+// Create main router
 const router = createRouter();
 
 // Static routes
@@ -27,15 +33,21 @@ router.get('/logout', (req, res) => {
     res.redirect('/');
 });
 
-const usernameRegex = /^[a-z0-9-]{4,16}$/i;
-const usernameMiddleware = validateBody('username', 'Username must be 4-16 characters (letters, numbers and dashes only)').notEmpty().withMessage('Please fill in a username').matches(usernameRegex);
+// Validation middleware
+const usernameMiddleware = validateBody('username', 'Username must be 4-16 characters (letters, numbers and dashes only)').notEmpty().withMessage('Please fill in a username').matches(/^[a-z0-9-]{4,16}$/i);
 const passwordMiddleware = validateBody('password', 'Password must be 9-100 characters').notEmpty().withMessage('Please fill in a password').matches(/^.{9,100}$/);
+const mustBeAuthenticatedMiddleware = (req, res, next) => {
+    if (!req.session.user) throw new Error('You need to be signed in!');
+    next();
+};
+const editPostLinkMiddleware = validateBody('link', 'link must be an http or https URL').optional().isURL({ protocols: ['http', 'https'], require_protocol: true });
+const editPostTextContentMiddleware = validateBody('text_content', 'Please write some content').optional();
 
 router.get('/', home);
 router.get('/settings', getSettings);
 router.post('/settings', postSettings);
-router.get('/settings/username/', getSettingsUsername);
-router.post('/settings/username/', postSettingsUsername);
+router.get('/settings/username', getSettingsUsername);
+router.post('/settings/username', mustBeAuthenticatedMiddleware, postSettingsUsername);
 // app.use('/settings/groups/', require('./routes/user-settings-groups'));
 // app.use('/settings/group/', require('./routes/user-settings-group'));
 router.get('/sign-up', getSignup);
@@ -43,14 +55,17 @@ router.post('/sign-up', usernameMiddleware, passwordMiddleware, postSignup);
 router.get('/login', getLogin);
 router.post('/login', postLogin);
 router.get('/new', getNew);
-router.post('/new', postNew);
-router.use(/^\/p\/([a-z0-9]{22})$/i, getDisplaySinglePost);
-// app.use(/^\/p\/([a-z0-9]{22})\/edit$/i, require('./routes/single-post-edit'));
+router.post('/new', mustBeAuthenticatedMiddleware, postNew);
+router.get(/^\/p\/([a-z0-9]{22})$/i, getPost);
+router.post(/^\/p\/([a-z0-9]{22})$/i, postPost);
+router.get(/^\/p\/([a-z0-9]{22})\/edit$/i, mustBeAuthenticatedMiddleware, getPostEdit);
+router.post(/^\/p\/([a-z0-9]{22})\/edit$/i, mustBeAuthenticatedMiddleware, editPostLinkMiddleware, editPostTextContentMiddleware, postPostEdit);
 // app.use(/^\/c\/([a-z0-9]{22})$/i, require('./routes/single-comment-display'));
 // app.use(/^\/c\/([a-z0-9]{22})\/edit$/i, require('./routes/single-comment-edit'));
-router.get('/following/', getFollowing);
+router.get('/following', mustBeAuthenticatedMiddleware, getFollowing);
+router.post('/following', mustBeAuthenticatedMiddleware, postFollowing);
 // app.use(/^\/r\/([a-z0-9-]{3,20})$/, require('./routes/group-posts'));
-// app.use('/inbox/', require('./routes/inbox'));
+router.get('/inbox', getInbox);
 // app.use('/api/v1/', require('./routes/api'));
 
 export {

@@ -1,6 +1,6 @@
 import { getTimezoneWithName } from '../../common/get-timezone-with-name.js';
 import { updateUser } from '../../common/user/update-user.js';
-import { getUserWithUsername } from '../../common/get-user-with-username.js';
+import { getUserWithUsername } from '../../common/user/get-user-with-username.js';
 import { cookieMaxAge as maxAge } from '../../config/index.js';
 import { saveSettings } from '../../common/save-settings.js';
 import { getTimezones } from '../../common/get-timezones.js';
@@ -25,10 +25,13 @@ export const postSettings = async (req, res) => {
         timezone: req.body.timezone
     };
 
+    // Get timezones
+    const timezones = await getTimezones();
+
     try {
         // Check timezone is valid
-        const timeZone = await getTimezoneWithName(settings.timezone);
-        if (!timeZone) throw new Error('Unknown time zone, pick again');
+        const timezone = await getTimezoneWithName(settings.timezone);
+        if (!timezone) throw new Error('Unknown time zone, pick again');
 
         // Check eyes is valid
         if (settings.eyes) {
@@ -37,7 +40,7 @@ export const postSettings = async (req, res) => {
         }
 
         // Check site width is valid
-        if (siteWidth < 500 || siteWidth > 1000) throw new Error('site width must be between 500-1000, or left blank');
+        if (settings.siteWidth < 500 || settings.siteWidth > 1000) throw new Error('site width must be between 500-1000, or left blank');
     } catch (error) {
         const timezones = await getTimezones();
 
@@ -47,18 +50,20 @@ export const postSettings = async (req, res) => {
                 title
             },
             error,
-            ...settings
+            ...settings,
+            timezones
         });
     }
 
     // Save settings
-    await saveSettings(req, res, req.session.user.user_id, settings);
+    await saveSettings(req, res, settings);
 
     // Render success page
     res.render('my-settings', {
         page: {
             title
         },
-        ...settings
+        ...settings,
+        timezones
     });
 };

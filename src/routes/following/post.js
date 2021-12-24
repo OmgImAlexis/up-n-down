@@ -1,56 +1,40 @@
-async (req, res) => {
-    if(req.session.user) {
+import { getUserFollowees } from '../../common/user/get-user-followees.js';
+import { getUserWithUsername } from '../../common/user/get-user-with-username.js';
+import { isUserFollowing } from '../../common/user/is-user-following.js';
+import { addFollower } from '../../common/user/add-follower.js';
 
-        //
-        let errors = []
+export const postFollowing = async (req, res) => {
+    // Redirect to signup if the user isn't signed in
+    if (!req.session.user) return res.redirect('/sign-up');
 
-        if(req.body.username === '') {
-            errors.push({msg: 'Please fill in a username'})
-        }
+    const formUsername = req.body.username ?? '';
 
-        //
-        if(errors.length) {
-            renderFollowing(req, res, errors, req.body.username)
-        }
-        else {
-            const {rows} = await db.getUserWithUsername(req.body.username)
+    try {
+        // Check if the user exists
+        const user = await getUserWithUsername(formUsername);
+        if (!user) throw new Error('No such user');
 
-            if(rows.length) {
+        // Check if the user is trying to follow themselves
+        if(req.session.user.user_id == user.user_id) throw new Error('You can\'t follow yourself');
 
-                if(req.session.user.user_id == rows[0].user_id) {
-                    renderFollowing(req, res,
-                        [{msg: 'You don\'t need to follow yourself'}],
-                        req.body.username)
-                }
-                else {
-                    //
-                    const {rows:rows2} = await db.isUserFollowing(
-                        req.session.user.user_id,
-                        rows[0].user_id
-                    )
+        // Check if the user is already following them
+        const isAlreadyFollowing = await isUserFollowing(req.session.user.user_id, user.user_id);
+        if (isAlreadyFollowing) throw new Error('You are already following that user');
 
-                    //
-                    if(rows2.length) {
-                        renderFollowing(req, res,
-                            [{msg: 'You are already following that user'}],
-                            req.body.username)
-                    }
-                    else {
-                        await db.addFollower(
-                            req.session.user.user_id,
-                            rows[0].user_id
-                        )
+        // Follow the user
+        await addFollower(req.session.user.user_id, user.user_id);
 
-                        return res.redirect('/following')
-                    }
-                }
-            }
-            else {
-                renderFollowing(req, res, [{msg: 'No such user'}], req.body.username)
-            }
-        }
+        // Redirect either to the goto address or following success page
+        return res.redirect(req.query.goto ?? `/following?followed=${user.username}`);
+    } catch (error) {
+        // Render error page
+        res.render('following', {
+            html: {
+                title: 'Following'
+            },
+            error,
+            followees: await getUserFollowees(req.session.user.user_id),
+            formUsername
+        });
     }
-    else {
-        res.send('permission denied...')
-    }
-}
+};

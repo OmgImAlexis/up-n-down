@@ -1,7 +1,7 @@
 import argon2 from 'argon2';
-import { getUserWithUsername } from '../../../common/get-user-with-username.js';
-import { getUserWithUserId } from '../../../common/get-user-with-user-id.js';
-import { updateUserUsername } from '../../../common/user/update-user.js';
+import { getUserWithUsername } from '../../../common/user/get-user-with-username.js';
+import { getUserWithUserId } from '../../../common/user/get-user-with-user-id.js';
+import { updateUserUsername } from '../../../common/user/update-user-username.js';
 
 const title = 'Settings / Username';
 const regexUsername = /^[a-z0-9-]{4,16}$/i;

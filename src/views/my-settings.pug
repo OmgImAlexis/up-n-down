@@ -4,10 +4,8 @@ block head
     link(rel='stylesheet', href='/cillmit99b/my-settings.css')
 
 block content2
-    if errors && errors.length > 1
-        ul
-            each error in errors
-                li #{error.msg}
+    if error
+        | #{error.message}
     form(method="post")
         div
             label(for="timezone" id="l_timezone") Timezone

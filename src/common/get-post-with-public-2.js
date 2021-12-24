@@ -63,4 +63,4 @@ export const getPostWithPublic2 = (publicId, timeZone, userId, filterUserId) => 
     WHERE
         p.public_id = ${publicId} AND
         not p.is_removed
-`);
+`).then(({rows: [post]}) => post);

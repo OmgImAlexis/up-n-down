@@ -1,4 +1,5 @@
 import { updateUser } from './user/update-user.js';
+import { cookieMaxAge as maxAge } from '../config/index.js';
 
 /**
  * Save the current user's settings
@@ -10,7 +11,7 @@ import { updateUser } from './user/update-user.js';
  * @param {string} userId 
  * @param {import('./typedefs/settings.js').Settings} settings
  */
-export const saveSettings = async (req, res, userId, settings = {}) => {
+export const saveSettings = async (req, res, settings = {}) => {
     // Handle logged out users
     if (!req.session.user) {
         // Set cookies as the user doesn't have a session
@@ -23,7 +24,7 @@ export const saveSettings = async (req, res, userId, settings = {}) => {
     }
 
     // Update database
-    await updateUser(userId, settings);
+    await updateUser(req.session.user.user_id, settings);
 
     // Update session
     req.session.user.comment_reply_mode = settings.commentReplyMode;

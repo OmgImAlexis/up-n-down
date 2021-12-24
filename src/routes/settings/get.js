@@ -1,13 +1,11 @@
-import createRouter from 'express-promise-router';
 import { eyesDefaultUsername } from '../../config/index.js';
-import { updateUserViewMode } from '../../common/update-user-view-mode.js';
+import { updateUserViewMode } from '../../common/user/update-user-view-mode.js';
 import { getTimezones } from '../../common/get-timezones.js';
-import { getUserWithUserId } from '../../common/get-user-with-user-id.js';
+import { getUserWithUserId } from '../../common/user/get-user-with-user-id.js';
 import { getAvailableEyes } from '../../common/get-available-eyes.js';
 import { cookieMaxAge } from '../../config/index.js';
-
-const router = createRouter();
-const title = 'Settings'
+import { getCurrentTimezone } from '../../common/get-current-timezone.js';
+import { getCurrentSiteMaxWidth } from '../../common/get-current-site-max-width.js';
 
 /**
  * Get the current eyes
@@ -45,19 +43,20 @@ export const getSettings = async (req, res) => {
         return res.redirect(redirectUrl);
     }
 
-    const timeZones = await getTimezones();
+    const timezones = await getTimezones();
     const availableEyes = await getAvailableEyes();
     const currentEyes = await getCurrentEyes(req);
 
     res.render('my-settings', {
-        title,
-        timeZones,
-        // time_zone: myMisc.getCurrTimeZone(req),
+        html:{
+            title: 'Settings'
+        },
+        timezones,
+        timezone: getCurrentTimezone(req),
         availableEyes,
         currentEyes,
         // postMode: myMisc.getCurrPostMode(req),
         // commentReplyMode: myMisc.getCurrCommentReplyMode(req),
-        // siteWidth: myMisc.getCurrSiteMaxWidth(req),
-        // max_width: myMisc.getCurrSiteMaxWidth(req)
+        siteWidth: getCurrentSiteMaxWidth(req)
     });
 };
