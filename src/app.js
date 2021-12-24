@@ -20,6 +20,9 @@ const redisStore = connectRedis(session);
 // Import package.json name field
 const name = importJson(joinPath(__dirname, '../package.json')).name;
 
+// Load .env into process.env
+config();
+
 const createSessionMiddleware = client => session({
     genid: () => uuid.v4(),
     name: process.env.SESSION_NAME ?? `${name}-session`,
@@ -41,9 +44,6 @@ const createErrorHandlerMiddleware = (status, message) => (req, res) => {
 };
 
 const main = async () => {
-    // Load .env into process.env
-    config();
-
     // Create redis client
     const redisClient = createClient(process.env.REDIS_PORT ?? '6379', process.env.REDIS_HOST ?? 'localhost');
 
@@ -59,13 +59,12 @@ const main = async () => {
 
     // Add user to locals
     app.use(function(req,res,next){
-        console.log(req.session.user);
         res.locals.user = req.session.user;
         next();
     });
 
     // Setup asset directory
-    app.use(createStaticMiddleware(joinPath(__dirname, 'public')));
+    app.use(createStaticMiddleware(joinPath(__dirname, '../public')));
 
     // Setup other misc middleware
     app.use(urlencoded({ extended:false }));

@@ -10,15 +10,15 @@ block content2
                 li #{error.msg}
     form(method="post")
         div
-            label(for="time-zone" id="l_time-zone") Timezone
-            select(id="time-zone" name="time_zone")
-                each timezone in (timeZones || [])
-                    - const isSelected = (timezone.name == time_zone)
-                    - const hours = timezone.utc_offset.hours
+            label(for="timezone" id="l_timezone") Timezone
+            select(id="timezone" name="timezone")
+                each _timezone in (timezones || [])
+                    - const isSelected = (_timezone.name == timezone)
+                    - const hours = _timezone.utc_offset.hours
                     - const hoursText = hours ? (hours > 0 ? '+' + hours : hours) : '+0'
-                    - const minutes = timezone.utc_offset.minutes
+                    - const minutes = _timezone.utc_offset.minutes
                     - const minutesText = minutes ? ':' + Math.abs(minutes) : ''
-                    option(value=timezone.name selected=isSelected) #{timezone.name} #{hoursText}#{minutesText}
+                    option(value=_timezone.name selected=isSelected) #{_timezone.name} #{hoursText}#{minutesText}
         div
             label(for="eyes" id="l_eyes") Following list
             select(id="eyes" name="eyes")

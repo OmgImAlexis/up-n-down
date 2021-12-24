@@ -1,13 +1,13 @@
 import createRouter from 'express-promise-router';
 import { eyesDefaultUsername } from '../../config/index.js';
 import { updateUserViewMode } from '../../common/update-user-view-mode.js';
-import { getTimeZones } from '../../common/get-timezones.js';
+import { getTimezones } from '../../common/get-timezones.js';
 import { getUserWithUserId } from '../../common/get-user-with-user-id.js';
 import { getAvailableEyes } from '../../common/get-available-eyes.js';
+import { cookieMaxAge } from '../../config/index.js';
 
 const router = createRouter();
 const title = 'Settings'
-const cookieMaxAge = 1000*60*60*24*365*10;
 
 /**
  * Get the current eyes
@@ -45,7 +45,7 @@ export const getSettings = async (req, res) => {
         return res.redirect(redirectUrl);
     }
 
-    const timeZones = await getTimeZones();
+    const timeZones = await getTimezones();
     const availableEyes = await getAvailableEyes();
     const currentEyes = await getCurrentEyes(req);
 

@@ -4,10 +4,10 @@ block head
     link(rel='stylesheet', href='/cillmit99b/my-settings-sensitive.css')
 
 block content2
-    if errors.length
-        ul
-            each error in errors
-                li #{error.msg}
+    if error
+        | #{error.message}
+    if info
+        | #{info.message}
     form(method="post")
         div
             label(for="username") Username

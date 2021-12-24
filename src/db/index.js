@@ -26,27 +26,6 @@ export const query = (query, params) => pool.query(query, params);
 // }
 
 
-// //TODO: consider combining this with getUserWithUsername()
-// exports.getUserWithPublicId = (publicId) => {
-//     return query(`
-//         select
-//             user_id,
-//             username,
-//             password,
-//             time_zone,
-//             post_mode,
-//             is_eyes,
-//             eyes,
-//             comment_reply_mode,
-//             site_width
-//         from
-//             tuser
-//         where
-//             public_id = $1`,
-//         [publicId]
-//     )
-// }
-
 
 
 
@@ -60,33 +39,9 @@ export const query = (query, params) => pool.query(query, params);
 //             public_id = ''`)
 // }
 
-// exports.updateUser = (userId, timeZoneName, postMode, commentReplyMode, siteWidth, eyes) => {
-//     return query(`
-//         update
-//             tuser
-//         set
-//             time_zone = $1,
-//             post_mode = $2,
-//             comment_reply_mode = $3,
-//             eyes = $4,
-//             site_width = $5
-//         where
-//             user_id = $6`,
-//         [timeZoneName, postMode, commentReplyMode, eyes, siteWidth, userId])
-// }
 
 
-// //
-// exports.updateUserUsername = (userId, username) => {
-//     return query(`
-//         update
-//             tuser
-//         set
-//             username = $1
-//         where
-//             user_id = $2`,
-//         [username, userId])
-// }
+
 
 // //
 // exports.genUserPublicId = (userId) => {
@@ -104,27 +59,7 @@ export const query = (query, params) => pool.query(query, params);
 //         ])
 // }
 
-// //post
-// exports.createPost = (userId, title, textContent, link, domainNameId) => {
-//     let newPostId = generateNanoId(nanoidAlphabet, nanoidLen)
-//     let finalLink = typeof link !== 'undefined' ? link : null
-//     let finalTextContent = textContent.trim() === '' ? null : textContent
 
-//     let promise = query(`
-//         insert into tpost
-//             (public_id, user_id, title, text_content, link,
-//             domain_name_id)
-//         values
-//             ($1, $2, $3, $4, $5,
-//             $6)
-//         returning
-//             post_id`,
-//         [newPostId, userId, title, finalTextContent, finalLink,
-//         domainNameId]
-//     )
-
-//     return [promise, newPostId]
-// }
 
 
 // //TODO: very similar to getPosts(), may want to combine
@@ -291,72 +226,6 @@ export const query = (query, params) => pool.query(query, params);
 //     )
 // }
 
-// exports.getPostWithPublic2 = (publicId, timeZone, userId, filterUserId) => {
-//     return query(`
-//         select
-//             p.post_id,
-//             p.title,
-//             to_char(
-//                 timezone($1, p.created_on),
-//                 'Mon FMDD, YYYY FMHH12:MIam') created_on,
-//             p.created_on created_on_raw,
-//             p.text_content,
-//             u.username,
-//             u.user_id,
-//             u.public_id as user_public_id,
-//             p.public_id,
-//             p.link,
-//             p.num_comments,
-//             dn.domain_name,
-//             u.user_id = $2 or u.user_id = $3 or
-//                 exists(select
-//                     1
-//                 from
-//                     tfollower
-//                 where
-//                     followee_user_id = u.user_id and
-//                     user_id = $4) is_visible,
-//             exists(select
-//                     1
-//                 from
-//                     tfollower
-//                 where
-//                     followee_user_id = u.user_id and
-//                     user_id = $5) is_follow,
-//             array(
-//                 select
-//                     t.tag
-//                 from
-//                     ttag t
-//                 join
-//                     tposttag pt on pt.tag_id = t.tag_id
-//                 where
-//                     pt.post_id = p.post_id
-//             ) as tags,
-//             array(
-//                 select
-//                     pg.private_group_id
-//                 from
-//                     tprivategroup pg
-//                 join
-//                     ttag t on t.tag = pg.name
-//                 join
-//                     tposttag pt on pt.tag_id = t.tag_id
-//                 where
-//                     pt.post_id = p.post_id
-//             ) as private_group_ids
-//         from
-//             tpost p
-//         join
-//             tuser u on u.user_id = p.user_id
-//         left join
-//             tdomainname dn on dn.domain_name_id = p.domain_name_id
-//         where
-//             p.public_id = $6 and
-//             not p.is_removed`,
-//         [timeZone, userId, filterUserId, filterUserId, userId, publicId]
-//     )
-// }
 
 // exports.getPostLinks = () => {
 //     return query(`
@@ -424,17 +293,6 @@ export const query = (query, params) => pool.query(query, params);
 //         [])
 // }
 
-// //domain name
-// exports.createDomainName = (domainName) => {
-//     return query(`
-//         insert into tdomainname
-//             (domain_name)
-//         values
-//             ($1)
-//         returning
-//             domain_name_id`,
-//         [domainName])
-// }
 
 // exports.getDomainName = (domainName) => {
 //     return query(`
@@ -447,17 +305,7 @@ export const query = (query, params) => pool.query(query, params);
 //         [domainName])
 // }
 
-// exports.getDomainNameId = async domainName => {
-//     const {rows} = await module.exports.getDomainName(domainName)
 
-//     if(rows.length) {
-//         return rows[0].domain_name_id
-//     }
-//     else {
-//         const {rows:rowsNew} = await module.exports.createDomainName(domainName)
-//         return rowsNew[0].domain_name_id
-//     }
-// }
 
 // //comment
 // exports.createPostComment = (postId, userId, content) => {
@@ -576,64 +424,6 @@ export const query = (query, params) => pool.query(query, params);
 //             isDiscoverMode, userId, filterUserId, filterUserId, pageSize, (page - 1)*pageSize])
 // }
 
-// exports.getPostComments = (postId, timeZone, userId, isDiscoverMode, filterUserId, page) => {
-//     const limit = config.commentsPerPage
-//     const offset = (page - 1)*config.commentsPerPage
-
-//     return query(`
-//         select
-//             c.text_content,
-//             c.path,
-//             u.username,
-//             u.user_id,
-//             u.public_id as user_public_id,
-//             to_char(
-//                 timezone($1, c.created_on),
-//                 'Mon FMDD, YYYY FMHH12:MIam') created_on,
-//             c.created_on created_on_raw,
-//             c.public_id,
-//             c.is_removed,
-//             u.user_id = $2 or u.user_id = $3 or
-//                 exists(select
-//                     1
-//                 from
-//                     tfollower
-//                 where
-//                     followee_user_id = u.user_id and
-//                     user_id = $4) is_visible,
-//             exists(select
-//                     1
-//                 from
-//                     tfollower
-//                 where
-//                     followee_user_id = u.user_id and
-//                     user_id = $5) is_follow
-//         from
-//             ttest c
-//         join
-//             tuser u on u.user_id = c.user_id
-//         where
-//             c.path <@ $6 and
-//             ($7 or not exists(
-//                 select
-//                     1
-//                 from
-//                     ttest c2
-//                 where
-//                     c2.path @> c.path and
-//                     not exists(select 1 from tfollower where user_id = $8 and followee_user_id = c2.user_id) and
-//                     c2.user_id != $9 and
-//                     c2.user_id != $10))
-//         order by
-//             c.path
-//         limit
-//             $11
-//         offset
-//             $12`,
-//         [timeZone, userId, filterUserId, filterUserId,
-//         userId, postId, isDiscoverMode, filterUserId,
-//         userId, filterUserId, limit, offset])
-// }
 
 // exports.getCommentComments = (path, timeZone, userId, isDiscoverMode, filterUserId, page) => {
 //     const limit = config.commentsPerPage
@@ -789,46 +579,9 @@ export const query = (query, params) => pool.query(query, params);
 //         [textContent, commentId])
 // }
 
-// //follower
-// exports.addFollower = (userId, followeeUserId) => {
-//     return query(`
-//         insert into tfollower
-//             (user_id, followee_user_id)
-//         values
-//             ($1, $2)`,
-//         [userId, followeeUserId])
-// }
 
-// exports.getUserFollowees = (userId) => {
-//     return query(`
-//         select
-//             u.user_id,
-//             u.username,
-//             u.public_id
-//         from
-//             tfollower f
-//         join
-//             tuser u on u.user_id = f.followee_user_id
-//         where
-//             f.user_id = $1
-//         order by
-//             lower(u.username)`,
-//         [userId]
-//     )
-// }
 
-// exports.getUserFollowee = (userId, followeeUserId) => {
-//     return query(`
-//         select
-//             1
-//         from
-//             tfollower f
-//         where
-//             f.user_id = $1 and
-//             f.followee_user_id = $2`,
-//         [userId, followeeUserId]
-//     )
-// }
+
 
 // exports.removeFollower = (userId, followeeUserId) => {
 //     return query(`
@@ -861,26 +614,7 @@ export const query = (query, params) => pool.query(query, params);
 //         [tagId, postId])
 // }
 
-// exports.createPostTags = async (trimTags, postId) => {
-//     let tagIds = []
 
-//     for(let i = 0; i < trimTags.length; ++i) {
-//         const {rows:tagd} = await module.exports.getTag(trimTags[i])
-
-//         if(tagd.length) {
-//             tagIds.push(tagd[0].tag_id)
-//         }
-//         else {
-//             const {rows:tagInsert} = await module.exports.createTag(trimTags[i])
-//             tagIds.push(tagInsert[0].tag_id)
-//         }
-//     }
-
-//     //
-//     for(let i = 0; i < tagIds.length; ++i) {
-//         await module.exports.createPostTag(tagIds[i], postId)
-//     }
-// }
 
 // exports.createPrivateGroup = (groupName, userId) => {
 //     return query(`
@@ -956,23 +690,7 @@ export const query = (query, params) => pool.query(query, params);
 
 
 
-// exports.isAllowedToViewPost = async (postPrivateIds, userId) => {
-//     const privateIds = []
 
-//     if(userId != -1) {
-//         const {rows:userPrivateGroups} = await module.exports.getUserAllPrivateGroupIds(userId)
-
-//         for(const i in userPrivateGroups) {
-//             privateIds.push(userPrivateGroups[i].private_group_id)
-//         }
-//     }
-
-//     //check that the post's IDs are a subset of the user's IDs
-//     const isAllowed = postPrivateIds.every(v => privateIds.includes(v))
-
-//     //
-//     return isAllowed
-// }
 
 // exports.getTag = (tagName) => {
 //     return query(`
@@ -1097,19 +815,4 @@ export const query = (query, params) => pool.query(query, params);
 //     )
 // }
 
-// //misc
-// exports.getTimeZoneWithName = (timeZoneName) => {
-//     return query(`
-//         select
-//             name,
-//             abbrev,
-//             utc_offset,
-//             is_dst
-//         from
-//             pg_timezone_names
-//         where
-//             name = $1`,
-//         [timeZoneName]
-//     )
-// }
 

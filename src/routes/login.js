@@ -34,7 +34,7 @@ export const getLogin = (req, res) => {
  */
  export const postLogin = async (req, res) => {
     try {
-        const { rows: [user] } = await getUserWithUsername(req.body.username);
+        const user = await getUserWithUsername(req.body.username);
 
         // No user found with the username
         if (!user) throw new Error('Invalid username or password');

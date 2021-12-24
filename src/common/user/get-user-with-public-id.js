@@ -1,12 +1,12 @@
 import postgres from 'postgresql-tag';
-import { query } from '../db/index.js';
+import { query } from '../../db/index.js';
 
 /**
  * 
- * @param {string} username 
+ * @param {string} publicId 
  * @returns 
  */
-export const getUserWithUsername = (username) => query(postgres`
+export const getUserWithPublicId = (publicId) => query(postgres`
     SELECT
         user_id,
         username,
@@ -20,5 +20,5 @@ export const getUserWithUsername = (username) => query(postgres`
     FROM
         tuser
     WHERE
-        lower(username) = lower(${username})
-`).then(({ rows: [user]}) => user);
+        public_id = ${publicId}
+`).then(({rows: [user]}) => user);

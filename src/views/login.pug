@@ -7,7 +7,7 @@ block content
     h2.pageh1 Log In
 
     if error
-        | error: #{error.message}
+        | #{error.message}
     form(method="post")
         div
             label(for="username") Username

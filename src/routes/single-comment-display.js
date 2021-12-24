@@ -20,7 +20,7 @@ router.route('/')
         if(rows.length) {
 
             //
-            const isAllowed = await db.isAllowedToViewPost(
+            const isAllowed = await db.isUserAllowedToViewPost(
                 rows[0].private_group_ids,
                 finalUserId)
 
@@ -93,7 +93,7 @@ router.route('/')
                 if(rows.length) {
 
                     //
-                    const isAllowed = await db.isAllowedToViewPost(
+                    const isAllowed = await db.isUserAllowedToViewPost(
                         rows[0].private_group_ids,
                         req.session.user.user_id)
 

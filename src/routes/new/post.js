@@ -1,3 +1,11 @@
+import { validationResult } from 'express-validator';
+import { processPostTitle } from '../../common/process-post-title.js';
+import { getDomainName } from '../../common/get-domain-name.js';
+import { processPostTags } from '../../common/process-post-tags.js';
+import { createPost } from '../../common/post/create-post.js';
+import { getDomainNameId } from '../../common/get-domain-name-id.js';
+import { createPostTags } from '../../common/post/create-post-tags.js';
+
 const title = 'New Post';
 
 /**
@@ -9,43 +17,54 @@ const title = 'New Post';
  */
 export const postNew = async (req, res) => {
     try {
-        if (!req.session.user) return res.send('nope...');
+        if (!req.session.user) throw new Error('You must be logged in to create posts.');
 
         const [validationError] = validationResult(req).array({ onlyFirstError: true });
         if (validationError) throw new Error(validationError.msg);
 
-        // Compress title?
-        const wsCompressedTitle = processPostTitle(req.body.title);
+        // Process title
+        const title = processPostTitle(req.body.title);
 
-        //
-        let [trimTags, tagErrors] = myMisc.processPostTags(req.body.tags)
-        errors = errors.concat(tagErrors)
+        // Process tags
+        const tags = processPostTags(req.body.tags);
 
-        // check private group permissions
-        if (!errors.length && trimTags.length) {
-            const {rows:privateGroups} = await db.getPrivateGroupsWithNames(trimTags)
+        // Check the user has permission to post in this private group
+        if (tags.length > 0) {
+            const privateGroups = await getPrivateGroupsWithNames(tags);
 
-            for(let i = 0; i < privateGroups.length; ++i) {
-                const pGroup = privateGroups[i]
-
-                if(req.session.user.user_id == pGroup.created_by) {
-                    continue
-                }
-
-                const {rows:gMember} = await db.getGroupMember(
-                    pGroup.private_group_id,
-                    req.session.user.user_id)
-
-                if(!gMember.length) {
-                    errors.push({msg: "You used a private group you don't have access to"})
-                    break
+            for (const privateGroup of privateGroups) {
+                // If this is not the owner then check they're a member of the group
+                if (req.session.user.user_id !== pGroup.created_by) {
+                    const groupMember = await getGroupMember(pGroup.private_group_id, req.session.user.user_id);
+                    if (!groupMember) throw new Error('You used a private group you don\'t have access to');    
                 }
             }
         }
+
+        // Get the domain name ID
+        const domainNameId = req.body.link ? await getDomainNameId(getDomainName(req.body.link)) : null;
+
+        // Create the post
+        const { postId, publicId } = await createPost(
+            req.session.user.user_id,
+            title,
+            req.body.text_content,
+            req.body.link,
+            domainNameId
+        );
+
+        // Create post tags
+        // This should be moved to createPost
+        // There's no need for this to be separate
+        await createPostTags(tags, postId);
+        
+        // Send the user to the newly created post
+        return res.redirect(`/p/${publicId}`);
     } catch (error) {
         res.render('new-post2', {
-            title,
-            user: req.session.user,
+            html: {
+                title
+            },
             error,
             title: req.body.title,
             link: req.body.link,
@@ -54,30 +73,5 @@ export const postNew = async (req, res) => {
             submitLabel: 'Create Post',
             heading: 'New Post'
         });
-    }
-
-        //
-        let domainNameId = null
-
-        if(typeof req.body.link !== 'undefined') {
-            const domainName = myMisc.getDomainName(req.body.link)
-            domainNameId = await db.getDomainNameId(domainName)
-        }
-
-        //
-        let vals = db.createPost(
-            req.session.user.user_id,
-            wsCompressedTitle,
-            req.body.text_content,
-            req.body.link,
-            domainNameId)
-
-        const {rows} = await vals[0]
-
-        //
-        await db.createPostTags(trimTags, rows[0].post_id)
-        
-        //
-        return res.redirect('/p/' + vals[1])
     }
 };

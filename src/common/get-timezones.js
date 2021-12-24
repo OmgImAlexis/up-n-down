@@ -1,6 +1,6 @@
 import { query } from '../db/index.js';
 
-export const getTimeZones = () => query(`
+export const getTimezones = () => query(`
     select
         name,
         utc_offset

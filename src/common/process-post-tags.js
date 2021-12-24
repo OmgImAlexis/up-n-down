@@ -1,47 +1,19 @@
 /**
  *
- * @param {string} rTags
+ * @param {string} postTags
  * @returns
  */
-export const processPostTags = (rTags) => {
-    let tags = rTags.split(',');
-    let trimTags = [];
-    let errors = [];
+export const processPostTags = (postTags) => {
+    const tags = postTags.split(',').map(tag => tag.trim().toLowerCase()).filter(tag => Boolean(tag));
 
-    for (const i = 0; i < tags.length; ++i) {
-        const trimTag = tags[i].trim().toLowerCase();
+    // Only allow a max of 4 tags
+    if (tags.length > 4) throw new Error('the max tags per post is 4');
 
-        if (trimTag !== "" && trimTags.indexOf(trimTag) == -1) {
-            trimTags.push(trimTag);
-        }
+    // Validate each tag
+    for (const tag of tags) {
+        if (tag.match(/^[0-9a-zA-Z-]+$/)) throw new Error('tags can only contain numbers, letters and dashes.');
+        if (tag.length < 3 || tag.length > 20) throw new Error('each tag must be 3-20 characters');
     }
 
-    //
-    let isCharError = false;
-    let isLenError = false;
-
-    for (let i = 0; i < trimTags.length; ++i) {
-        let isMatch = trimTags[i].match(/^[0-9a-zA-Z-]+$/);
-
-        if (!isCharError && isMatch === null) {
-            errors.push({ 'msg': 'group names can only contain numbers, letters and dashes' });
-            isCharError = true;
-        }
-
-        let tagLen = trimTags[i].length;
-        let isLenOkay = tagLen >= 3 && tagLen <= 20;
-
-        if (!isLenError && !isLenOkay) {
-            errors.push({ 'msg': 'each group name must be 3-20 characters' });
-            isLenError = true;
-        }
-    }
-
-    //
-    if (trimTags.length > 4) {
-        errors.push({ 'msg': 'the max tags per post is 4' });
-    }
-
-    //
-    return [trimTags, errors];
+    return tags;
 };

@@ -9,10 +9,10 @@ mixin unfollowLink(username, publicId)
 block content
     h2.pageh1 Following
 
-    if errors.length
-        ul
-            each error in errors
-                li #{error.msg}
+    if error
+        | #{error.message}
+    if info
+        | #{info.message}
     form(method="post" action="/following")
         div
             label(for="username") Username
