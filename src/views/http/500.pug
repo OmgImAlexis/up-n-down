@@ -1,0 +1,6 @@
+extends ../layout
+
+block content
+    if error
+        | #{error.cause ? error.cause : error}
+        //- pre #{error.cause ? error.cause.stack : error.stack}

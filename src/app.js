@@ -1,4 +1,5 @@
 import { join as joinPath } from 'path';
+import { serializeError } from 'serialize-error';
 import express, { static as createStaticMiddleware, urlencoded } from 'express';
 import cookieParser from 'cookie-parser';
 import uuid from 'uuid';
@@ -12,6 +13,15 @@ import { fileURLToPath } from 'url';
 import { importJson } from './common/import-json.js';
 import { getCurrentSiteMaxWidth } from './common/get-current-site-max-width.js';
 import { router } from './router.js';
+
+class HttpError extends Error {
+    constructor(message, status = 500, cause) {
+        super(message);
+        this.status = status;
+        this.code = `HTTP_${status}`;
+        this.cause = cause;
+    }
+}
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -32,15 +42,20 @@ const createSessionMiddleware = client => session({
     store: new redisStore({ client })
 });
 
-const createErrorHandlerMiddleware = (status, message) => (req, res) => {
+const createErrorHandlerMiddleware = (error) => (req, res) => {
+    const status = error.status;
+    
     // Set status
     res.status(status);
 
+    // Respond with HTML
+    if (req.accepts('html')) return res.render(`http/${status}`, { html: { title: error.cause ? error.cause.message : error.message }, error });
+
     // Respond with JSON
-    if (req.accepts('json')) return res.json({ error: { status, message } });
+    if (req.accepts('json')) return res.json(serializeError(error));
 
     // Default to plain-text
-    res.status(status).type('txt').send(message);
+    res.type('txt').send(message);
 };
 
 const main = async () => {
@@ -82,10 +97,10 @@ const main = async () => {
     app.use(router);
 
     // 404
-    app.use(createErrorHandlerMiddleware(404, 'Not Found'));
+    app.use(createErrorHandlerMiddleware(new HttpError('Not Found', 404)));
 
     // 5XX
-    app.use(createErrorHandlerMiddleware(500, 'Internal Server Error'));
+    app.use((error, req, res, next) => createErrorHandlerMiddleware(new HttpError('Internal Server Error', 500, error))(req, res));
 
     // Start web server
     const server = app.listen(process.env.HTTP_PORT ?? 0, () => {

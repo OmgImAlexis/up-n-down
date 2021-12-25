@@ -7,6 +7,8 @@ import { getPostWithPublic2 } from '../../common/get-post-with-public-2.js';
 import { isUserAllowedToViewPost } from '../../common/post/is-user-allowed-to-view-post.js';
 import { getPostComments } from '../../common/comment/get-post-comments.js';
 
+const isUUID = string => /^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/gi.test(string);
+
 /**
  * Render a post
  * 
@@ -18,6 +20,9 @@ export const getPost = async (req, res) => {
     const postPublicId = req.params.postId;
     const finalUserId = req.session.user ? req.session.user.user_id : -1;
     const filterUserId = await getCurrentEyesId(req);
+
+    // Bail if this isn't a UUID
+    if (!isUUID(postPublicId)) throw new Error('Invalid post ID');
 
     // Fetch the current post
     const post = await getPostWithPublic2(postPublicId, getCurrentTimezone(req), finalUserId, filterUserId);

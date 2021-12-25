@@ -32,6 +32,7 @@
     "nodemon": "^2.0.2",
     "pg": "^8.7.1",
     "postgres-migrations": "^5.3.0",
-    "postgresql-tag": "^0.1.0"
+    "postgresql-tag": "^0.1.0",
+    "serialize-error": "^9.0.0"
   }
 }

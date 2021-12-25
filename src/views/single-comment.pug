@@ -10,146 +10,149 @@ include bbCodes.pug
 include userContent.pug
 
 block content
-    - const followGoto = '/c/' + comment.comment_public_id
-
-    nav.backpost-nav
-        a(href=`/p/${post_public_id}`) !{'&lt;'} Post
-        | 
-        a(href=`/p/${post_public_id}#${comment.comment_public_id}`) !{'&lt;'} Post#
-
-    article.the-comment
-
-        if comment.is_visible
-            span(class="cby") by
-            | 
-            span(class="cuser") #{comment.username}
-
-            if !user || (comment.user_id != user.user_id)
-                | 
-                if comment.is_follow
-                    +ucUnfollowLink(comment.username, comment.user_public_id, followGoto)
-                else
-                    +ucFollowLink(comment.username, comment.user_public_id, followGoto)
-
-            | 
-            span(class="cdate") on #{comment.created_on}
-
-            | 
-            span.clinks-single
-                a(href=`/c/${comment.comment_public_id}`) link
-
-                if user && comment.user_id == user.user_id
-                    | 
-                    a(href=`/c/${comment.comment_public_id}/edit`) edit
-
-            div.the-comment-content
-                +bbCodes(comment.text_content)
-        else
-            span(class="cby2") by
-            | 
-            span(class="cuser2") #{comment.username}
-
-            if !user || (comment.user_id != user.user_id)
-                | 
-                if comment.is_follow
-                    +ucUnfollowLink(comment.username, comment.user_public_id, followGoto)
-                else
-                    +ucFollowLink(comment.username, comment.user_public_id, followGoto)
-
-            | 
-            span(class="cdate2") on #{comment.created_on}
-
-            | 
-            span.clinks2-single
-                a(href=`/c/${comment.comment_public_id}`) link
-
-    if user
-        form(method="post" id="write-comment")
-            if errors.length
-                ul
-                    each error in errors
-                        li #{error.msg}
-
-            div
-                label(for="text_content") Write a Comment
-                textarea(name="text_content" id="text_content")
-            div
-                input(type="submit" value="Submit Comment")
-
-    if is_discover_mode
-        div(class="alert1o")
-            span(class="alert1")
-                |Showing all comments. 
-                a(href=`/settings?viewmode=locked&goto=/c/${comment.comment_public_id}`) Switch to locked
-                |.
+    if error
+        | #{error.message}
     else
-        div(class="alert1o")
-            span(class="alert1")
-                |Some comments may be hidden. 
-                a(href=`/settings?viewmode=discover&goto=/c/${comment.comment_public_id}`) Show all
-                |.
+        - const followGoto = '/c/' + comment.comment_public_id
 
-    .comments
-        if comments.length
-            - let currIndent = comments[0].path.split('.').length - 2
-            - let isFirst = true
-            - const parentIndent = comment.path.split('.').length - 2
+        nav.backpost-nav
+            a(href=`/p/${post_public_id}`) !{'&lt;'} Post
+            | 
+            a(href=`/p/${post_public_id}#${comment.comment_public_id}`) !{'&lt;'} Post#
 
-            <ul>
+        article.the-comment
 
-            for comment in comments
-                - const commentIndent = comment.path.split('.').length - 2
+            if comment.is_visible
+                span(class="cby") by
+                | 
+                span(class="cuser") #{comment.username}
 
-                if isFirst
+                if !user || (comment.user_id != user.user_id)
+                    | 
+                    if comment.is_follow
+                        +ucUnfollowLink(comment.username, comment.user_public_id, followGoto)
+                    else
+                        +ucFollowLink(comment.username, comment.user_public_id, followGoto)
 
-                    - let i = 0
-                    - const numEmpty = commentIndent - parentIndent - 1
+                | 
+                span(class="cdate") on #{comment.created_on}
 
-                    while i < numEmpty
-                        <li style="list-style-type:none"><ul>
-                        - ++i
+                | 
+                span.clinks-single
+                    a(href=`/c/${comment.comment_public_id}`) link
 
-                    <li>
-                    +ucListComment(comment, user, followGoto, comment_reply_mode, true)
-                    - isFirst = false
-                else 
-                    if commentIndent > currIndent
-                        <ul><li>
-                        +ucListComment(comment, user, followGoto, comment_reply_mode, true)
-                    else if commentIndent < currIndent
-                        - let diffIndent = currIndent - commentIndent
-                        - let n = 0
+                    if user && comment.user_id == user.user_id
+                        | 
+                        a(href=`/c/${comment.comment_public_id}/edit`) edit
 
-                        </li>
+                div.the-comment-content
+                    +bbCodes(comment.text_content)
+            else
+                span(class="cby2") by
+                | 
+                span(class="cuser2") #{comment.username}
 
-                        while n < diffIndent
-                            </ul></li>
-                            - ++n
-                        
+                if !user || (comment.user_id != user.user_id)
+                    | 
+                    if comment.is_follow
+                        +ucUnfollowLink(comment.username, comment.user_public_id, followGoto)
+                    else
+                        +ucFollowLink(comment.username, comment.user_public_id, followGoto)
+
+                | 
+                span(class="cdate2") on #{comment.created_on}
+
+                | 
+                span.clinks2-single
+                    a(href=`/c/${comment.comment_public_id}`) link
+
+        if user
+            form(method="post" id="write-comment")
+                if errors.length
+                    ul
+                        each error in errors
+                            li #{error.msg}
+
+                div
+                    label(for="text_content") Write a Comment
+                    textarea(name="text_content" id="text_content")
+                div
+                    input(type="submit" value="Submit Comment")
+
+        if is_discover_mode
+            div(class="alert1o")
+                span(class="alert1")
+                    |Showing all comments. 
+                    a(href=`/settings?viewmode=locked&goto=/c/${comment.comment_public_id}`) Switch to locked
+                    |.
+        else
+            div(class="alert1o")
+                span(class="alert1")
+                    |Some comments may be hidden. 
+                    a(href=`/settings?viewmode=discover&goto=/c/${comment.comment_public_id}`) Show all
+                    |.
+
+        .comments
+            if comments.length
+                - let currIndent = comments[0].path.split('.').length - 2
+                - let isFirst = true
+                - const parentIndent = comment.path.split('.').length - 2
+
+                <ul>
+
+                for comment in comments
+                    - const commentIndent = comment.path.split('.').length - 2
+
+                    if isFirst
+
+                        - let i = 0
+                        - const numEmpty = commentIndent - parentIndent - 1
+
+                        while i < numEmpty
+                            <li style="list-style-type:none"><ul>
+                            - ++i
+
                         <li>
                         +ucListComment(comment, user, followGoto, comment_reply_mode, true)
-                    else
-                        </li><li>
-                        +ucListComment(comment, user, followGoto, comment_reply_mode, true)
+                        - isFirst = false
+                    else 
+                        if commentIndent > currIndent
+                            <ul><li>
+                            +ucListComment(comment, user, followGoto, comment_reply_mode, true)
+                        else if commentIndent < currIndent
+                            - let diffIndent = currIndent - commentIndent
+                            - let n = 0
+
+                            </li>
+
+                            while n < diffIndent
+                                </ul></li>
+                                - ++n
+                            
+                            <li>
+                            +ucListComment(comment, user, followGoto, comment_reply_mode, true)
+                        else
+                            </li><li>
+                            +ucListComment(comment, user, followGoto, comment_reply_mode, true)
+                        
+                        - currIndent = commentIndent
+
+                if currIndent > 0 
+                    - let n = 0
+
+                    </li>
+
+                    while n < currIndent
+                        </ul></li>
+                        - ++n
                     
-                    - currIndent = commentIndent
+                    </ul>
+                else
+                    </li></ul>
 
-            if currIndent > 0 
-                - let n = 0
+                div
+                    - let pageUrl = `/c/${comment.comment_public_id}?p=${page + 1}`
 
-                </li>
-
-                while n < currIndent
-                    </ul></li>
-                    - ++n
-                
-                </ul>
+                    a(class="more" href=pageUrl) more &gt;
             else
-                </li></ul>
-
-            div
-                - let pageUrl = `/c/${comment.comment_public_id}?p=${page + 1}`
-
-                a(class="more" href=pageUrl) more &gt;
-        else
-            | no comments yet
+                | no comments yet
