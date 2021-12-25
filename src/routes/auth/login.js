@@ -40,7 +40,7 @@ export const getLogin = (req, res) => {
         if (!user) throw new Error('Invalid username or password');
 
         // Password doesn't match the database
-        if (!validatePassword(user.password, req.body.password)) throw new Error('Invalid username or password');
+        if (!await validatePassword(user.password, req.body.password)) throw new Error('Invalid username or password');
 
         req.session.user = user;
         return res.redirect('/');
