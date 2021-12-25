@@ -6,8 +6,6 @@ import { isDiscover } from '../../common/is-discover.js';
 import { getCommentComments } from '../../common/comment/get-comment-comments.js';
 import { getCurrentCommentReplyMode } from '../../common/get-current-comment-reply-mode.js';
 
-const htmlTitleComment = '';
-
 /**
  * Render a comment.
  * 
@@ -45,7 +43,7 @@ export const getComment = async (req, res) => {
 
         res.render('single-comment', {
             html: {
-                title: `${htmlTitleComment} ${commentPublicId}`
+                title: commentPublicId
             },
             post_public_id: comment.post_public_id,
             comment,
@@ -57,7 +55,7 @@ export const getComment = async (req, res) => {
     } catch (error) {
         res.render('single-comment', {
             html: {
-                title: htmlTitleComment
+                title: ''
             },
             error
         });

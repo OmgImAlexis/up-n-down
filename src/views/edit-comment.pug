@@ -7,10 +7,8 @@ block content
     h2.pageh1 Edit Comment
 
     form(method="post")
-        if errors.length
-            ul
-                each error in errors
-                    li #{error.msg}
+        if error
+            | #{error.message}
 
         div
             label(for="text_content") Comment

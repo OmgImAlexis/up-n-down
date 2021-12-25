@@ -32,9 +32,9 @@ export const createPostComment = async (postId, userId, content) => {
     // Save comment to database
     await query(postgres`
         INSERT INTO ttest
-            (post_id, user_id, text_content, path, public_id)
+            (post_id, user_id, text_content, path)
         VALUES
-            (${postId}, ${userId}, ${content}, ${postId + '.' + numberToOrderedAlpha(parseInt(count, 10) + 1)}, ${generateNanoId()})
+            (${postId}, ${userId}, ${content}, ${postId + '.' + numberToOrderedAlpha(parseInt(count, 10) + 1)})
         RETURNING
             public_id
     `);

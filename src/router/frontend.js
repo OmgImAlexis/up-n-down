@@ -21,6 +21,7 @@ import { getComment } from '../routes/comment/get.js';
 import { postComment } from '../routes/comment/post.js';
 import { getCommentEdit } from '../routes/comment/edit/get.js';
 import { postCommentEdit } from '../routes/comment/edit/post.js';
+import { getLeaving } from '../routes/leaving/get.js';
 
 // Create main router
 const router = createRouter();
@@ -72,6 +73,7 @@ router.get('/following', mustBeAuthenticatedMiddleware, getFollowing);
 router.post('/following', mustBeAuthenticatedMiddleware, postFollowing);
 // app.use(/^\/r\/([a-z0-9-]{3,20})$/, require('./routes/group-posts'));
 router.get('/inbox', getInbox);
+router.get('/leaving', getLeaving);
 
 export {
     router

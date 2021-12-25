@@ -1,84 +1,48 @@
-export const postComment = () => {};
+import { increasePostNumberOfComments } from "../../common/post/increase-post-number-of-comments.js";
+import { getCurrentEyesId } from "../../common/get-current-eyes-id.js";
+import { getCommentWithPublic2 } from "../../common/comment/get-comment-with-public-2.js";
+import { isUserAllowedToViewPost } from "../../common/post/is-user-allowed-to-view-post.js";
+import { processComment } from "../../common/process-comment.js";
+import { getCurrentCommentReplyMode } from "../../common/get-current-comment-reply-mode.js";
+import { getCurrentTimezone } from "../../common/get-current-timezone.js";
+import { isDiscover } from "../../common/is-discover.js";
+import { getCommentComments } from "../../common/comment/get-comment-comments.js";
+import { createCommentComment } from "../../common/comment/create-comment-comment.js";
 
+export const postComment = async (req, res) => {
+    const commentPublicId = req.params.commentId;
+    const finalUserId = req.session?.user?.user_id ?? -1;
+    const filterUserId = await getCurrentEyesId(req);
+    const comment = await getCommentWithPublic2(commentPublicId, getCurrentTimezone(req), finalUserId, filterUserId);
+    
+    try {
+        if (!comment) throw new Error('Unknown comment.');
+        if (comment.user_id !== req.session.user.user_id) throw new Error('Permission denied!');
 
-        // async (req, res) => {
-        //     if(req.session.user) {
-        //         const commentPublicId = req.params[0]
-        //         const finalUserId = req.session.user ? req.session.user.user_id : -1
-        //         const filterUserId = await db.getCurrEyesId(req)
+        const isAllowed = await isUserAllowedToViewPost(comment.private_group_ids, finalUserId);
+        if(!isAllowed) throw new Error("This comment is from a private group and you do not have access.");
 
-        //         const {rows} = await db.getCommentWithPublic2(
-        //             commentPublicId,
-        //             myMisc.getCurrTimeZone(req),
-        //             finalUserId,
-        //             filterUserId)
+        const trimmedComment = processComment(req.body.text_content);
 
-        //         if(rows.length) {
+        const reply = await createCommentComment(comment.post_id, req.session.user.user_id, trimmedComment, comment.path, 'UTC');
 
-        //             //
-        //             const isAllowed = await db.isUserAllowedToViewPost(
-        //                 rows[0].private_group_ids,
-        //                 req.session.user.user_id)
+        return res.redirect(`/c/${commentPublicId}#${reply.public_id}`);
+    } catch (error) {
+        //
+        const isDiscoverMode = isDiscover(req);
 
-        //             if(!isAllowed) {
-        //                 return res.render(
-        //                     'message',
-        //                     {
-        //                         html_title: htmlTitleComment + commentPublicId,
-        //                         message: "This comment is from a private group and you do not have access.",
-        //                         user: req.session.user,
-        //                         max_width: myMisc.getCurrSiteMaxWidth(req)
-        //                     })
-        //             }
+        const comments = await getCommentComments(comment.path, getCurrentTimezone(req), finalUserId, isDiscoverMode, filterUserId);
 
-        //             let [compressedComment, errors] = myMisc.processComment(req.body.text_content)
-
-        //             if(errors.length) {
-
-        //                 //
-        //                 const isDiscoverMode = myMisc.isDiscover(req)
-
-        //                 const{rows:comments} = await db.getCommentComments(
-        //                     rows[0].path,
-        //                     myMisc.getCurrTimeZone(req),
-        //                     finalUserId,
-        //                     isDiscoverMode,
-        //                     filterUserId)
-
-        //                 res.render(
-        //                     'single-comment',
-        //                     {
-        //                         html_title: htmlTitleComment + commentPublicId,
-        //                         user: req.session.user,
-        //                         post_public_id: rows[0].post_public_id,
-        //                         comment: rows[0],
-        //                         comments: comments,
-        //                         errors: errors,
-        //                         is_discover_mode: isDiscoverMode,
-        //                         comment_reply_mode: myMisc.getCurrCommentReplyMode(req),
-        //                         max_width: myMisc.getCurrSiteMaxWidth(req)
-        //                     }
-        //                 )
-        //             }
-        //             else {
-
-        //                 //
-        //                 const {rows:data1} = await db.createCommentComment(
-        //                     rows[0].post_id,
-        //                     req.session.user.user_id,
-        //                     compressedComment,
-        //                     rows[0].path,
-        //                     'UTC')
-
-        //                 //
-        //                 await db.incPostNumComments(rows[0].post_id)
-        //                 return res.redirect(`/c/${commentPublicId}#${data1[0].public_id}`)
-        //             }
-        //         }
-        //         else {
-        //             res.send('not found')
-        //         }
-        //     }
-        //     else {
-        //         res.send('nope...')
-        //     }
+        res.render('single-comment', {
+            html: {
+                title: commentPublicId
+            },
+            post_public_id: comment.post_public_id,
+            comment,
+            comments,
+            error,
+            is_discover_mode: isDiscoverMode,
+            comment_reply_mode: getCurrentCommentReplyMode(req)
+        });
+    }
+};

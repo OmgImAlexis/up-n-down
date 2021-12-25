@@ -165,11 +165,8 @@ function reply(cpid, isTargetLink) {
     
     //
     if(isUl) {
-        //console.log('ul exists, insert comment')
         commentLi.insertBefore(cForm, lastChild)
-    }
-    else {
-        //console.log('ul doesnt exist, create ul...')
+    } else {
         commentLi.appendChild(cForm)
     }
 

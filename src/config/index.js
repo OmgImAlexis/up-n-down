@@ -3,6 +3,8 @@ import { config } from 'dotenv';
 // Load .env into process.env
 config();
 
+export const siteName = `Peaches 'n' Stink`;
+
 export const eyesDefaultUsername = 'stink';
 
 export const commentsPerPage = 200;

@@ -53,14 +53,13 @@ block content
 
     if posts && posts.length > 0
         .posts
-
             each post in posts
                 div
                     if post.is_visible
                         if post.link === null
                             a(class="ptitle" href=`/p/${post.public_id}`) #{post.title}
                         else
-                            a(class="ptitle" href=post.link)= post.title
+                            a(class="ptitle" href=`/leaving?link=${post.link}`)= post.title
                             | 
                             span.domname1 (#{post.domain_name})
 

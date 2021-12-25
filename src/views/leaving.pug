@@ -1,0 +1,5 @@
+extends layout
+
+block content
+    span You are now leaving #{siteName}.<br>
+    span Click <a href="#{link.startsWith('http') ? link : 'http://' + link}">here</a> to continue.
