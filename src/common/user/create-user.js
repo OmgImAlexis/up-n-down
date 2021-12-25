@@ -9,13 +9,11 @@ import { query } from '../../db/index.js';
  * @param {string} password The user's plain text password.
  * @returns The newly created user.
  */
-export const createUser = async (username, password) => {
-    return query(sql`
-        INSERT INTO tuser
-            (username, password)
-        VALUES
-            (${username}, ${await argon2.hash(password)}})
-        RETURNING
-            user_id, username, time_zone, post_mode, eyes, comment_reply_mode, site_width
-    `);
-}
+export const createUser = async (username, password) => query(sql`
+    INSERT INTO tuser
+        (username, password)
+    VALUES
+        (${username}, ${await argon2.hash(password)})
+    RETURNING
+        user_id, username, time_zone, post_mode, eyes, comment_reply_mode, site_width
+`).then(({ rows: [user] }) => user);

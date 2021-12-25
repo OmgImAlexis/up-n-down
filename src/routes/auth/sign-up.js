@@ -48,11 +48,11 @@ export const postSignup = async (req, res) => {
 
     try {
         // Create the user
-        const { rows: [user] } = await createUser(username, password);
+        const user = await createUser(username, password);
 
         // If the user ticked auto login then
         // authenticate them and redirect them to the homepage
-        if (req.body.autoLogin === 'yes') {
+        if (req.body.auto_login === 'yes') {
             req.session.user = user;
     
             return res.redirect('/');
