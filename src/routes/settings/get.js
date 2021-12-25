@@ -50,7 +50,7 @@ export const getSettings = async (req, res) => {
     const availableEyes = await getAvailableEyes();
     const currentEyes = await getCurrentEyes(req);
 
-    res.render('my-settings', {
+    res.render('settings', {
         html:{
             title: 'Settings'
         },

@@ -56,7 +56,7 @@ export const postPost = async (req, res) => {
         const title = post.is_visible ? post.title : 'Post #' + post.public_id;
 
         // Render error
-        return res.render('single-post', {
+        return res.render('posts/post', {
             title,
             post,
             comments,

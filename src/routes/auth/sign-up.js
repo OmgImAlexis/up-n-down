@@ -19,7 +19,7 @@ export const getSignup = (req, res) => {
         });
     }
 
-    return res.render('sign-up', {
+    return res.render('auth/sign-up', {
         title,
         autoLogin: 'yes'
     });
@@ -36,7 +36,7 @@ export const postSignup = async (req, res) => {
     // Check body for validation errors
     const [validationError] = validationResult(req).array({ onlyFirstError: true });
     if (validationError) {
-        return res.render('sign-up', {
+        return res.render('auth/sign-up', {
             title,
             error: new Error(validationError.msg),
             username: req.body.username,
@@ -66,7 +66,7 @@ export const postSignup = async (req, res) => {
     } catch (error) {
         // Render error page
         const errorMessage = error.constraint == 'username_unique_idx' ? `"${username}" already taken` : 'unknown error, please try again';
-        return res.render('sign-up', {
+        return res.render('auth/sign-up', {
             title,
             error: new Error(errorMessage),
             username: req.body.username,

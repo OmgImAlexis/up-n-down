@@ -32,10 +32,10 @@ import { getSettingsGroup } from '../routes/settings/group/get.js';
 const router = createRouter();
 
 // Static routes
-router.route('/manual').get(renderPage('instruction-manual', { html: { title: 'Manual' } }));
-router.route('/privacy-policy').get(renderPage('privacy-policy', { html: { title: 'Privacy Policy' } }));
-router.route('/contact-us').get(renderPage('contact-us', { html: { title: 'Contact Us' } }));
-router.route('/api').get(renderPage('api', { html: { title: 'API' } }));
+router.route('/manual').get(renderPage('static/manual', { html: { title: 'Manual' } }));
+router.route('/privacy-policy').get(renderPage('static/privacy-policy', { html: { title: 'Privacy Policy' } }));
+router.route('/contact-us').get(renderPage('static/contact-us', { html: { title: 'Contact Us' } }));
+router.route('/api').get(renderPage('static/api', { html: { title: 'API' } }));
 
 // Logout page
 router.get('/logout', (req, res) => {

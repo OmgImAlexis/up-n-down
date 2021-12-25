@@ -53,7 +53,7 @@ export const postPostEdit = async (req, res) => {
         //
         if(errors.length) {
             res.render(
-                'new-post2',
+                'posts/new',
                 {
                     html_title: htmlTitleEditPost,
                     user: req.session.user,

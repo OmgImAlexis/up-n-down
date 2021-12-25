@@ -14,7 +14,7 @@ export const getPostEdit = async (req, res) => {
     if (post.user_id !== req.session.user.user_id) throw new Error('Permission denied!');
 
     // Render post edit page
-    res.render('new-post2', {
+    res.render('posts/new', {
         html: {
             title: 'Edit Post'
         },

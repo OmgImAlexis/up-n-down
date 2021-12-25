@@ -58,7 +58,7 @@ export const getGroups = async (req, res) => {
         filterUserId,
         sort);
 
-    res.render('posts2', {
+    res.render('posts/feed', {
         html: {
             title: tag
         },

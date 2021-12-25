@@ -15,7 +15,7 @@ export const home = async (req, res) => {
 
     const posts = await getPosts(userId, getCurrentTimezone(req), page, isDiscoverMode, filterUserId, sort);
 
-    res.render('posts2', {
+    res.render('posts/feed', {
         html: {
             title: 'Home'
         },

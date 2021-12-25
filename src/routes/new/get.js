@@ -10,7 +10,7 @@ export const getNew = async (req, res) => {
         });
     }
 
-    res.render('new-post2', {
+    res.render('posts/new', {
         html: {
             title: 'New post'
         },

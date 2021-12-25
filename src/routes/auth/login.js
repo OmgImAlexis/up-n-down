@@ -20,7 +20,7 @@ export const getLogin = (req, res) => {
     }
 
     // Render login page
-    return res.render('login', {
+    return res.render('auth/login', {
         html: {
             title
         }

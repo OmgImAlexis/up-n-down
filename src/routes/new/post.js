@@ -62,7 +62,7 @@ export const postNew = async (req, res) => {
         // Send the user to the newly created post
         return res.redirect(`/p/${publicId}`);
     } catch (error) {
-        res.render('new-post2', {
+        res.render('posts/new', {
             html: {
                 title
             },

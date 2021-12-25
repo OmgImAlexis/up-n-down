@@ -49,7 +49,7 @@ export const postSettings = async (req, res) => {
         const timezones = await getTimezones();
 
         // Render error page
-        return res.render('my-settings', {
+        return res.render('settings', {
             page: {
                 title
             },
@@ -63,7 +63,7 @@ export const postSettings = async (req, res) => {
     await saveSettings(req, res, settings);
 
     // Render success page
-    res.render('my-settings', {
+    res.render('settings', {
         page: {
             title
         },

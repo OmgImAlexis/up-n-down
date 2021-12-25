@@ -54,7 +54,7 @@ export const getPost = async (req, res) => {
     const title = post.is_visible ? post.title : 'Post #' + post.public_id;
 
     // Render the post
-    res.render('single-post', {
+    res.render('posts/post', {
         html: {
             title
         },
