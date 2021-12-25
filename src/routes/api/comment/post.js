@@ -4,7 +4,7 @@ import { compileFile } from 'pug';
 import { HttpError } from '../../../errors/http-error.js';
 import { getCommentWithPublicId } from '../../../common/comment/get-comment-with-public-id.js';
 import { isUserAllowedToViewPost } from '../../../common/post/is-user-allowed-to-view-post.js';
-import { processComment } from '../../../common/process-comment.js';
+import { processComment } from '../../../common/comment/process-comment.js';
 import { createCommentComment } from '../../../common/comment/create-comment-comment.js';
 import { increasePostNumberOfComments } from '../../../common/post/increase-post-number-of-comments.js';
 import { getCurrentTimezone } from '../../../common/get-current-timezone.js';

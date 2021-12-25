@@ -1,6 +1,5 @@
 import postgres from 'postgresql-tag';
 import { query } from '../../db/index.js';
-import { generateNanoId } from '../generate-nano-id.js'; 
 
 /**
  * 

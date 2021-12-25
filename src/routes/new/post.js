@@ -1,7 +1,7 @@
 import { validationResult } from 'express-validator';
 import { processPostTitle } from '../../common/post/process-post-title.js';
 import { getDomainName } from '../../common/get-domain-name.js';
-import { processPostTags } from '../../common/process-post-tags.js';
+import { processPostTags } from '../../common/post/process-post-tags.js';
 import { createPost } from '../../common/post/create-post.js';
 import { getDomainNameId } from '../../common/get-domain-name-id.js';
 import { createPostTags } from '../../common/post/create-post-tags.js';

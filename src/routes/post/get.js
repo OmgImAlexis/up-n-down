@@ -3,7 +3,7 @@ import { isDiscover } from '../../common/is-discover.js';
 import { getCurrentSiteMaxWidth } from '../../common/get-current-site-max-width.js';
 import { getCurrentCommentReplyMode } from '../../common/get-current-comment-reply-mode.js';
 import { getCurrentEyesId } from '../../common/get-current-eyes-id.js';
-import { getPostWithPublic2 } from '../../common/get-post-with-public-2.js';
+import { getPostWithPublic2 } from '../../common/post/get-post-with-public-2.js';
 import { isUserAllowedToViewPost } from '../../common/post/is-user-allowed-to-view-post.js';
 import { getPostComments } from '../../common/comment/get-post-comments.js';
 

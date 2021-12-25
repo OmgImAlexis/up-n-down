@@ -1,4 +1,4 @@
-import { processComment } from '../../../common/process-comment.js';
+import { processComment } from '../../../common/comment/process-comment.js';
 import { getCommentWithPublicId } from '../../../common/comment/get-comment-with-public-id.js';
 import { updateComment } from '../../../common/comment/update-comment.js';
 

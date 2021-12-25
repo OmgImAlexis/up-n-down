@@ -1,5 +1,4 @@
 import postgres from 'postgresql-tag';
-import { generateNanoId } from '../generate-nano-id.js';
 import { numberToOrderedAlpha } from '../number-to-ordered-alpha.js';
 import { query } from '../../db/index.js';
 import { increasePostNumberOfComments } from '../post/increase-post-number-of-comments.js';

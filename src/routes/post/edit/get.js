@@ -1,4 +1,4 @@
-import { getPostWithPublic } from '../../../common/get-post-with-public.js';
+import { getPostWithPublic } from '../../../common/post/get-post-with-public.js';
 
 /**
  * Render the edit page for a post

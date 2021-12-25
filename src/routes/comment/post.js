@@ -2,7 +2,7 @@ import { increasePostNumberOfComments } from "../../common/post/increase-post-nu
 import { getCurrentEyesId } from "../../common/get-current-eyes-id.js";
 import { getCommentWithPublic2 } from "../../common/comment/get-comment-with-public-2.js";
 import { isUserAllowedToViewPost } from "../../common/post/is-user-allowed-to-view-post.js";
-import { processComment } from "../../common/process-comment.js";
+import { processComment } from "../../common/comment/process-comment.js";
 import { getCurrentCommentReplyMode } from "../../common/get-current-comment-reply-mode.js";
 import { getCurrentTimezone } from "../../common/get-current-timezone.js";
 import { isDiscover } from "../../common/is-discover.js";

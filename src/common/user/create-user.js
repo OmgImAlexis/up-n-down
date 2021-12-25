@@ -1,7 +1,6 @@
 import postgres from 'postgresql-tag';
 import argon2 from 'argon2';
 import { query } from '../../db/index.js';
-import { generateNanoId } from '../../common/generate-nano-id.js';
 
 /**
  * Create a user.
@@ -13,9 +12,9 @@ import { generateNanoId } from '../../common/generate-nano-id.js';
 export const createUser = async (username, password) => {
     return query(postgres`
         INSERT INTO tuser
-            (username, password, public_id)
+            (username, password)
         VALUES
-            (${username}, ${await argon2.hash(password)}, ${generateNanoId()})
+            (${username}, ${await argon2.hash(password)}})
         RETURNING
             user_id, username, time_zone, post_mode, eyes, comment_reply_mode, site_width
     `);
