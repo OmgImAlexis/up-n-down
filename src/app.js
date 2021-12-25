@@ -12,16 +12,8 @@ import { dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { importJson } from './common/import-json.js';
 import { getCurrentSiteMaxWidth } from './common/get-current-site-max-width.js';
-import { router } from './router.js';
-
-class HttpError extends Error {
-    constructor(message, status = 500, cause) {
-        super(message);
-        this.status = status;
-        this.code = `HTTP_${status}`;
-        this.cause = cause;
-    }
-}
+import { router } from './router/index.js';
+import { HttpError } from './errors/http-error.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 

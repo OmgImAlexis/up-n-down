@@ -2,6 +2,9 @@ import postgres from 'postgresql-tag';
 import { generateNanoId } from '../generate-nano-id.js';
 import { numberToOrderedAlpha } from '../number-to-ordered-alpha.js';
 import { query } from '../../db/index.js';
+import { increasePostNumberOfComments } from '../post/increase-post-number-of-comments.js';
+
+// @todo: Convert this to using SQL transactions
 
 /**
  * Create a comment on a post.
@@ -11,11 +14,9 @@ import { query } from '../../db/index.js';
  * @param {string} content The content of the comment.
  */
 export const createPostComment = async (postId, userId, content) => {
-    // @todo: Convert this to using SQL transactions
-
     const path = `${parseInt(postId)}.*{1}`;
 
-    // Get current comment count?
+    // Get current comment count
     const { rows: [{ count }] } = await query(postgres`
         SELECT
             count(1) as count
@@ -25,6 +26,9 @@ export const createPostComment = async (postId, userId, content) => {
             path ~ ${path}
     `);
 
+    // Update the amount of comments on this post
+    await increasePostNumberOfComments(postId);
+
     // Save comment to database
     await query(postgres`
         INSERT INTO ttest
@@ -33,15 +37,5 @@ export const createPostComment = async (postId, userId, content) => {
             (${postId}, ${userId}, ${content}, ${postId + '.' + numberToOrderedAlpha(parseInt(count, 10) + 1)}, ${generateNanoId()})
         RETURNING
             public_id
-    `);
-
-    // Update the amount of comments on this post
-    await query(postgres`
-        UPDATE
-            tpost
-        SET
-            num_comments = num_comments +1
-        WHERE
-            post_id = ${postId}
     `);
 };

@@ -68,10 +68,8 @@ block content
 
         if user
             form(method="post" id="write-comment")
-                if errors.length
-                    ul
-                        each error in errors
-                            li #{error.msg}
+                if error
+                    | #{error.message}
 
                 div
                     label(for="text_content") Write a Comment

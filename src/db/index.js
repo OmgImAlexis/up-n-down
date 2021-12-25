@@ -242,33 +242,6 @@ export const query = (query, params) => pool.query(query, params);
 
 
 
-// exports.createCommentComment = (postId, userId, content, parentPath, timeZone) => {
-//     let lQuery = parentPath + '.*{1}'
-
-//     return query(`
-//         select
-//             count(1) as count
-//         from
-//             ttest
-//         where
-//             path ~ $1`,
-//         [lQuery]).then(res => query(`
-//         insert into ttest
-//             (post_id, user_id, text_content, path, public_id)
-//         values
-//             ($1, $2, $3, $4, $5)
-//         returning
-//             public_id,
-//             text_content,
-//             to_char(
-//                 timezone($6, created_on),
-//                 'Mon FMDD, YYYY FMHH12:MIam') created_on`,
-//         [postId, userId, content,
-//             parentPath + '.' + numToOrderedAlpha(parseInt(res.rows[0].count) + 1),
-//             generateNanoId(nanoidAlphabet, nanoidLen),
-//             timeZone])
-//     )
-// }
 
 // exports.getInboxComments = (timeZone, userId, isDiscoverMode, filterUserId, page) => {
 //     const pageSize = 20
@@ -327,67 +300,6 @@ export const query = (query, params) => pool.query(query, params);
 //             $13`,
 //         [timeZone, userId, filterUserId, filterUserId, userId, userId, userId,
 //             isDiscoverMode, userId, filterUserId, filterUserId, pageSize, (page - 1)*pageSize])
-// }
-
-
-// exports.getCommentComments = (path, timeZone, userId, isDiscoverMode, filterUserId, page) => {
-//     const limit = config.commentsPerPage
-//     const offset = (page - 1)*config.commentsPerPage
-
-//     return query(`
-//         select
-//             c.text_content,
-//             c.path,
-//             u.username,
-//             u.user_id,
-//             u.public_id as user_public_id,
-//             to_char(
-//                 timezone($1, c.created_on),
-//                 'Mon FMDD, YYYY FMHH12:MIam') created_on,
-//             c.created_on created_on_raw,
-//             c.public_id,
-//             u.user_id = $2 or u.user_id = $3 or
-//                 exists(select
-//                     1
-//                 from
-//                     tfollower
-//                 where
-//                     followee_user_id = u.user_id and
-//                     user_id = $4) is_visible,
-//             exists(select
-//                     1
-//                 from
-//                     tfollower
-//                 where
-//                     followee_user_id = u.user_id and
-//                     user_id = $5) is_follow
-//         from
-//             ttest c
-//         join
-//             tuser u on u.user_id = c.user_id
-//         where
-//             c.path <@ $6 and
-//             not (c.path ~ $7) and
-//             ($8 or not exists(
-//                 select
-//                     1
-//                 from
-//                     ttest c2
-//                 where
-//                     c2.path @> c.path and
-//                     not exists(select 1 from tfollower where user_id = $9 and followee_user_id = c2.user_id) and
-//                     c2.user_id != $10 and
-//                     c2.user_id != $11 and
-//                     not (c2.path @> $12)))
-//         order by
-//             c.path
-//         limit
-//             $13
-//         offset
-//             $14`,
-//         [timeZone, userId, filterUserId, filterUserId, userId,
-//             path, path, isDiscoverMode, filterUserId, userId,
-//             filterUserId, path, limit, offset])
 // }
 
 

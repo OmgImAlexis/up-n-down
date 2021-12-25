@@ -1,6 +1,10 @@
 import { getCurrentEyesId } from '../../common/get-current-eyes-id.js';
 import { getCurrentTimezone } from '../../common/get-current-timezone.js';
 import { getCommentWithPublic2 } from '../../common/comment/get-comment-with-public-2.js';
+import { isUserAllowedToViewPost } from '../../common/post/is-user-allowed-to-view-post.js';
+import { isDiscover } from '../../common/is-discover.js';
+import { getCommentComments } from '../../common/comment/get-comment-comments.js';
+import { getCurrentCommentReplyMode } from '../../common/get-current-comment-reply-mode.js';
 
 const htmlTitleComment = '';
 
@@ -20,7 +24,7 @@ export const getComment = async (req, res) => {
         if (!comment) throw new Error('Unknown comment.');
         if (comment.user_id !== req.session.user.user_id) throw new Error('Permission denied!');
 
-        const isAllowed = await db.isUserAllowedToViewPost(comment.private_group_ids, finalUserId)
+        const isAllowed = await isUserAllowedToViewPost(comment.private_group_ids, finalUserId)
         if(!isAllowed) throw new Error("This comment is from a private group and you do not have access.");
 
         //
@@ -43,7 +47,7 @@ export const getComment = async (req, res) => {
             html: {
                 title: `${htmlTitleComment} ${commentPublicId}`
             },
-            post_public_id: rows[0].post_public_id,
+            post_public_id: comment.post_public_id,
             comment,
             comments,
             is_discover_mode: isDiscoverMode,

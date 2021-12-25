@@ -1,26 +1,26 @@
 import createRouter from 'express-promise-router';
 import { body as validateBody } from 'express-validator';
-import { home } from './routes/home.js';
-import { getSettings } from './routes/settings/get.js';
-import { postSettings } from './routes/settings/post.js';
-import { getSettingsUsername } from './routes/settings/username/get.js';
-import { postSettingsUsername } from './routes/settings/username/post.js';
-import { renderPage } from './common/render-page.js';
-import { getLogin, postLogin } from './routes/auth/login.js';
-import { getSignup, postSignup } from './routes/auth/sign-up.js';
-import { getNew } from './routes/new/get.js';
-import { postNew } from './routes/new/post.js';
-import { getPost } from './routes/post/get.js';
-import { getFollowing } from './routes/following/get.js';
-import { postFollowing } from './routes/following/post.js';
-import { postPost } from './routes/post/post.js';
-import { getPostEdit } from './routes/post/edit/get.js';
-import { postPostEdit } from './routes/post/edit/post.js';
-import { getInbox } from './routes/inbox/get.js';
-import { getComment } from './routes/comment/get.js';
-import { postComment } from './routes/comment/post.js';
-import { getCommentEdit } from './routes/comment/edit/get.js';
-import { postCommentEdit } from './routes/comment/edit/post.js';
+import { home } from '../routes/home.js';
+import { getSettings } from '../routes/settings/get.js';
+import { postSettings } from '../routes/settings/post.js';
+import { getSettingsUsername } from '../routes/settings/username/get.js';
+import { postSettingsUsername } from '../routes/settings/username/post.js';
+import { renderPage } from '../common/render-page.js';
+import { getLogin, postLogin } from '../routes/auth/login.js';
+import { getSignup, postSignup } from '../routes/auth/sign-up.js';
+import { getNew } from '../routes/new/get.js';
+import { postNew } from '../routes/new/post.js';
+import { getPost } from '../routes/post/get.js';
+import { getFollowing } from '../routes/following/get.js';
+import { postFollowing } from '../routes/following/post.js';
+import { postPost } from '../routes/post/post.js';
+import { getPostEdit } from '../routes/post/edit/get.js';
+import { postPostEdit } from '../routes/post/edit/post.js';
+import { getInbox } from '../routes/inbox/get.js';
+import { getComment } from '../routes/comment/get.js';
+import { postComment } from '../routes/comment/post.js';
+import { getCommentEdit } from '../routes/comment/edit/get.js';
+import { postCommentEdit } from '../routes/comment/edit/post.js';
 
 // Create main router
 const router = createRouter();
@@ -72,7 +72,6 @@ router.get('/following', mustBeAuthenticatedMiddleware, getFollowing);
 router.post('/following', mustBeAuthenticatedMiddleware, postFollowing);
 // app.use(/^\/r\/([a-z0-9-]{3,20})$/, require('./routes/group-posts'));
 router.get('/inbox', getInbox);
-// app.use('/api/v1/', require('./routes/api'));
 
 export {
     router

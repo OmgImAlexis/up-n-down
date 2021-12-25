@@ -43,6 +43,7 @@ function reply(cpid, isTargetLink) {
 
             xhr.open('POST', '/api/v1/comment')
             xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded')
+            xhr.setRequestHeader('Accept', 'application/json');
             xhr.onload = function() {
                 if(xhr.status == 200) {
 
