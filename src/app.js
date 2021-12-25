@@ -14,6 +14,7 @@ import { importJson } from './common/import-json.js';
 import { getCurrentSiteMaxWidth } from './common/get-current-site-max-width.js';
 import { router } from './router/index.js';
 import { HttpError } from './errors/http-error.js';
+import { siteName } from './config/index.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -64,12 +65,6 @@ const main = async () => {
     // Setup session
     app.use(createSessionMiddleware(redisClient));
 
-    // Add user to locals
-    app.use(function(req,res,next){
-        res.locals.user = req.session.user;
-        next();
-    });
-
     // Setup asset directory
     app.use(createStaticMiddleware(joinPath(__dirname, '../public')));
 
@@ -77,10 +72,17 @@ const main = async () => {
     app.use(urlencoded({ extended:false }));
     app.use(cookieParser());
 
-    // Add site max width to locals
+    // Add user to locals
+    app.use(function(req,res,next){
+        res.locals.user = req.session.user;
+        next();
+    });
+
+    // Add site details to locals
     app.use((req, res, next) => {
         res.locals.site = {
-            maxWidth: getCurrentSiteMaxWidth(req)
+            maxWidth: getCurrentSiteMaxWidth(req),
+            name: siteName
         };
         next();
     });

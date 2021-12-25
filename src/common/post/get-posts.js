@@ -122,5 +122,5 @@ export const getPosts = async (userId, timeZone, page, isDiscoverMode, filterUse
         OFFSET
             $${pAfter+7}`,
         finalParams
-    )
+    ).then(({ rows }) => rows)
 };

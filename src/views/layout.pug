@@ -3,7 +3,7 @@ html
   head
     meta(charset="utf-8")
     meta(name="viewport" content="width=device-width, initial-scale=1")
-    title=html ? html.title : ''
+    title=(html && html.title) ? `${html.title} - ${site.name}` : site.name
     link(rel='stylesheet', href='/cillmit99b/style.css')
     link(rel="icon" href="/images/favicon-32.png" sizes="32x32")
     block head

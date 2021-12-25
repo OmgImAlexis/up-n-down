@@ -13,10 +13,12 @@ export const home = async (req, res) => {
     const isDiscoverMode = isDiscover(req);
     const filterUserId = await getCurrentEyesId(req);
 
-    const { rows: posts } = await getPosts(userId, getCurrentTimezone(req), page, isDiscoverMode, filterUserId, sort);
+    const posts = await getPosts(userId, getCurrentTimezone(req), page, isDiscoverMode, filterUserId, sort);
 
     res.render('posts2', {
-        title: "Peaches 'n' Stink",
+        html: {
+            title: 'Home'
+        },
         posts,
         page,
         base_url: '/',

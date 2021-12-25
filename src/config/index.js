@@ -3,7 +3,7 @@ import { config } from 'dotenv';
 // Load .env into process.env
 config();
 
-export const siteName = `Peaches 'n' Stink`;
+export const siteName = `ABC`;
 
 export const eyesDefaultUsername = 'stink';
 

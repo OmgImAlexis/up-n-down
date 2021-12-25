@@ -12,7 +12,7 @@ export const getNew = async (req, res) => {
 
     res.render('new-post2', {
         html: {
-            title: ''
+            title: 'New post'
         },
         link: '',
         textContent: '',

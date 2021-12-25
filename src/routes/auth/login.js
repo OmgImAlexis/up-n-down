@@ -21,7 +21,9 @@ export const getLogin = (req, res) => {
 
     // Render login page
     return res.render('login', {
-        title
+        html: {
+            title
+        }
     });
 };
 
@@ -45,9 +47,10 @@ export const getLogin = (req, res) => {
         req.session.user = user;
         return res.redirect('/');
     } catch (error) {
-        console.log(error)
         res.render('login', {
-            title,
+            html: {
+                title
+            },
             error
         });
     }
