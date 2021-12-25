@@ -1,10 +1,10 @@
-import { getCurrentEyesId } from '../../common/get-current-eyes-id.js';
-import { getCurrentTimezone } from '../../common/get-current-timezone.js';
+import { getCurrentEyesId } from '../../common/settings/get-current-eyes-id.js';
+import { getCurrentTimezone } from '../../common/settings/get-current-timezone.js';
 import { getCommentWithPublic2 } from '../../common/comment/get-comment-with-public-2.js';
 import { isUserAllowedToViewPost } from '../../common/post/is-user-allowed-to-view-post.js';
 import { isDiscover } from '../../common/is-discover.js';
 import { getCommentComments } from '../../common/comment/get-comment-comments.js';
-import { getCurrentCommentReplyMode } from '../../common/get-current-comment-reply-mode.js';
+import { getCurrentCommentReplyMode } from '../../common/settings/get-current-comment-reply-mode.js';
 
 /**
  * Render a comment.

@@ -1,12 +1,12 @@
-import postgres from 'postgresql-tag';
-import { query } from '../db/index.js';
+import sql from 'sql-tag';
+import { query } from '../../db/index.js';
 
 /**
  * 
  * @param {string} timezoneName 
  * @returns 
  */
-export const getTimezoneWithName = (timezoneName) => query(postgres`
+export const getTimezoneWithName = (timezoneName) => query(sql`
     SELECT
         name,
         abbrev,

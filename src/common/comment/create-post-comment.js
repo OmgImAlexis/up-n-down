@@ -1,5 +1,5 @@
-import postgres from 'postgresql-tag';
-import { numberToOrderedAlpha } from '../number-to-ordered-alpha.js';
+import sql from 'sql-tag';
+import { numberToOrderedAlpha } from '../utils/number-to-ordered-alpha.js';
 import { query } from '../../db/index.js';
 import { increasePostNumberOfComments } from '../post/increase-post-number-of-comments.js';
 
@@ -16,7 +16,7 @@ export const createPostComment = async (postId, userId, content) => {
     const path = `${parseInt(postId)}.*{1}`;
 
     // Get current comment count
-    const { rows: [{ count }] } = await query(postgres`
+    const { rows: [{ count }] } = await query(sql`
         SELECT
             count(1) as count
         FROM
@@ -29,7 +29,7 @@ export const createPostComment = async (postId, userId, content) => {
     await increasePostNumberOfComments(postId);
 
     // Save comment to database
-    await query(postgres`
+    await query(sql`
         INSERT INTO ttest
             (post_id, user_id, text_content, path)
         VALUES

@@ -5,35 +5,7 @@ const router = express.Router()
 const htmlTitle = 'Settings / Group'
 
 router.route('/')
-    .get(async (req, res) => {
-
-        //
-        if(!req.session.user) {
-            return res.redirect('/settings')
-        }
-
-        //
-        const {rows:data1} = await db.getPrivateGroupWithName(req.query.name)
-
-        //
-        if(data1.length) {
-
-            //
-            const privateGroup = data1[0]
-
-            if(privateGroup.created_by == req.session.user.user_id) {
-
-                //
-                renderHtml(req, res, [], privateGroup.private_group_id)
-            }
-            else {
-                res.send('hello...')
-            }
-        }
-        else {
-            res.send('private group does not exist')
-        }
-    })
+    .get()
     .post(async (req, res) => {
 
         //

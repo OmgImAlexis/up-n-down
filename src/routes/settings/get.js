@@ -1,11 +1,13 @@
 import { eyesDefaultUsername } from '../../config/index.js';
 import { updateUserViewMode } from '../../common/user/update-user-view-mode.js';
-import { getTimezones } from '../../common/get-timezones.js';
+import { getTimezones } from '../../common/utils/get-timezones.js';
 import { getUserWithUserId } from '../../common/user/get-user-with-user-id.js';
 import { getAvailableEyes } from '../../common/get-available-eyes.js';
 import { cookieMaxAge } from '../../config/index.js';
-import { getCurrentTimezone } from '../../common/get-current-timezone.js';
-import { getCurrentSiteMaxWidth } from '../../common/get-current-site-max-width.js';
+import { getCurrentTimezone } from '../../common/settings/get-current-timezone.js';
+import { getCurrentSiteMaxWidth } from '../../common/settings/get-current-site-max-width.js';
+import { getCurrentPostMode } from '../../common/settings/get-current-post-mode.js';
+import { getCurrentCommentReplyMode } from '../../common/settings/get-current-comment-reply-mode.js';
 
 /**
  * Get the current eyes
@@ -13,14 +15,15 @@ import { getCurrentSiteMaxWidth } from '../../common/get-current-site-max-width.
  * @returns {Promise<string>}
  */
 const getCurrentEyes = async (req) => {
-    // If the user is logged in and there's eyes
-    if (req.session.user?.eyes) return getUserWithUserId(req.session.user.eyes).then(user => user.username);
-    
-    // If the user is logged out
-    if (!req.session.user) return req.cookies.eyes ?? eyesDefaultUsername;
+    // // If the user is logged out
+    // if (!req.session.user) return req.cookies.eyes ?? eyesDefaultUsername;
 
-    // If the user is logged in and no eyes
-    return '';
+    // // If the user is logged in and there's eyes
+    // if (req.session.user?.eyes) return getUserWithUserId(req.session.user.eyes).then(user => user.username);
+
+    // // If the user is logged in and no eyes
+    // return '';
+    return eyesDefaultUsername;
 };
 
 /**
@@ -55,8 +58,8 @@ export const getSettings = async (req, res) => {
         timezone: getCurrentTimezone(req),
         availableEyes,
         currentEyes,
-        // postMode: myMisc.getCurrPostMode(req),
-        // commentReplyMode: myMisc.getCurrCommentReplyMode(req),
+        postMode: getCurrentPostMode(req),
+        commentReplyMode: getCurrentCommentReplyMode(req),
         siteWidth: getCurrentSiteMaxWidth(req)
     });
 };

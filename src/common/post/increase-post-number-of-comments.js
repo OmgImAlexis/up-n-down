@@ -1,4 +1,4 @@
-import postgres from 'postgresql-tag';
+import sql from 'sql-tag';
 import { query } from '../../db/index.js';
 
 /**
@@ -6,7 +6,7 @@ import { query } from '../../db/index.js';
  * 
  * @param {string} postId 
  */
-export const increasePostNumberOfComments = (postId) => query(postgres`
+export const increasePostNumberOfComments = (postId) => query(sql`
     UPDATE
         tpost
     SET

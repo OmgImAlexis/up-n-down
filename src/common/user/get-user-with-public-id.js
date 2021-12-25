@@ -1,4 +1,4 @@
-import postgres from 'postgresql-tag';
+import sql from 'sql-tag';
 import { query } from '../../db/index.js';
 
 /**
@@ -6,7 +6,7 @@ import { query } from '../../db/index.js';
  * @param {string} publicId 
  * @returns 
  */
-export const getUserWithPublicId = (publicId) => query(postgres`
+export const getUserWithPublicId = (publicId) => query(sql`
     SELECT
         user_id,
         username,

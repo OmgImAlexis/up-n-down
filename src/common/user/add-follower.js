@@ -1,4 +1,4 @@
-import postgres from 'postgresql-tag';
+import sql from 'sql-tag';
 import { query } from '../../db/index.js';
 
 /**
@@ -7,7 +7,7 @@ import { query } from '../../db/index.js';
  * @param {number} followeeUserId 
  * @returns 
  */
-export const addFollower = (userId, followeeUserId) => query(postgres`
+export const addFollower = (userId, followeeUserId) => query(sql`
     INSERT INTO tfollower
         (user_id, followee_user_id)
     VALUES

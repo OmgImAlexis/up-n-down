@@ -6,10 +6,11 @@ append head
 block content2
     h3 Create New Private Group
 
-    if errors.length
-        ul
-            each error in errors
-                li #{error.msg}
+    if error
+        | #{error.message}
+
+    if info
+        | #{info.message}
 
     form(method="post")
         div
@@ -20,22 +21,22 @@ block content2
 
     h3 Your Created Private Groups
 
-    if created_groups.length
+    if createdGroups.length > 0
         ul
-            each cg in created_groups
+            each group in createdGroups
                 li
-                    a(href=`/r/${cg.name}`)= cg.name
+                    a(href=`/r/${group.name}`)= group.name
                     | 
-                    a(href=`/settings/group?name=${cg.name}`) [settings]
+                    a(href=`/settings/group?name=${group.name}`) [settings]
     else
         div None
 
     h3 Other Private Group Memberships
 
-    if member_groups.length
+    if memberGroups.length > 0
         ul
-            each mg in member_groups
+            each group in memberGroups
                 li
-                    a(href=`/r/${mg.name}`)= mg.name
+                    a(href=`/r/${group.name}`)= group.name
     else
         div None

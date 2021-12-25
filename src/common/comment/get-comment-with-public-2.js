@@ -1,7 +1,7 @@
-import postgres from 'postgresql-tag';
+import sql from 'sql-tag';
 import { query } from '../../db/index.js';
 
-export const getCommentWithPublic2 = (publicId, timezone, userId, filterUserId) => query(postgres`
+export const getCommentWithPublic2 = (publicId, timezone, userId, filterUserId) => query(sql`
     SELECT
         c.text_content,
         to_char(

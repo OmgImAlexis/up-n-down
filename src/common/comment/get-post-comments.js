@@ -1,4 +1,4 @@
-import postgres from 'postgresql-tag';
+import sql from 'sql-tag';
 import { query } from '../../db/index.js';
 import { commentsPerPage } from '../../config/index.js';
 
@@ -6,7 +6,7 @@ export const getPostComments = (postId, timeZone, userId, isDiscoverMode, filter
     const limit = commentsPerPage
     const offset = (page - 1) * commentsPerPage;
 
-    return query(postgres`
+    return query(sql`
         SELECT
             c.text_content,
             c.path,

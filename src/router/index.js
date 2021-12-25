@@ -1,5 +1,6 @@
 import createRouter from 'express-promise-router';
 import uuid from 'uuid';
+import morgan from 'morgan';
 import { router as frontend } from './frontend.js';
 import { router as api } from './api.js';
 
@@ -15,6 +16,7 @@ router.use((req, res, next) => {
     next();
 });
 
+router.use(morgan('tiny'));
 router.use('/', frontend);
 router.use('/api', api);
 

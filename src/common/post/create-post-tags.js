@@ -1,20 +1,15 @@
-export const createPostTags = async (tags, postId) => {
-    // let tagIds = []
+import { createTag } from '../tag/create-tag.js';
+import { createPostTag } from '../tag/create-post-tag.js';
+import { getTag } from '../tag/get-tag.js'
 
-    // for(let i = 0; i < trimTags.length; ++i) {
-    //     const {rows:tagd} = await getTag(trimTags[i])
-
-    //     if(tagd.length) {
-    //         tagIds.push(tagd[0].tag_id)
-    //     }
-    //     else {
-    //         const {rows:tagInsert} = await createTag(trimTags[i])
-    //         tagIds.push(tagInsert[0].tag_id)
-    //     }
-    // }
-
-    // //
-    // for(let i = 0; i < tagIds.length; ++i) {
-    //     await createPostTag(tagIds[i], postId);
-    // }
-};
+/**
+ * 
+ * @param {string[]} tags 
+ * @param {string} postId 
+ * @returns 
+ */
+export const createPostTags = async (tags, postId) => Promise.all(tags.map(async tagText => {
+    const tag = await getTag(tagText).then(tag => tag?.tag_id) ?? await createTag(tagText).then(tag => tag.tag_id);
+    console.log({tag})
+    // return createPostTag(tag.tag_id, postId);
+}));

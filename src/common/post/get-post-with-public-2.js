@@ -1,7 +1,7 @@
-import postgres from 'postgresql-tag';
+import sql from 'sql-tag';
 import { query } from '../../db/index.js';
 
-export const getPostWithPublic2 = (publicId, timeZone, userId, filterUserId) => query(postgres`
+export const getPostWithPublic2 = (publicId, timeZone, userId, filterUserId) => query(sql`
     SELECT
         p.post_id,
         p.title,

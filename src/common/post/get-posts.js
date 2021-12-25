@@ -37,7 +37,7 @@ export const getPosts = async (userId, timeZone, page, isDiscoverMode, filterUse
         userId, filterUserId, filterUserId]
 
     const afterParams = [sort, sort, sort, sort, sort, sort,
-        pageSize, (page - 1)*pageSize]
+        pageSize, ((page < 1 ? 1 : page) - 1) * pageSize];
 
     const finalParams = beforeParams.concat(allowedPrivateIds, afterParams)
 

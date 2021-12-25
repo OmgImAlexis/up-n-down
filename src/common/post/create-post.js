@@ -1,4 +1,4 @@
-import postgres from 'postgresql-tag';
+import sql from 'sql-tag';
 import { query } from '../../db/index.js';
 
 /**
@@ -10,7 +10,7 @@ import { query } from '../../db/index.js';
  * @param {string} domainNameId ? 
  * @returns {string} Post ID of newly created post.
  */
-export const createPost = async (userId, title, textContent, link, domainNameId) => query(postgres`
+export const createPost = async (userId, title, textContent, link, domainNameId) => query(sql`
     INSERT INTO tpost
         (user_id, title, text_content, link, domain_name_id)
     VALUES

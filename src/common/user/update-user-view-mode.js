@@ -1,7 +1,7 @@
-import postgres from 'postgresql-tag';
+import sql from 'sql-tag';
 import { query } from '../../db/index.js';
 
-export const updateUserViewMode = async (userId, postMode) => query(postgres`
+export const updateUserViewMode = async (userId, postMode) => query(sql`
     update
         tuser
     set

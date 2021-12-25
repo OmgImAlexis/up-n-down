@@ -1,11 +1,11 @@
-import postgres from 'postgresql-tag';
+import sql from 'sql-tag';
 import { query } from '../db/index.js';
 
 /**
  * 
  * @returns {string} username
  */
-export const getAvailableEyes = () => query(postgres`
+export const getAvailableEyes = () => query(sql`
     SELECT username FROM tuser WHERE is_eyes
     ORDER BY lower(username)
-`).then(({ rows }) => rows[0]);
+`).then(({ rows: [eyes] }) => eyes);

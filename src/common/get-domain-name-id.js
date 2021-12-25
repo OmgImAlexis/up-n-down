@@ -1,7 +1,7 @@
-import postgres from 'postgresql-tag';
+import sql from 'sql-tag';
 import { query } from '../db/index.js';
 
-export const getDomainName = (domainName) => query(postgres`
+export const getDomainName = (domainName) => query(sql`
     SELECT
         domain_name_id
     FROM
@@ -10,7 +10,7 @@ export const getDomainName = (domainName) => query(postgres`
         domain_name = ${domainName}
 `).then(({ rows: [row] }) => row?.domain_name_id);
 
-const createDomainName = (domainName) => query(postgres`
+const createDomainName = (domainName) => query(sql`
     insert into tdomainname
         (domain_name)
     VALUES

@@ -1,5 +1,5 @@
-import { updateUser } from './user/update-user.js';
-import { cookieMaxAge as maxAge } from '../config/index.js';
+import { updateUser } from '../user/update-user.js';
+import { cookieMaxAge as maxAge } from '../../config/index.js';
 
 /**
  * Save the current user's settings

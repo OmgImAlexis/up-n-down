@@ -6,7 +6,7 @@ mixin followLink(username, publicId)
     - const sortSeparator = (pagePart === '') ? '?' : '&'
     - const sortPart = (sortNameValue !== '') ? `${sortSeparator}${sortNameValue}` : ''
     - const goto = encodeURIComponent(`${base_url}${pagePart}${sortPart}`)
-    a(href=`/following?follow=${publicId}&goto=${goto}` class="follow" title=`follow ${username}`) +
+    a(href=`/following?follow=${publicId}${goto ? `&goto=${goto}` : ''}` class="follow" title=`follow ${username}`) +
 
 mixin unfollowLink(username, publicId)
     - const pagePart = page < 2 ? '' : `?p=${page}`
@@ -14,10 +14,10 @@ mixin unfollowLink(username, publicId)
     - const sortSeparator = (pagePart === '') ? '?' : '&'
     - const sortPart = (sortNameValue !== '') ? `${sortSeparator}${sortNameValue}` : ''
     - const goto = encodeURIComponent(`${base_url}${pagePart}${sortPart}`)
-    a(href=`/following?unfollow=${publicId}&goto=${goto}` class="unfollow" title=`unfollow ${username}`) -
+    a(href=`/following?unfollow=${publicId}${goto ? `&goto=${goto}` : ''}` class="unfollow" title=`unfollow ${username}`) -
 
 block content
-    - const gotoUrl = (sort === '') ? base_url : `${base_url}?sort=${sort}`
+    - const goto = (sort === '') ? base_url : `${base_url}?sort=${sort}`
 
     if page_tag
         h2.pageh1
@@ -30,13 +30,13 @@ block content
         div(class="alert2o")
             span(class="alert2")
                 |Showing all posts. 
-                a(href=`/settings?viewmode=locked&goto=${gotoUrl}`) Switch to locked
+                a(href=`/settings?viewmode=locked${goto ? `&goto=${goto}` : ''}`) Switch to locked
                 |.
     else
         div(class="alert2o")
             span(class="alert2")
                 |Some posts may be hidden. 
-                a(href=`/settings?viewmode=discover&goto=${gotoUrl}`) Show all
+                a(href=`/settings?viewmode=discover${goto ? `&goto=${goto}` : ''}`) Show all
                 |.
 
     div.sort1o
@@ -104,14 +104,9 @@ block content
                         span(class="pdate2") on #{post.created_on}
                         | 
                         a(class="pcount2" href=`/p/${post.public_id}`) comments(#{post.num_comments})
-        div
-            -
-                let pageUrl = `${base_url}?p=${page + 1}`
-
-                if(sort !== '') {
-                    pageUrl += `&sort=${sort}`
-                }
-
-            a(class="more" href=pageUrl) more &gt;
     else
-        span no posts
+        span no more posts
+    div
+        a(class="more" href=`${base_url}?p=${page - 1}${sort ? `&sort=${sort}` : ''}`) &pr; prev 
+        if posts.length > 0
+            a(class="more" href=`${base_url}?p=${page + 1}${sort ? `&sort=${sort}` : ''}`) more &gt;

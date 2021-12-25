@@ -17,7 +17,6 @@
     "express-session": "^1.17.0",
     "express-validator": "^6.3.1",
     "http-errors": "~1.6.3",
-    "morgan": "~1.9.1",
     "multer": "^1.4.2",
     "pug": "2.0.0-beta11",
     "redis": "^2.8.0",
@@ -28,11 +27,12 @@
     "@types/express": "^4.17.13",
     "@types/node": "^17.0.0",
     "@types/pg": "^8.6.3",
+    "morgan": "^1.10.0",
     "nanoid": "^3.1.30",
     "nodemon": "^2.0.2",
     "pg": "^8.7.1",
     "postgres-migrations": "^5.3.0",
-    "postgresql-tag": "^0.1.0",
-    "serialize-error": "^9.0.0"
+    "serialize-error": "^9.0.0",
+    "sql-tag": "^1.0.1"
   }
 }

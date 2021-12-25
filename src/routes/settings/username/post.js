@@ -23,7 +23,7 @@ export const postSettingsUsername = async (req, res) => {
     const username = req.body.username;
     
     try {
-        if (!req.session.user) throw new Error('You need to be signed in!');
+        if (!req.session.user) res.redirect('/sign-up');
 
         // Check username is correct length and only using letters, numbers and dashes
         if (!username.match(regexUsername)) throw new Error('Username must be 4-16 characters(letters, numbers and dashes only).');

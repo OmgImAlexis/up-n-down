@@ -1,4 +1,4 @@
-import postgres from 'postgresql-tag';
+import sql from 'sql-tag';
 import { query } from '../../db/index.js';
 
 /**
@@ -7,7 +7,7 @@ import { query } from '../../db/index.js';
  * @param {import('../typedefs/settings.js').Settings} settings 
  * @returns 
  */
-export const updateUser = (userId, settings) => query(postgres`
+export const updateUser = (userId, settings) => query(sql`
     UPDATE
         tuser
     SET

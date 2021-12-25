@@ -11,7 +11,7 @@ export const processPostTags = (postTags) => {
 
     // Validate each tag
     for (const tag of tags) {
-        if (tag.match(/^[0-9a-zA-Z-]+$/)) throw new Error('tags can only contain numbers, letters and dashes.');
+        if (!tag.match(/^[0-9a-zA-Z-]+$/)) throw new Error('tags can only contain numbers, letters and dashes.');
         if (tag.length < 3 || tag.length > 20) throw new Error('each tag must be 3-20 characters');
     }
 

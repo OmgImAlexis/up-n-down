@@ -1,5 +1,5 @@
 import { getUserWithUsername } from '../../common/user/get-user-with-username.js';
-import { validatePassword } from '../../common/validate-password.js';
+import { validatePassword } from '../../common/auth/validate-password.js';
 
 const title = 'Log In';
 

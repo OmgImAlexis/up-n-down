@@ -1,14 +1,18 @@
-import { getTimezoneWithName } from '../../common/get-timezone-with-name.js';
+import { getTimezoneWithName } from '../../common/utils/get-timezone-with-name.js';
 import { updateUser } from '../../common/user/update-user.js';
 import { getUserWithUsername } from '../../common/user/get-user-with-username.js';
 import { cookieMaxAge as maxAge } from '../../config/index.js';
-import { saveSettings } from '../../common/save-settings.js';
-import { getTimezones } from '../../common/get-timezones.js';
+import { saveSettings } from '../../common/settings/save-settings.js';
+import { getTimezones } from '../../common/utils/get-timezones.js';
 
 const title = 'Settings';
 
 const defaultSettings = {
-    siteWidth: 600
+    eyes: -1,
+    commentReplyMode: 'quick', // Quick
+    postMode: 'discover', // Discover
+    siteWidth: 600,
+    timezone: 'UTC'
 };
 
 /**
@@ -18,12 +22,14 @@ const defaultSettings = {
  */
 export const postSettings = async (req, res) => {
     const settings = {
-        commentReplyMode: req.body.comment_reply_mode,
-        eyes: req.body.eyes,
-        postMode: req.body.post_mode,
-        siteWidth: parseInt(req.body.site_width, 10) || defaultSettings.siteWidth,
-        timezone: req.body.timezone
+        eyes: req.body.eyes || defaultSettings.eyes,
+        commentReplyMode: req.body.comment_reply_mode || defaultSettings.commentReplyMode,
+        postMode: req.body.post_mode || defaultSettings.postMode,
+        siteWidth: req.body.site_width ? parseInt(req.body.site_width, 10) : defaultSettings.siteWidth,
+        timezone: req.body.timezone || defaultSettings.timezone
     };
+
+    console.log(settings);
 
     // Get timezones
     const timezones = await getTimezones();
@@ -34,7 +40,7 @@ export const postSettings = async (req, res) => {
         if (!timezone) throw new Error('Unknown time zone, pick again');
 
         // Check eyes is valid
-        if (settings.eyes) {
+        if (settings.eyes !== -1) {
             const eyesLookup = await getUserWithUsername(settings.eyes);
             if (!eyesLookup?.is_eyes) throw new Error('bad following list');
         }

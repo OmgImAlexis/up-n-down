@@ -1,4 +1,4 @@
-import postgres from 'postgresql-tag';
+import sql from 'sql-tag';
 import argon2 from 'argon2';
 import { query } from '../../db/index.js';
 
@@ -10,7 +10,7 @@ import { query } from '../../db/index.js';
  * @returns The newly created user.
  */
 export const createUser = async (username, password) => {
-    return query(postgres`
+    return query(sql`
         INSERT INTO tuser
             (username, password)
         VALUES

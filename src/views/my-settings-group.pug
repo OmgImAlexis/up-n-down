@@ -6,10 +6,8 @@ append head
 block content2
     h3 Add User
 
-    if errors.length
-        ul
-            each error in errors
-                li #{error.msg}
+    if error
+        | #{error.message}
 
     form(method="post")
         div
@@ -20,14 +18,14 @@ block content2
 
     h3 Existing Users
 
-    if group_members.length
+    if groupMembers.length > 0
         ul
-            each gm in group_members
+            each member in groupMembers
                 li.memlist
-                    span= gm.username
+                    span= member.username
                     | 
                     form(method="post" class="fdel")
                         input(type="submit" value="x" title="delete")
-                        input(type="hidden" name="deleteid" value=gm.public_id)
+                        input(type="hidden" name="deleteid" value=member.public_id)
     else
         div None

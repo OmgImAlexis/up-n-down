@@ -1,4 +1,4 @@
-import postgres from 'postgresql-tag';
+import sql from 'sql-tag';
 import { query } from '../../db/index.js';
 
 /**
@@ -7,7 +7,7 @@ import { query } from '../../db/index.js';
  * @param {string} textContent 
  * @returns 
  */
-export const updateComment = (commentId, textContent) => query(postgres`
+export const updateComment = (commentId, textContent) => query(sql`
     UPDATE
         ttest
     SET

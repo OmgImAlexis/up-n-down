@@ -1,7 +1,7 @@
-import postgres from 'postgresql-tag';
+import sql from 'sql-tag';
 import { query } from '../../db/index.js';
 
-export const isUserFollowing = (userId, followeeUserId) => query(postgres`
+export const isUserFollowing = (userId, followeeUserId) => query(sql`
     SELECT
         1
     FROM

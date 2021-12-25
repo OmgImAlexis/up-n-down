@@ -1,4 +1,4 @@
-import postgres from 'postgresql-tag';
+import sql from 'sql-tag';
 import { query } from '../../db/index.js';
 
 /**
@@ -7,7 +7,7 @@ import { query } from '../../db/index.js';
  * @param {string} username 
  * @returns 
  */
-export const updateUserUsername = (userId, username) => query(postgres`
+export const updateUserUsername = (userId, username) => query(sql`
  UPDATE
      tuser
  SET

@@ -7,7 +7,7 @@ import { isUserAllowedToViewPost } from '../../../common/post/is-user-allowed-to
 import { processComment } from '../../../common/comment/process-comment.js';
 import { createCommentComment } from '../../../common/comment/create-comment-comment.js';
 import { increasePostNumberOfComments } from '../../../common/post/increase-post-number-of-comments.js';
-import { getCurrentTimezone } from '../../../common/get-current-timezone.js';
+import { getCurrentTimezone } from '../../../common/settings/get-current-timezone.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 

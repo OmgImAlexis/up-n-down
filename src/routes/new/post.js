@@ -1,10 +1,11 @@
 import { validationResult } from 'express-validator';
 import { processPostTitle } from '../../common/post/process-post-title.js';
-import { getDomainName } from '../../common/get-domain-name.js';
+import { getDomainName } from '../../common/utils/get-domain-name.js';
 import { processPostTags } from '../../common/post/process-post-tags.js';
 import { createPost } from '../../common/post/create-post.js';
 import { getDomainNameId } from '../../common/get-domain-name-id.js';
 import { createPostTags } from '../../common/post/create-post-tags.js';
+import { getPrivateGroupsWithNames } from '../../common/group/get-private-groups-with-names.js';
 
 const title = 'New Post';
 
@@ -34,8 +35,8 @@ export const postNew = async (req, res) => {
 
             for (const privateGroup of privateGroups) {
                 // If this is not the owner then check they're a member of the group
-                if (req.session.user.user_id !== pGroup.created_by) {
-                    const groupMember = await getGroupMember(pGroup.private_group_id, req.session.user.user_id);
+                if (req.session.user.user_id !== privateGroup.created_by) {
+                    const groupMember = await getGroupMember(privateGroup.private_group_id, req.session.user.user_id);
                     if (!groupMember) throw new Error('You used a private group you don\'t have access to');    
                 }
             }
