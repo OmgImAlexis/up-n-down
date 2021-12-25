@@ -16,7 +16,7 @@ export const postComment = async (req, res) => {
     if (!req.session.user) throw new HttpError('Unauthorized', 401);
 
     // Bail if the comment doesn't exist
-    const comment = await getCommentWithPublicId(req.body.commentid);
+    const comment = await getCommentWithPublicId(req.body.comment_id);
     if (!comment) throw new HttpError('Not Found', 404);
    
     // Bail if they if they don't have permission

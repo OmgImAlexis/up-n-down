@@ -1,6 +1,6 @@
 import { join as joinPath } from 'path';
 import { serializeError } from 'serialize-error';
-import express, { static as createStaticMiddleware, urlencoded } from 'express';
+import express, { static as createStaticMiddleware, urlencoded, json } from 'express';
 import cookieParser from 'cookie-parser';
 import uuid from 'uuid';
 import session from 'express-session';
@@ -36,16 +36,17 @@ const createSessionMiddleware = client => session({
 });
 
 const createErrorHandlerMiddleware = (error) => (req, res) => {
+    const realError = error instanceof HttpError ? error.cause : error;
     const status = error.status;
     
     // Set status
     res.status(status);
 
     // Respond with HTML
-    if (req.accepts('html')) return res.render(`http/${status}`, { html: { title: error.cause ? error.cause.message : error.message }, error });
+    if (req.accepts('html')) return res.render(`http/${status}`, { html: { title: realError.cause ? realError.cause.message : realError.message }, error: realError });
 
     // Respond with JSON
-    if (req.accepts('json')) return res.json(serializeError(error));
+    if (req.accepts('json')) return res.json(serializeError(realError));
 
     // Default to plain-text
     res.type('txt').send(message);
@@ -65,12 +66,15 @@ const main = async () => {
     // Setup session
     app.use(createSessionMiddleware(redisClient));
 
+    // Setup cookies
+    app.use(cookieParser());
+
     // Setup asset directory
     app.use(createStaticMiddleware(joinPath(__dirname, '../public')));
 
-    // Setup other misc middleware
-    app.use(urlencoded({ extended:false }));
-    app.use(cookieParser());
+    // Setup body parsing
+    app.use(urlencoded({ extended: false }));
+    app.use(json());
 
     // Add user to locals
     app.use(function(req,res,next){

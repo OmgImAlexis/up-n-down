@@ -66,7 +66,6 @@ export const postSignup = async (req, res) => {
     } catch (error) {
         // Render error page
         const errorMessage = error.constraint == 'username_unique_idx' ? `"${username}" already taken` : 'unknown error, please try again';
-        console.log(error);
         return res.render('sign-up', {
             title,
             error: new Error(errorMessage),

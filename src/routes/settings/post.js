@@ -29,8 +29,6 @@ export const postSettings = async (req, res) => {
         timezone: req.body.timezone || defaultSettings.timezone
     };
 
-    console.log(settings);
-
     // Get timezones
     const timezones = await getTimezones();
 
