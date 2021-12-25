@@ -8,7 +8,7 @@ block content
 
     ul
         li
-            a(href="#what") What is Peaches 'n' Stink?
+            a(href="#what") What is #{site.name}?
         li
             a(href="#posts") Posts
         li
@@ -36,9 +36,9 @@ block content
         li
             a(href="#api") API
 
-    h2#what What is Peaches 'n' Stink?
+    h2#what What is #{site.name}?
     p
-        |Peaches 'n' Stink is a link aggregation internet forum similar to 
+        |#{site.name} is a link aggregation internet forum similar to 
         a(href="https://www.reddit.com") Reddit
         | 
         |and 
@@ -143,7 +143,7 @@ block content
     h2#private-groups Private Groups
     p
         |By default, all posts and comments are public. 
-        |But with private groups, you can use Peaches 'n' Stink privately 
+        |But with private groups, you can use #{site.name} privately 
         |with your friends, family and peers. Private groups use the same 
         |mechanism as "normal" groups and can be mixed with them.
 
@@ -234,7 +234,7 @@ block content
 
     h2#open-source Open Source
     p.
-        The source code for Peaches 'n' Stink is
+        The source code for #{site.name} is
         #[a(href="https://github.com/ferg1e/peaches-n-stink") available on GitHub] under the MIT license.
 
     h2#privacy-policy Privacy Policy

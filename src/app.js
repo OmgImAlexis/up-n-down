@@ -14,7 +14,7 @@ import { importJson } from './common/import-json.js';
 import { getCurrentSiteMaxWidth } from './common/get-current-site-max-width.js';
 import { router } from './router/index.js';
 import { HttpError } from './errors/http-error.js';
-import { siteName } from './config/index.js';
+import { site } from './config/index.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -81,8 +81,8 @@ const main = async () => {
     // Add site details to locals
     app.use((req, res, next) => {
         res.locals.site = {
-            maxWidth: getCurrentSiteMaxWidth(req),
-            name: siteName
+            ...site,
+            maxWidth: getCurrentSiteMaxWidth(req)
         };
         next();
     });
