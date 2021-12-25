@@ -2,7 +2,7 @@ import { join as joinPath } from 'path';
 import { serializeError } from 'serialize-error';
 import express, { static as createStaticMiddleware, urlencoded, json } from 'express';
 import cookieParser from 'cookie-parser';
-import uuid from 'uuid';
+import { v4 } from 'uuid';
 import session from 'express-session';
 import connectRedis from 'connect-redis';
 import { createClient } from 'redis';
@@ -27,7 +27,7 @@ const name = importJson(joinPath(__dirname, '../package.json')).name;
 config();
 
 const createSessionMiddleware = client => session({
-    genid: () => uuid.v4(),
+    genid: () => v4(),
     name: process.env.SESSION_NAME ?? `${name}-session`,
     secret: process.env.SESSION_SECRET ?? randomBytes(64).toString(),
     resave: false,
@@ -54,7 +54,12 @@ const createErrorHandlerMiddleware = (error) => (req, res) => {
 
 const main = async () => {
     // Create redis client
-    const redisClient = createClient(process.env.REDIS_PORT ?? '6379', process.env.REDIS_HOST ?? 'localhost');
+    const redisClient = createClient({
+        legacyMode: true
+    });
+
+    // Wait for redis to connect
+    await redisClient.connect();
 
     // Create main express app
     const app = express();
