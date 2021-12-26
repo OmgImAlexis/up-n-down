@@ -3,3 +3,5 @@ node_modules
 my-files/
 doc/
 /test*.js
+.nyc_output
+coverage
