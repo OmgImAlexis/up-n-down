@@ -54,8 +54,12 @@ export const postSettings = async (req, res) => {
 
 		// Render error page
 		return res.render('settings', {
-			page: {
+			html: {
 				title,
+			},
+			site: {
+				...res.locals.site,
+				maxWidth: settings.siteWidth,
 			},
 			error,
 			...settings,
@@ -68,8 +72,12 @@ export const postSettings = async (req, res) => {
 
 	// Render success page
 	res.render('settings', {
-		page: {
+		html: {
 			title,
+		},
+		site: {
+			...res.locals.site,
+			maxWidth: settings.siteWidth,
 		},
 		...settings,
 		timezones,

@@ -7,6 +7,7 @@ import { cookieMaxAge } from '../../config/index.js';
 import { getCurrentTimezone } from '../../common/settings/get-current-timezone.js';
 import { getCurrentPostMode } from '../../common/settings/get-current-post-mode.js';
 import { getCurrentCommentReplyMode } from '../../common/settings/get-current-comment-reply-mode.js';
+import { getCurrentSiteMaxWidth } from '../../common/settings/get-current-site-max-width.js';
 
 /**
  * Get the current eyes
@@ -21,7 +22,7 @@ const getCurrentEyes = async req => {
 
 	// If the user is logged in and there's eyes
 	if (req.session.user?.eyes) {
-		return getUserWithUserId(req.session.user.eyes).then(user => user.username);
+		return getUserWithUserId(req.session.user.eyes).then(user => user?.username);
 	}
 
 	// If the user is logged in and no eyes
@@ -56,10 +57,15 @@ export const getSettings = async (req, res) => {
 	const timezones = await getTimezones();
 	const availableEyes = await getAvailableEyes();
 	const currentEyes = await getCurrentEyes(req);
+	const siteWidth = getCurrentSiteMaxWidth(req);
 
 	res.render('settings', {
 		html: {
 			title: 'Settings',
+		},
+		site: {
+			...res.locals.site,
+			maxWidth: siteWidth,
 		},
 		timezones,
 		timezone: getCurrentTimezone(req),
@@ -67,5 +73,6 @@ export const getSettings = async (req, res) => {
 		currentEyes,
 		postMode: getCurrentPostMode(req),
 		commentReplyMode: getCurrentCommentReplyMode(req),
+		siteWidth,
 	});
 };

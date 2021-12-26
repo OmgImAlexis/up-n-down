@@ -1,4 +1,4 @@
-import { getCommentWithPublic } from '../../../common/comment/get-comment-with-public.js';
+import { getCommentWithPublicId } from '../../../common/comment/get-comment-with-public-id.js';
 
 /**
  * Render the edit page for a comment.
@@ -10,7 +10,7 @@ import { getCommentWithPublic } from '../../../common/comment/get-comment-with-p
 export const getCommentEdit = async (req, res) => {
 	try {
 		const commentPublicId = req.params.commentId;
-		const comment = await getCommentWithPublic(commentPublicId);
+		const comment = await getCommentWithPublicId(commentPublicId);
 		if (!comment) {
 			throw new Error('Unknown comment.');
 		}
