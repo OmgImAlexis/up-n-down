@@ -38,7 +38,12 @@ const createSessionMiddleware = client => session({
     secret: process.env.SESSION_SECRET ?? randomBytes(64).toString(),
     resave: false,
     saveUninitialized: false,
-    store: new redisStore({ client })
+    store: new redisStore({ client }),
+    cookie: {
+        httpOnly: true,
+        path: '/',
+        secure: process.env.NODE_ENV === 'production'
+    }
 });
 
 const createErrorHandlerMiddleware = (error) => (req, res) => {

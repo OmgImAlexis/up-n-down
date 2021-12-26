@@ -4,6 +4,7 @@ block content
     h2.pageh1 Contact Us
     p
         |You can contact us by creating a post. 
-        |Or you can send an email to 
-        a(href="mailto:#{site.contact.email}") #{site.contact.email}
-        |.
+        if site.contact.email
+            |Or you can send an email to 
+            a(href="mailto:#{site.contact.email}") #{site.contact.email}
+            |.

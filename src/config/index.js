@@ -6,7 +6,7 @@ config();
 export const site = {
     name: `Up 'n' Down`,
     contact: {
-        email: 'peachesnstink@protonmail.com'
+        email: ''
     },
     repo: 'https://github.com/omgimalexis/up-n-down'
 };
