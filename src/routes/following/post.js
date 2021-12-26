@@ -19,7 +19,7 @@ export const postFollowing = async (req, res) => {
 		}
 
 		// Check if the user is trying to follow themselves
-		if (req.session.user.user_id == user.user_id) {
+		if (req.session.user.user_id === user.user_id) {
 			throw new Error('You can\'t follow yourself');
 		}
 

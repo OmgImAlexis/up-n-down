@@ -5,7 +5,6 @@ import { getUserWithUserId } from '../../common/user/get-user-with-user-id.js';
 import { getAvailableEyes } from '../../common/get-available-eyes.js';
 import { cookieMaxAge } from '../../config/index.js';
 import { getCurrentTimezone } from '../../common/settings/get-current-timezone.js';
-import { getCurrentSiteMaxWidth } from '../../common/settings/get-current-site-max-width.js';
 import { getCurrentPostMode } from '../../common/settings/get-current-post-mode.js';
 import { getCurrentCommentReplyMode } from '../../common/settings/get-current-comment-reply-mode.js';
 
@@ -14,16 +13,21 @@ import { getCurrentCommentReplyMode } from '../../common/settings/get-current-co
  * @param {import('express').Request} req
  * @returns {Promise<string>}
  */
-const getCurrentEyes = async req =>
-// // If the user is logged out
-// if (!req.session.user) return req.cookies.eyes ?? eyesDefaultUsername;
+const getCurrentEyes = async req => {
+	// If the user is logged out
+	if (!req.session.user) {
+		return req.cookies.eyes ?? eyesDefaultUsername;
+	}
 
-// // If the user is logged in and there's eyes
-// if (req.session.user?.eyes) return getUserWithUserId(req.session.user.eyes).then(user => user.username);
+	// If the user is logged in and there's eyes
+	if (req.session.user?.eyes) {
+		return getUserWithUserId(req.session.user.eyes).then(user => user.username);
+	}
 
-// // If the user is logged in and no eyes
-// return '';
-	eyesDefaultUsername;
+	// If the user is logged in and no eyes
+	return '';
+};
+
 const viewModes = ['discover', 'following-only'];
 
 /**
@@ -63,6 +67,5 @@ export const getSettings = async (req, res) => {
 		currentEyes,
 		postMode: getCurrentPostMode(req),
 		commentReplyMode: getCurrentCommentReplyMode(req),
-		siteWidth: getCurrentSiteMaxWidth(req),
 	});
 };

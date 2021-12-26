@@ -3,7 +3,7 @@ extends layout
 append head
     link(rel='stylesheet', href='/assets/css/group-comment.css')
 
-    if user && comment_reply_mode == 'quick'
+    if user && comment_reply_mode === 'quick'
         script(src="/assets/js/reply.js")
 
 include bbCodes.pug
@@ -41,7 +41,7 @@ block content
                 span.clinks-single
                     a(href=`/c/${comment.comment_public_id}`) link
 
-                    if user && comment.user_id == user.user_id
+                    if user && comment.user_id === user.user_id
                         | 
                         a(href=`/c/${comment.comment_public_id}/edit`) edit
 

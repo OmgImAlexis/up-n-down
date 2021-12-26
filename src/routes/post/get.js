@@ -1,6 +1,5 @@
 import { getCurrentTimezone } from '../../common/settings/get-current-timezone.js';
 import { isDiscover } from '../../common/is-discover.js';
-import { getCurrentSiteMaxWidth } from '../../common/settings/get-current-site-max-width.js';
 import { getCurrentCommentReplyMode } from '../../common/settings/get-current-comment-reply-mode.js';
 import { getCurrentEyesId } from '../../common/settings/get-current-eyes-id.js';
 import { getPostWithPublic2 } from '../../common/post/get-post-with-public-2.js';
@@ -40,7 +39,6 @@ export const getPost = async (req, res) => {
 		return res.render('message', {
 			title: 'Post #' + post.public_id,
 			message: 'This post is from a private group and you do not have access.',
-			max_width: getCurrentSiteMaxWidth(req),
 		});
 	}
 

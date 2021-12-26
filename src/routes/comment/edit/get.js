@@ -1,3 +1,5 @@
+import { getCommentWithPublic } from '../../../common/comment/get-comment-with-public.js';
+
 /**
  * Render the edit page for a comment.
  *

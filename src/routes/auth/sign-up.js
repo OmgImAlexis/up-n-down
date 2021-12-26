@@ -1,6 +1,5 @@
 import { validationResult } from 'express-validator';
 import { createUser } from '../../common/user/create-user.js';
-import { getCurrentSiteMaxWidth } from '../../common/settings/get-current-site-max-width.js';
 
 const title = 'Sign Up';
 
@@ -14,13 +13,17 @@ const title = 'Sign Up';
 export const getSignup = (req, res) => {
 	if (req.session.user) {
 		return res.render('message', {
-			title,
+			html: {
+				title,
+			},
 			message: 'You already signed up. If you want to create another account then please <a href="/logout">log out</a>.',
 		});
 	}
 
 	return res.render('auth/sign-up', {
-		title,
+		html: {
+			title,
+		},
 		autoLogin: 'yes',
 	});
 };
@@ -37,7 +40,9 @@ export const postSignup = async (req, res) => {
 	const [validationError] = validationResult(req).array({ onlyFirstError: true });
 	if (validationError) {
 		return res.render('auth/sign-up', {
-			title,
+			html: {
+				title,
+			},
 			error: new Error(validationError.msg),
 			username: req.body.username,
 			autoLogin: req.body.autoLogin,
@@ -54,20 +59,23 @@ export const postSignup = async (req, res) => {
 		// authenticate them and redirect them to the homepage
 		if (req.body.auto_login === 'yes') {
 			req.session.user = user;
-
 			return res.redirect('/');
 		}
 
 		// Show success message
 		return res.render('message', {
-			title,
+			html: {
+				title,
+			},
 			message: 'Sign up was successful, you can now <a href="/login">log in</a>.',
 		});
 	} catch (error) {
 		// Render error page
-		const errorMessage = error.constraint == 'username_unique_idx' ? `"${username}" already taken` : 'unknown error, please try again';
+		const errorMessage = error.constraint === 'username_unique_idx' ? `"${username}" already taken` : 'unknown error, please try again';
 		return res.render('auth/sign-up', {
-			title,
+			html: {
+				title,
+			},
 			error: new Error(errorMessage),
 			username: req.body.username,
 			autoLogin: req.body.autoLogin,

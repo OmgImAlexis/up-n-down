@@ -36,7 +36,7 @@ export const getComment = async (req, res) => {
 		let page = 1;
 
 		if (typeof req.query.p !== 'undefined') {
-			page = parseInt(req.query.p);
+			page = parseInt(req.query.p, 10);
 
 			if (isNaN(page)) {
 				return res.redirect(`/c/${commentPublicId}`);

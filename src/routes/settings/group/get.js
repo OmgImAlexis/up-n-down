@@ -7,7 +7,7 @@ export const getSettingsGroup = async (req, res) => {
 		return res.send('private group does not exist');
 	}
 
-	if (!privateGroup.created_by == req.session.user.user_id) {
+	if (!privateGroup.created_by === req.session.user.user_id) {
 		return res.send('hello...');
 	}
 

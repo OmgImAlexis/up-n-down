@@ -5,7 +5,9 @@ import { numberToOrderedAlpha } from '../utils/number-to-ordered-alpha.js';
 
 // @todo: Convert this to using SQL transactions
 
-export const createCommentComment = async (postId, userId, content, parentPath, timezone) => {
+export const createCommentComment = async ({
+	postId, userId, content, parentPath, timezone,
+}) => {
 	const path = `${parentPath}.*{1}`;
 
 	// Get current comment count

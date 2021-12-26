@@ -36,7 +36,13 @@ export const postComment = async (req, res) => {
 	const trimmedComment = processComment(req.body.text_content);
 
 	// Create the reply
-	const reply = await createCommentComment(comment.post_id, req.session.user.user_id, trimmedComment, comment.path, getCurrentTimezone(req));
+	const reply = await createCommentComment({
+		postId: comment.post_id,
+		userId: req.session.user.user_id,
+		comment: trimmedComment,
+		parentPath: comment.path,
+		timezone: getCurrentTimezone(req),
+	});
 
 	// Increase number of comments on the associated post
 	await increasePostNumberOfComments(comment.post_id);

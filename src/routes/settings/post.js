@@ -1,7 +1,5 @@
 import { getTimezoneWithName } from '../../common/utils/get-timezone-with-name.js';
-import { updateUser } from '../../common/user/update-user.js';
 import { getUserWithUsername } from '../../common/user/get-user-with-username.js';
-import { cookieMaxAge as maxAge } from '../../config/index.js';
 import { saveSettings } from '../../common/settings/save-settings.js';
 import { getTimezones } from '../../common/utils/get-timezones.js';
 

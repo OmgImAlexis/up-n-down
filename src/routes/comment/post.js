@@ -1,4 +1,3 @@
-import { increasePostNumberOfComments } from '../../common/post/increase-post-number-of-comments.js';
 import { getCurrentEyesId } from '../../common/settings/get-current-eyes-id.js';
 import { getCommentWithPublic2 } from '../../common/comment/get-comment-with-public-2.js';
 import { isUserAllowedToViewPost } from '../../common/post/is-user-allowed-to-view-post.js';
@@ -31,7 +30,13 @@ export const postComment = async (req, res) => {
 
 		const trimmedComment = processComment(req.body.text_content);
 
-		const reply = await createCommentComment(comment.post_id, req.session.user.user_id, trimmedComment, comment.path, 'UTC');
+		const reply = await createCommentComment({
+			postId: comment.post_id,
+			userId: req.session.user.user_id,
+			comment: trimmedComment,
+			parentPath: comment.path,
+			timezone: 'UTC',
+		});
 
 		return res.redirect(`/c/${commentPublicId}#${reply.public_id}`);
 	} catch (error) {

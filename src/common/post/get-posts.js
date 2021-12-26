@@ -21,8 +21,8 @@ export const getPosts = async (userId, timeZone, page, isDiscoverMode, filterUse
 		//
 		const { rows } = await getUserAllPrivateGroupIds(userId);
 
-		for (const i in rows) {
-			allowedPrivateIds.push(rows[i].private_group_id);
+		for (const row of rows) {
+			allowedPrivateIds.push(row.private_group_id);
 		}
 
 		for (let i = 1; i <= allowedPrivateIds.length; ++i) {

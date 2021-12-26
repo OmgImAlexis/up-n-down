@@ -32,7 +32,7 @@ export const getComment = async (req, res) => {
 	}
 
 	let isDiscoverMode = false;
-	if (typeof req.query.viewmode !== 'undefined' && req.query.viewmode.toLowerCase() == 'discover') {
+	if (typeof req.query.viewmode !== 'undefined' && req.query.viewmode.toLowerCase() === 'discover') {
 		isDiscoverMode = true;
 	}
 

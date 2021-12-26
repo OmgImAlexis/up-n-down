@@ -37,12 +37,12 @@ mixin ucListComment(pComment, pUser, pFollowGoto, pCommentReplyMode, isTargetLin
 
                 if pUser
                     | 
-                    if pCommentReplyMode == 'quick'
+                    if pCommentReplyMode === 'quick'
                         a(onclick=`reply('${pComment.public_id}', ${isTargetLink});return false;` href="#") reply
                     else
                         a(href=`/c/${pComment.public_id}#write-comment`) reply
 
-                if pUser && pUser.user_id == pComment.user_id
+                if pUser && pUser.user_id === pComment.user_id
                     | 
                     a(href=`/c/${pComment.public_id}/edit`) edit
         else
@@ -70,7 +70,7 @@ mixin ucListComment(pComment, pUser, pFollowGoto, pCommentReplyMode, isTargetLin
 
                 if pUser
                     | 
-                    if pCommentReplyMode == 'quick'
+                    if pCommentReplyMode === 'quick'
                         a(onclick=`reply('${pComment.public_id}', ${isTargetLink});return false;` href="#") reply
                     else
                         a(href=`/c/${pComment.public_id}#write-comment`) reply

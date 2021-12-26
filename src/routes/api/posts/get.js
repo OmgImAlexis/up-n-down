@@ -1,9 +1,11 @@
-async (req, res) => {
+import { getPostSort } from '../../../common/post/get-post-sort.js';
+
+export const getPosts = async (req, res) => {
 	//
 	let page = 1;
 
 	if (typeof req.query.p !== 'undefined') {
-		page = parseInt(req.query.p);
+		page = parseInt(req.query.p, 10);
 
 		if (isNaN(page)) {
 			page = 1;
@@ -14,7 +16,7 @@ async (req, res) => {
 	let isDiscoverMode = false;
 
 	if (typeof req.query.viewmode !== 'undefined'
-        && req.query.viewmode.toLowerCase() == 'discover') {
+        && req.query.viewmode.toLowerCase() === 'discover') {
 		isDiscoverMode = true;
 	}
 
@@ -22,9 +24,9 @@ async (req, res) => {
 	const filterUserId = 1;
 	const sort = getPostSort(req);
 
-	const { rows } = await db.getPosts(
+	const posts = await getPosts(
 		userId,
-		'UTC', // TODO: dry this up
+		'UTC',
 		page,
 		isDiscoverMode,
 		filterUserId,
@@ -33,17 +35,15 @@ async (req, res) => {
 	//
 	const rows2 = [];
 
-	for (const i in rows) {
-		const v = rows[i];
-
+	for (const post of posts) {
 		rows2.push({
-			post_id: v.public_id,
-			title: v.is_visible ? v.title : false,
-			link: v.is_visible ? v.link : false,
-			post_time: v.created_on_raw,
-			by: v.username,
-			num_comments: v.num_comments,
-			groups: v.tags,
+			post_id: post.public_id,
+			title: post.is_visible ? post.title : false,
+			link: post.is_visible ? post.link : false,
+			post_time: post.created_on_raw,
+			by: post.username,
+			num_comments: post.num_comments,
+			groups: post.tags,
 		});
 	}
 

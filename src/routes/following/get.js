@@ -24,7 +24,7 @@ export const getFollowing = async (req, res) => {
 				}
 
 				// Check if the user is trying to follow themselves
-				if (req.session.user.user_id == user.user_id) {
+				if (req.session.user.user_id === user.user_id) {
 					throw new Error('You can\'t follow yourself');
 				}
 
@@ -51,7 +51,7 @@ export const getFollowing = async (req, res) => {
 				}
 
 				// Check if the user is trying to unfollow themselves
-				if (req.session.user.user_id == user.user_id) {
+				if (req.session.user.user_id === user.user_id) {
 					throw new Error('You can\'t unfollow yourself');
 				}
 
@@ -70,7 +70,7 @@ export const getFollowing = async (req, res) => {
 
 			case req.query.followed !== undefined: {
 				// Render success page
-				res.render('following', {
+				return res.render('following', {
 					html: {
 						title: 'Following',
 					},
@@ -84,7 +84,7 @@ export const getFollowing = async (req, res) => {
 
 			case req.query.unfollowed !== undefined: {
 				// Render success page
-				res.render('following', {
+				return res.render('following', {
 					html: {
 						title: 'Following',
 					},
@@ -98,7 +98,7 @@ export const getFollowing = async (req, res) => {
 
 			default: {
 				// Render following page
-				res.render('following', {
+				return res.render('following', {
 					html: {
 						title: 'Following',
 					},

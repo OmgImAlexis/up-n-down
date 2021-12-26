@@ -1,4 +1,14 @@
-async (req, res) => {
+import { getPostWithPublic2 } from '../../../common/post/get-post-with-public-2.js';
+import { isUserAllowedToViewPost } from '../../../common/post/is-user-allowed-to-view-post.js';
+import { getPostComments } from '../../../common/comment/get-post-comments.js';
+
+/**
+ *
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ * @returns
+ */
+export const getPost = async (req, res) => {
 	//
 	if (typeof req.query.postid === 'undefined') {
 		return res.json(0);
@@ -10,7 +20,7 @@ async (req, res) => {
 	const filterUserId = 1;
 
 	//
-	const { rows } = await db.getPostWithPublic2(
+	const { rows } = await getPostWithPublic2(
 		postPublicId,
 		'UTC',
 		userId,
@@ -19,7 +29,7 @@ async (req, res) => {
 	//
 	if (rows.length) {
 		//
-		const isAllowed = await db.isUserAllowedToViewPost(
+		const isAllowed = await isUserAllowedToViewPost(
 			rows[0].private_group_ids,
 			userId);
 
@@ -31,11 +41,11 @@ async (req, res) => {
 		let isDiscoverMode = false;
 
 		if (typeof req.query.viewmode !== 'undefined'
-            && req.query.viewmode.toLowerCase() == 'discover') {
+            && req.query.viewmode.toLowerCase() === 'discover') {
 			isDiscoverMode = true;
 		}
 
-		const { rows: comments } = await db.getPostComments(
+		const { rows: comments } = await getPostComments(
 			rows[0].post_id,
 			'UTC',
 			userId,
@@ -45,8 +55,7 @@ async (req, res) => {
 		//
 		const comments2 = [];
 
-		for (const i in comments) {
-			const c = comments[i];
+		for (const c of comments) {
 			const dotCount = (c.path.match(/\./g) || []).length;
 
 			comments2.push({

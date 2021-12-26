@@ -83,7 +83,6 @@ const mustBeAuthenticatedMiddleware = (req, res, next) => {
 	next();
 };
 
-// eslint-disable-next-line camelcase
 const editPostLinkMiddleware = validateBody('link', 'link must be an http or https URL').optional().isURL({ protocols: ['http', 'https'], require_protocol: true });
 const editPostTextContentMiddleware = validateBody('text_content', 'Please write some content').optional();
 

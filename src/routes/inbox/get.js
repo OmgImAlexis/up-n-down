@@ -1,3 +1,9 @@
+import { getCurrentEyesId } from '../../common/settings/get-current-eyes-id.js';
+import { isDiscover } from '../../common/is-discover.js';
+import { getInboxComments } from '../../common/get-inbox-comments.js';
+import { getCurrentTimezone } from '../../common/settings/get-current-timezone.js';
+import { getCurrentCommentReplyMode } from '../../common/settings/get-current-comment-reply-mode.js';
+
 /**
  *
  * @param {import('express').Request} req
@@ -10,7 +16,7 @@ export const getInbox = async (req, res) => {
 			throw new Error('<a href="/login">Log in</a> to view your inbox.');
 		}
 
-		const filterUserId = await getCurrEyesId(req);
+		const filterUserId = await getCurrentEyesId(req);
 		const isDiscoverMode = isDiscover(req);
 
 		// Get the requested page or fall back to 1
@@ -19,7 +25,7 @@ export const getInbox = async (req, res) => {
 
 		//
 		const comments = await getInboxComments(
-			getCurrentTimeZone(req),
+			getCurrentTimezone(req),
 			req.session.user.user_id,
 			isDiscoverMode,
 			filterUserId,
@@ -33,7 +39,7 @@ export const getInbox = async (req, res) => {
 			comments,
 			page,
 			isDiscoverMode,
-			comment_reply_mode: myMisc.getCurrCommentReplyMode(req),
+			comment_reply_mode: getCurrentCommentReplyMode(req),
 		});
 	} catch (error) {
 		res.render('inbox', {

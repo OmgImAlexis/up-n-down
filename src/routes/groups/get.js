@@ -16,18 +16,16 @@ export const getGroups = async (req, res) => {
 	const tag = req.params.groupId;
 	const finalUserId = req.session.user ? req.session.user.user_id : -1;
 
-	//
 	let page = 1;
 
 	if (typeof req.query.p !== 'undefined') {
-		page = parseInt(req.query.p);
+		page = parseInt(req.query.p, 10);
 
 		if (isNaN(page)) {
 			return res.redirect(`/g/${tag}`);
 		}
 	}
 
-	//
 	const privateGroup = await getPrivateGroupWithName(tag);
 
 	if (privateGroup) {
@@ -41,24 +39,19 @@ export const getGroups = async (req, res) => {
 		}
 	}
 
-	//
 	const sort = getPostSort(req);
 
-	//
 	const isDiscoverMode = isDiscover(req);
 	const filterUserId = await getCurrentEyesId(req);
 
-	//
-	const posts = await getTagPosts(
-		finalUserId,
-		{
-			timezone: getCurrentTimezone(req),
-			page,
-			tag,
-			isDiscoverMode,
-			filterUserId,
-			sort,
-		});
+	const posts = await getTagPosts(finalUserId, {
+		timezone: getCurrentTimezone(req),
+		page,
+		tag,
+		isDiscoverMode,
+		filterUserId,
+		sort,
+	});
 
 	res.render('posts/feed', {
 		html: {

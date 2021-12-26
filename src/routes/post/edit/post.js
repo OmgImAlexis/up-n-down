@@ -56,7 +56,7 @@ export const postPostEdit = async (req, res) => {
 	// check that the lengths are equal
 	// and check that one is a subset of the other
 	const isPrivateGroupsSame
-        = existingPrivateGroups.length == editedPrivateGroups.length
+        = existingPrivateGroups.length === editedPrivateGroups.length
         && existingPrivateGroups.every(v => editedPrivateGroups.includes(v));
 
 	if (!isPrivateGroupsSame) {

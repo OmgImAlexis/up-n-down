@@ -6,6 +6,7 @@ import { createPost } from '../../common/post/create-post.js';
 import { getDomainNameId } from '../../common/get-domain-name-id.js';
 import { createPostTags } from '../../common/post/create-post-tags.js';
 import { getPrivateGroupsWithNames } from '../../common/group/get-private-groups-with-names.js';
+import { getGroupMember } from '../../common/group/get-group-member.js';
 
 const title = 'New Post';
 
@@ -37,7 +38,7 @@ export const postNew = async (req, res) => {
 		if (tags.length > 0) {
 			const privateGroups = await getPrivateGroupsWithNames(tags);
 
-			for (const privateGroup of privateGroups) {
+			for await (const privateGroup of privateGroups) {
 				// If this is not the owner then check they're a member of the group
 				if (req.session.user.user_id !== privateGroup.created_by) {
 					const groupMember = await getGroupMember(privateGroup.private_group_id, req.session.user.user_id);
