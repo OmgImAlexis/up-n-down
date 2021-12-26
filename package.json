@@ -7,7 +7,8 @@
     "start": "NODE_ENV=production node ./src/app.js",
     "dev": "nodemon ./src/app.js",
     "lint": "eslint ./src",
-    "test": "c8 ava"
+    "test": "c8 --reporter=text ava",
+    "coverage": "c8 --reporter=html ava"
   },
   "dependencies": {
     "argon2": "^0.28.3",
@@ -54,5 +55,9 @@
     "eslint": "^8.5.0",
     "eslint-config-xo": "^0.39.0",
     "nodemon": "^2.0.15"
+  },
+  "c8": {
+    "include": ["src/**/*.js"],
+    "all": true
   }
 }
