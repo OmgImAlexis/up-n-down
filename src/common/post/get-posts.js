@@ -17,7 +17,7 @@ export const getPosts = async (userId, timeZone, page, isDiscoverMode, filterUse
     const allowedPrivateIds = [];
     const dynamicPlaceholders = [];
 
-    if (userId != -1) {
+    if (userId !== -1) {
         //
         const {rows} = await getUserAllPrivateGroupIds(userId);
 

@@ -1,4 +1,4 @@
-extends layout
+extends ../layout
 
 append head
     link(rel='stylesheet', href='/cillmit99b/api.css')
@@ -14,7 +14,7 @@ block content
     p.
         All of the API calls accept an optional #[em viewmode] variable in the URL.
         If #[em viewmode] is #[em "discover"] then the discover view mode is used.
-        If any other value is used for #[em viewmode] then the locked view mode is used.
+        If any other value is used for #[em viewmode] then the following-only view mode is used.
         You can read more about how view mode works in the
         #[a(href="/manual#settings") settings section of the instruction manual].
 

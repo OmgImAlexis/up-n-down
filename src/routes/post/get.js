@@ -62,6 +62,7 @@ export const getPost = async (req, res) => {
         post,
         comments,
         comment_reply_mode: getCurrentCommentReplyMode(req),
+        is_discover_mode: isDiscoverModeEnabled,
         page
     });
 };

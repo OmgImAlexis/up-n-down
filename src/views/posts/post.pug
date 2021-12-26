@@ -1,4 +1,4 @@
-extends layout
+extends ../layout
 
 append head
     link(rel='stylesheet', href='/cillmit99b/single-post.css')
@@ -6,8 +6,8 @@ append head
     if user && comment_reply_mode == 'quick'
         script(src="/bavamuts/shared.js")
 
-include bbCodes.pug
-include userContent.pug
+include ../bbCodes.pug
+include ../userContent.pug
 
 block content
     - const followGoto = '/p/' + post.public_id
@@ -43,7 +43,7 @@ block content
 
                     each tag in post.tags
                         | 
-                        a(href=`/r/${tag}` class="tag1")=tag
+                        a(href=`/g/${tag}` class="tag1")=tag
 
                 | 
                 span.plinks
@@ -86,7 +86,7 @@ block content
         div(class="alert1o")
             span(class="alert1")
                 |Showing all comments. 
-                a(href=`/settings?viewmode=locked&goto=/p/${post.public_id}`) Switch to locked
+                a(href=`/settings?viewmode=following-only&goto=/p/${post.public_id}`) Switch to following only
                 |.
     else
         div(class="alert1o")

@@ -26,6 +26,7 @@ import { getGroups } from '../routes/groups/get.js';
 import { getSettingsGroups } from '../routes/settings/groups/get.js';
 import { postSettingsGroups } from '../routes/settings/groups/post.js';
 import { getSettingsGroup } from '../routes/settings/group/get.js';
+import { getUser } from '../routes/user/get.js';
 // import { postSettingsGroup } from '../routes/settings/group/post.js';
 
 // Create main router
@@ -53,7 +54,10 @@ const mustBeAuthenticatedMiddleware = (req, res, next) => {
 const editPostLinkMiddleware = validateBody('link', 'link must be an http or https URL').optional().isURL({ protocols: ['http', 'https'], require_protocol: true });
 const editPostTextContentMiddleware = validateBody('text_content', 'Please write some content').optional();
 
+// Homepage
 router.get('/', home);
+
+// Settings
 router.get('/settings', getSettings);
 router.post('/settings', postSettings);
 router.get('/settings/username', getSettingsUsername);
@@ -62,24 +66,41 @@ router.get('/settings/groups', mustBeAuthenticatedMiddleware, getSettingsGroups)
 router.post('/settings/groups', mustBeAuthenticatedMiddleware, postSettingsGroups);
 router.get('/settings/group', mustBeAuthenticatedMiddleware, getSettingsGroup);
 // router.post('/settings/group', mustBeAuthenticatedMiddleware, postSettingsGroup);
+
+// Auth
 router.get('/sign-up', getSignup);
 router.post('/sign-up', usernameMiddleware, passwordMiddleware, postSignup);
 router.get('/login', getLogin);
 router.post('/login', postLogin);
+
+// Posts
 router.get('/new', mustBeAuthenticatedMiddleware, getNew);
 router.post('/new', mustBeAuthenticatedMiddleware, postNew);
 router.get('/p/:postId', getPost);
 router.post('/p/:postId', postPost);
 router.get('/p/:postId/edit', mustBeAuthenticatedMiddleware, getPostEdit);
 router.post('/p/:postId/edit', mustBeAuthenticatedMiddleware, editPostLinkMiddleware, editPostTextContentMiddleware, postPostEdit);
+
+// Comments
 router.get('/c/:commentId', getComment);
 router.post('/c/:commentId', postComment);
 router.get('/c/:commentId/edit', mustBeAuthenticatedMiddleware, getCommentEdit);
 router.post('/c/:commentId/edit', mustBeAuthenticatedMiddleware, postCommentEdit);
+
+// Users
+router.get('/u/:username', getUser);
+
+// Following
 router.get('/following', mustBeAuthenticatedMiddleware, getFollowing);
 router.post('/following', mustBeAuthenticatedMiddleware, postFollowing);
-router.get(`/r/:groupId`, getGroups);
+
+// Groups
+router.get(`/g/:groupId`, getGroups);
+
+// Inbox
 router.get('/inbox', mustBeAuthenticatedMiddleware, getInbox);
+
+// Leaving
 router.get('/leaving', getLeaving);
 
 export {

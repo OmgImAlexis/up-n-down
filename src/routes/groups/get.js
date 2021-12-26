@@ -23,7 +23,7 @@ export const getGroups = async (req, res) => {
         page = parseInt(req.query.p)
 
         if(isNaN(page)) {
-            return res.redirect(`/r/${tag}`)
+            return res.redirect(`/g/${tag}`)
         }
     }
 
@@ -64,7 +64,7 @@ export const getGroups = async (req, res) => {
         },
         posts,
         page,
-        base_url: `/r/${tag}`,
+        base_url: `/g/${tag}`,
         is_discover_mode: isDiscoverMode,
         page_tag: tag,
         sort

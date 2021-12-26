@@ -1,96 +1,72 @@
+import { validationResult } from "express-validator";
+import { getPostWithPublic } from "../../../common/post/get-post-with-public.js";
+import { processPostTitle } from "../../../common/post/process-post-title.js";
+import { processPostTags } from "../../../common/post/process-post-tags.js";
+import { getPrivateGroupsWithNames } from "../../../common/group/get-private-groups-with-names.js";
+import { getDomainNameId } from "../../../common/get-domain-name-id.js";
+import { getDomainName } from "../../../common/utils/get-domain-name.js";
+import { updatePost } from '../../../common/post/update-post.js';
+import { deletePostTags } from '../../../common/post/delete-post-tags.js';
+import { createPostTags } from '../../../common/post/create-post-tags.js';
+
 export const postPostEdit = async (req, res) => {
-        //
-        const postPublicId = req.params.postId;
-        const {rows} = await db.getPostWithPublic(postPublicId)
+    const postPublicId = req.params.postId;
+    const post = await getPostWithPublic(postPublicId);
+    if (!post) throw new Error('Unknown post.');
+    if (post.user_id !== req.session.user.user_id) throw new Error('Permission denied!');
 
-        //
-        if(!rows.length) {
-            return res.send('unknown post...')
+    // Check body for validation errors
+    const [validationError] = validationResult(req).array({ onlyFirstError: true });
+    if (validationError) {
+        return res.render('posts/new', {
+            html:{
+                title: `Edit ${postPublicId}`
+            },
+            error: new Error(validationError.msg),
+            title: req.body.title,
+            link: req.body.link ?? '',
+            textContent: req.body.text_content,
+            tags: req.body.tags,
+            submitLabel: 'Edit Post',
+            heading: 'Edit Post'
+        });
+    }
+
+    const title = processPostTitle(req.body.title);
+    const tags = processPostTags(req.body.tags);
+
+    // start private group check
+    const existingPrivateGroups = post.private_group_names;
+    const editedPrivateGroups = [];
+
+    if (tags.length > 0) {
+        const {rows:dataGroups} = await getPrivateGroupsWithNames(tags);
+
+        for(let i = 0; i < dataGroups.length; ++i) {
+            editedPrivateGroups.push(dataGroups[i].name);
         }
+    }
 
-        //
-        if(rows[0].user_id != req.session.user.user_id) {
-            return res.send('wrong user...')
-        }
+    //make sure private groups are unchanged
+    //check that the lengths are equal
+    //and check that one is a subset of the other
+    const isPrivateGroupsSame =
+        existingPrivateGroups.length == editedPrivateGroups.length &&
+        existingPrivateGroups.every(v => editedPrivateGroups.includes(v))
 
-        let errors = validationResult(req).array({onlyFirstError:true})
+    if(!isPrivateGroupsSame) throw new Error( "You cannot edit private groups");
+    // end private group check
 
-        //
-        let [wsCompressedTitle, error] = myMisc.processPostTitle(req.body.title)
+    const domainNameId = req.body.link ? await getDomainNameId(getDomainName(req.body.link)) : null;
 
-        if(error !== null) {
-            errors.push(error)
-        }
+    await updatePost(post.post_id, title, req.body.text_content, req.body.link, domainNameId);
 
-        //
-        let [trimTags, tagErrors] = myMisc.processPostTags(req.body.tags)
-        errors = errors.concat(tagErrors)
+    // delete tags for this post
+    await deletePostTags(post.post_id)
 
-        // start private group check
-        const existingPrivateGroups = rows[0].private_group_names
-        const editedPrivateGroups = []
-
-        if(trimTags.length) {
-            const {rows:dataGroups} = await db.getPrivateGroupsWithNames(trimTags)
-
-            for(let i = 0; i < dataGroups.length; ++i) {
-                editedPrivateGroups.push(dataGroups[i].name)
-            }
-        }
-
-        //make sure private groups are unchanged
-        //check that the lengths are equal
-        //and check that one is a subset of the other
-        const isPrivateGroupsSame =
-            existingPrivateGroups.length == editedPrivateGroups.length &&
-            existingPrivateGroups.every(v => editedPrivateGroups.includes(v))
-
-        if(!isPrivateGroupsSame) {
-            errors.push({msg: "You cannot edit private groups"})
-        }
-        // end private group check
-
-        //
-        if(errors.length) {
-            res.render(
-                'posts/new',
-                {
-                    html_title: htmlTitleEditPost,
-                    user: req.session.user,
-                    errors: errors,
-                    title: req.body.title,
-                    link: (typeof req.body.link !== 'undefined' ? req.body.link : ''),
-                    textContent: req.body.text_content,
-                    tags: req.body.tags,
-                    submitLabel: 'Edit Post',
-                    heading: 'Edit Post',
-                    max_width: myMisc.getCurrSiteMaxWidth(req)
-                })
-        }
-        else {
-
-            //
-            let domainNameId = null
-
-            if(typeof req.body.link !== 'undefined') {
-                const domainName = myMisc.getDomainName(req.body.link)
-                domainNameId = await db.getDomainNameId(domainName)
-            }
-
-            await db.updatePost(
-                rows[0].post_id,
-                wsCompressedTitle,
-                req.body.text_content,
-                req.body.link,
-                domainNameId)
-
-            // delete tags for this post
-            await db.deletePostTags(rows[0].post_id)
-
-            //
-            await db.createPostTags(trimTags, rows[0].post_id)
-            
-            //
-            return res.redirect('/p/' + postPublicId)
-        }
+    //
+    await createPostTags(tags, post.post_id)
+    
+    //
+    return res.redirect('/p/' + postPublicId)
 };

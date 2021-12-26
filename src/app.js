@@ -5,6 +5,9 @@ import cookieParser from 'cookie-parser';
 import { v4 } from 'uuid';
 import session from 'express-session';
 import connectRedis from 'connect-redis';
+import createDOMPurify from 'dompurify';
+import { JSDOM } from 'jsdom';
+import { marked } from 'marked';
 import { createClient } from 'redis';
 import { config } from 'dotenv';
 import { randomBytes } from 'crypto';
@@ -15,6 +18,9 @@ import { getCurrentSiteMaxWidth } from './common/settings/get-current-site-max-w
 import { router } from './router/index.js';
 import { HttpError } from './errors/http-error.js';
 import { site } from './config/index.js';
+
+const jsdom = new JSDOM('');
+const { sanitize } = createDOMPurify(jsdom.window);
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -36,8 +42,10 @@ const createSessionMiddleware = client => session({
 });
 
 const createErrorHandlerMiddleware = (error) => (req, res) => {
-    const realError = error instanceof HttpError ? error.cause : error;
+    const realError = error instanceof HttpError ? (error.cause ?? error) : error;
     const status = error.status;
+
+    console.log(error);
     
     // Set status
     res.status(status);
@@ -82,8 +90,14 @@ const main = async () => {
     app.use(json());
 
     // Add user to locals
-    app.use(function(req,res,next){
+    app.use((req, res, next) => {
         res.locals.user = req.session.user;
+        next();
+    });
+
+    // Add markdown parser to locals
+    app.use((req, res, next) => {
+        res.locals.compileMarkdown = (text) => marked.parse(sanitize(text, { ALLOWED_TAGS: ['div', 'br', 'a', 'b', 'i', 'span', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'img'] }));
         next();
     });
 

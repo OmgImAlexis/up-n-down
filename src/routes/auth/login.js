@@ -47,7 +47,7 @@ export const getLogin = (req, res) => {
         req.session.user = user;
         return res.redirect('/');
     } catch (error) {
-        res.render('login', {
+        res.render('auth/login', {
             html: {
                 title
             },

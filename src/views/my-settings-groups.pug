@@ -25,7 +25,7 @@ block content2
         ul
             each group in createdGroups
                 li
-                    a(href=`/r/${group.name}`)= group.name
+                    a(href=`/g/${group.name}`)= group.name
                     | 
                     a(href=`/settings/group?name=${group.name}`) [settings]
     else
@@ -37,6 +37,6 @@ block content2
         ul
             each group in memberGroups
                 li
-                    a(href=`/r/${group.name}`)= group.name
+                    a(href=`/g/${group.name}`)= group.name
     else
         div None

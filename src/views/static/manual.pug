@@ -1,4 +1,4 @@
-extends layout
+extends ../layout
 
 append head
     link(rel='stylesheet', href='/cillmit99b/manual.css')
@@ -67,7 +67,7 @@ block content
         a(href="/") home page
         |, 
         |at the top of group pages (e.g. 
-        a(href="/r/meta") r/meta
+        a(href="/g/meta") r/meta
         |), and when using the /posts API call. 
         |Here is a description of each sorting option:
         ul.list1
@@ -136,7 +136,7 @@ block content
         |When you create a post you can add it to a group (this is optional). 
         |Each group has its own page with all of its posts. 
         |For example, the 
-        a(href="/r/meta") meta group
+        a(href="/g/meta") meta group
         |. Groups display to the right of the post time for each post; 
         |click these links to go to the group's page!
 
@@ -208,7 +208,7 @@ block content
             li
                 b View Mode
                 |: this affects how posts and comments display that are from unfollowed users; 
-                |"locked" completely hides these posts and comments, while "discover" will show these posts and 
+                |"following-only" completely hides these posts and comments, while "discover" will show these posts and 
                 |comments but only with the username and time. There is a shortcut to toggle this option at the top of
                 |every list of posts and comments.
             li

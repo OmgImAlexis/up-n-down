@@ -1,4 +1,4 @@
-extends layout
+extends ../layout
 
 mixin followLink(username, publicId)
     - const pagePart = page < 2 ? '' : `?p=${page}`
@@ -30,7 +30,7 @@ block content
         div(class="alert2o")
             span(class="alert2")
                 |Showing all posts. 
-                a(href=`/settings?viewmode=locked${goto ? `&goto=${goto}` : ''}`) Switch to locked
+                a(href=`/settings?viewmode=following-only${goto ? `&goto=${goto}` : ''}`) Switch to following only
                 |.
     else
         div(class="alert2o")
@@ -55,7 +55,7 @@ block content
         .posts
             each post in posts
                 div
-                    if post.is_visible
+                    if true
                         if post.link === null
                             a(class="ptitle" href=`/p/${post.public_id}`) #{post.title}
                         else
@@ -64,7 +64,7 @@ block content
                             span.domname1 (#{post.domain_name})
 
                         div.pinfo1
-                            span(class="puser") by #{post.username}
+                            span(class="puser") by #[a(href=`/u/${post.username}`) #{post.username}]
                             | 
 
                             if !user || (post.user_id != user.user_id)
@@ -81,7 +81,7 @@ block content
                                 |to
                                 each tag in post.tags
                                     | 
-                                    a(href=`/r/${tag}` class="tag1")=tag
+                                    a(href=`/g/${tag}` class="tag1")=tag
 
                             | 
                             span.plinks
@@ -107,6 +107,7 @@ block content
     else
         span no more posts
     div
-        a(class="more" href=`${base_url}?p=${page - 1}${sort ? `&sort=${sort}` : ''}`) &pr; prev 
-        if posts.length > 0
+        if page > 1
+            a(class="more" href=`${base_url}?p=${page - 1}${sort ? `&sort=${sort}` : ''}`) &pr; prev 
+        if page > 0
             a(class="more" href=`${base_url}?p=${page + 1}${sort ? `&sort=${sort}` : ''}`) more &gt;

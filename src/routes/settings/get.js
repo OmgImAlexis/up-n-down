@@ -26,6 +26,8 @@ const getCurrentEyes = async (req) => {
     return eyesDefaultUsername;
 };
 
+const viewModes = ['discover', 'following-only'];
+
 /**
  * Render user settings page
  * @param {import('express').Request} req 
@@ -33,8 +35,11 @@ const getCurrentEyes = async (req) => {
  */
 export const getSettings = async (req, res) => {
     if (req.query.viewmode) {
-        const viewMode = req.query.viewmode == 'discover' ? req.query.viewmode : 'following-only';
+        // Default to discover mode
+        const viewMode = viewModes.includes(req.query.viewmode) ? req.query.viewmode : 'discover';
 
+        // Either update the session or cookie
+        // depending on if the user is logged in
         if (req.session.user) {
             await updateUserViewMode(req.session.user.user_id, viewMode);
             req.session.user.post_mode = viewMode;

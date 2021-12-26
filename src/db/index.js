@@ -58,22 +58,7 @@ export const query = (query, params) => {
 //             link is not null`)
 // }
 
-// exports.updatePost = (postId, title, textContent, link, domainNameId) => {
-//     let finalLink = typeof link !== 'undefined' ? link : null
-//     let finalTextContent = textContent.trim() === '' ? null : textContent
 
-//     return query(`
-//         update
-//             tpost
-//         set
-//             title = $1,
-//             link = $2,
-//             text_content = $3,
-//             domain_name_id = $4
-//         where
-//             post_id = $5`,
-//         [title, finalLink, finalTextContent, domainNameId, postId])
-// }
 
 
 // exports.updatePostDomainNameId = (postId, domainNameId) => {
@@ -180,14 +165,6 @@ export const query = (query, params) => {
 // }
 
 
-// exports.deletePostTags = (postId) => {
-//     return query(`
-//         delete from
-//             tposttag
-//         where
-//             post_id = $1`,
-//         [postId])
-// }
 
 // //private group member
 // exports.createGroupMember = (groupId, userId) => {
