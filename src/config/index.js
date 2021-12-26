@@ -4,10 +4,11 @@ import { config } from 'dotenv';
 config();
 
 export const site = {
-    name: `Peaches 'n' Stink`,
+    name: `Up 'n' Down`,
     contact: {
         email: 'peachesnstink@protonmail.com'
-    }
+    },
+    repo: 'https://github.com/omgimalexis/up-n-down'
 };
 
 export const eyesDefaultUsername = 'stink';
