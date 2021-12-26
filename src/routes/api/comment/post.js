@@ -15,30 +15,36 @@ const { Unauthorized, NotFound, Forbidden } = HttpErrors;
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export const postComment = async (req, res) => {
-    // Bail if they're not authenticated
-    if (!req.session.user) throw new Unauthorized('You must be signed in to post comments.');
+	// Bail if they're not authenticated
+	if (!req.session.user) {
+		throw new Unauthorized('You must be signed in to post comments.');
+	}
 
-    // Bail if the comment doesn't exist
-    const comment = await getCommentWithPublicId(req.body.comment_id);
-    if (!comment) throw new NotFound('No comment found with that ID');
-   
-    // Bail if they if they don't have permission
-    const isAllowed = await isUserAllowedToViewPost(comment.private_group_ids, req.session.user.user_id);
-    if(!isAllowed) throw new Forbidden('You do not have permission to comment on this post');
+	// Bail if the comment doesn't exist
+	const comment = await getCommentWithPublicId(req.body.comment_id);
+	if (!comment) {
+		throw new NotFound('No comment found with that ID');
+	}
 
-    // Trim the comment
-    const trimmedComment = processComment(req.body.text_content);
+	// Bail if they if they don't have permission
+	const isAllowed = await isUserAllowedToViewPost(comment.private_group_ids, req.session.user.user_id);
+	if (!isAllowed) {
+		throw new Forbidden('You do not have permission to comment on this post');
+	}
 
-    // Create the reply
-    const reply = await createCommentComment(comment.post_id, req.session.user.user_id, trimmedComment, comment.path, getCurrentTimezone(req));
+	// Trim the comment
+	const trimmedComment = processComment(req.body.text_content);
 
-    // Increase number of comments on the associated post
-    await increasePostNumberOfComments(comment.post_id);
+	// Create the reply
+	const reply = await createCommentComment(comment.post_id, req.session.user.user_id, trimmedComment, comment.path, getCurrentTimezone(req));
 
-    // Respond with comment
-    res.json({
-        ...reply,
-        text_content: compileFile(joinPath(__dirname, '../../../views/bbCodesOnly.pug'))({ compileMarkdown, text: reply.text_content }),
-        by: req.session.user.username
-    });
-}
+	// Increase number of comments on the associated post
+	await increasePostNumberOfComments(comment.post_id);
+
+	// Respond with comment
+	res.json({
+		...reply,
+		text_content: compileFile(joinPath(__dirname, '../../../views/bbCodesOnly.pug'))({ compileMarkdown, text: reply.text_content }),
+		by: req.session.user.username,
+	});
+};

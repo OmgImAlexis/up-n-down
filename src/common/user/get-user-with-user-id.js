@@ -3,10 +3,10 @@ import { query } from '../../db/index.js';
 
 /**
  * Get a user from the database based on it's user_id
- * @param {string} userId 
- * @returns 
+ * @param {string} userId
+ * @returns
  */
-export const getUserWithUserId = (userId) => query(sql`
+export const getUserWithUserId = userId => query(sql`
     SELECT
         username,
         password

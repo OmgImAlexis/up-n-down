@@ -1,7 +1,7 @@
 import sql from 'sql-tag';
 import { query } from '../../db/index.js';
 
-export const getCommentWithPublicId = (publicId) => query(sql`
+export const getCommentWithPublicId = publicId => query(sql`
     SELECT
         c.comment_id,
         c.post_id,

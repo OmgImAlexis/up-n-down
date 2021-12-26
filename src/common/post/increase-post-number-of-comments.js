@@ -3,10 +3,10 @@ import { query } from '../../db/index.js';
 
 /**
  * Increase the comment count on a post.
- * 
- * @param {string} postId 
+ *
+ * @param {string} postId
  */
-export const increasePostNumberOfComments = (postId) => query(sql`
+export const increasePostNumberOfComments = postId => query(sql`
     UPDATE
         tpost
     SET

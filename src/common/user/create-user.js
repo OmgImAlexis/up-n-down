@@ -4,7 +4,7 @@ import { query } from '../../db/index.js';
 
 /**
  * Create a user.
- * 
+ *
  * @param {string} username The user's username.
  * @param {string} password The user's plain text password.
  * @returns The newly created user.

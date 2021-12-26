@@ -2,11 +2,11 @@ import sql from 'sql-tag';
 import { query } from '../../db/index.js';
 
 /**
- * 
- * @param {string} timezoneName 
- * @returns 
+ *
+ * @param {string} timezoneName
+ * @returns
  */
-export const getTimezoneWithName = (timezoneName) => query(sql`
+export const getTimezoneWithName = timezoneName => query(sql`
     SELECT
         name,
         abbrev,

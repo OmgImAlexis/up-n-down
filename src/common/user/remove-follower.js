@@ -2,10 +2,10 @@ import sql from 'sql-tag';
 import { query } from '../../db/index.js';
 
 /**
- * 
- * @param {number} userId 
- * @param {number} followeeUserId 
- * @returns 
+ *
+ * @param {number} userId
+ * @param {number} followeeUserId
+ * @returns
  */
 export const removeFollower = (userId, followeeUserId) => query(sql`
     DELETE FROM

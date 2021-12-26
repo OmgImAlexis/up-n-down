@@ -5,24 +5,24 @@ import { getCurrentTimezone } from '../../common/settings/get-current-timezone.j
 import { getCurrentEyesId } from '../../common/settings/get-current-eyes-id.js';
 
 export const getUser = async (req, res) => {
-    const username = req.params.username;
-    const userId = req.session.user?.user_id ?? -1;
-    const requestedPage = parseInt(req.query.p, 10);
-    const page = isNaN(requestedPage) ? 1 : requestedPage;
-    const sort = getPostSort(req);
-    
-    const isDiscoverMode = isDiscover(req);
-    const filterUserId = await getCurrentEyesId(req);
+	const { username } = req.params;
+	const userId = req.session.user?.user_id ?? -1;
+	const requestedPage = parseInt(req.query.p, 10);
+	const page = isNaN(requestedPage) ? 1 : requestedPage;
+	const sort = getPostSort(req);
 
-    const posts = await getPosts(userId, getCurrentTimezone(req), page, isDiscoverMode, filterUserId, sort);
+	const isDiscoverMode = isDiscover(req);
+	const filterUserId = await getCurrentEyesId(req);
 
-    res.render('posts/feed', {
-        html: {
-            title: username
-        },
-        posts,
-        page,
-        base_url: '/',
-        sort
-    });
+	const posts = await getPosts(userId, getCurrentTimezone(req), page, isDiscoverMode, filterUserId, sort);
+
+	res.render('posts/feed', {
+		html: {
+			title: username,
+		},
+		posts,
+		page,
+		baseUrl: '/',
+		sort,
+	});
 };

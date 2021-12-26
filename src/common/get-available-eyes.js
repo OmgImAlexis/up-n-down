@@ -2,7 +2,7 @@ import sql from 'sql-tag';
 import { query } from '../db/index.js';
 
 /**
- * 
+ *
  * @returns {string} username
  */
 export const getAvailableEyes = () => query(sql`

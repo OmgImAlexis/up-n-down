@@ -11,5 +11,5 @@ export const getTimezones = () => query(`
         name not like 'GMT%' and
         name not like 'posix%'
     order by
-        utc_offset, name`
+        utc_offset, name`,
 ).then(({ rows }) => rows);

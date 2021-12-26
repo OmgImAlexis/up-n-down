@@ -2,10 +2,10 @@ import sql from 'sql-tag';
 import { query } from '../../db/index.js';
 
 /**
- * 
+ *
  * @param {string} userId The user's ID.
- * @param {import('../typedefs/settings.js').Settings} settings 
- * @returns 
+ * @param {import('../typedefs/settings.js').Settings} settings
+ * @returns
  */
 export const updateUser = (userId, settings) => query(sql`
     UPDATE

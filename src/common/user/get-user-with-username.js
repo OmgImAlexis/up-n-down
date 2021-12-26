@@ -2,11 +2,11 @@ import sql from 'sql-tag';
 import { query } from '../../db/index.js';
 
 /**
- * 
- * @param {string} username 
- * @returns 
+ *
+ * @param {string} username
+ * @returns
  */
-export const getUserWithUsername = (username) => query(sql`
+export const getUserWithUsername = username => query(sql`
     SELECT
         user_id,
         username,
@@ -21,4 +21,4 @@ export const getUserWithUsername = (username) => query(sql`
         tuser
     WHERE
         lower(username) = lower(${username})
-`).then(({ rows: [user]}) => user);
+`).then(({ rows: [user] }) => user);

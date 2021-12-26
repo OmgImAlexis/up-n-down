@@ -1,48 +1,55 @@
-import { increasePostNumberOfComments } from "../../common/post/increase-post-number-of-comments.js";
-import { getCurrentEyesId } from "../../common/settings/get-current-eyes-id.js";
-import { getCommentWithPublic2 } from "../../common/comment/get-comment-with-public-2.js";
-import { isUserAllowedToViewPost } from "../../common/post/is-user-allowed-to-view-post.js";
-import { processComment } from "../../common/comment/process-comment.js";
-import { getCurrentCommentReplyMode } from "../../common/settings/get-current-comment-reply-mode.js";
-import { getCurrentTimezone } from "../../common/settings/get-current-timezone.js";
-import { isDiscover } from "../../common/is-discover.js";
-import { getCommentComments } from "../../common/comment/get-comment-comments.js";
-import { createCommentComment } from "../../common/comment/create-comment-comment.js";
+import { increasePostNumberOfComments } from '../../common/post/increase-post-number-of-comments.js';
+import { getCurrentEyesId } from '../../common/settings/get-current-eyes-id.js';
+import { getCommentWithPublic2 } from '../../common/comment/get-comment-with-public-2.js';
+import { isUserAllowedToViewPost } from '../../common/post/is-user-allowed-to-view-post.js';
+import { processComment } from '../../common/comment/process-comment.js';
+import { getCurrentCommentReplyMode } from '../../common/settings/get-current-comment-reply-mode.js';
+import { getCurrentTimezone } from '../../common/settings/get-current-timezone.js';
+import { isDiscover } from '../../common/is-discover.js';
+import { getCommentComments } from '../../common/comment/get-comment-comments.js';
+import { createCommentComment } from '../../common/comment/create-comment-comment.js';
 
 export const postComment = async (req, res) => {
-    const commentPublicId = req.params.commentId;
-    const finalUserId = req.session?.user?.user_id ?? -1;
-    const filterUserId = await getCurrentEyesId(req);
-    const comment = await getCommentWithPublic2(commentPublicId, getCurrentTimezone(req), finalUserId, filterUserId);
-    
-    try {
-        if (!comment) throw new Error('Unknown comment.');
-        if (comment.user_id !== req.session.user.user_id) throw new Error('Permission denied!');
+	const commentPublicId = req.params.commentId;
+	const finalUserId = req.session?.user?.user_id ?? -1;
+	const filterUserId = await getCurrentEyesId(req);
+	const comment = await getCommentWithPublic2(commentPublicId, getCurrentTimezone(req), finalUserId, filterUserId);
 
-        const isAllowed = await isUserAllowedToViewPost(comment.private_group_ids, finalUserId);
-        if(!isAllowed) throw new Error("This comment is from a private group and you do not have access.");
+	try {
+		if (!comment) {
+			throw new Error('Unknown comment.');
+		}
 
-        const trimmedComment = processComment(req.body.text_content);
+		if (comment.user_id !== req.session.user.user_id) {
+			throw new Error('Permission denied!');
+		}
 
-        const reply = await createCommentComment(comment.post_id, req.session.user.user_id, trimmedComment, comment.path, 'UTC');
+		const isAllowed = await isUserAllowedToViewPost(comment.private_group_ids, finalUserId);
+		if (!isAllowed) {
+			throw new Error('This comment is from a private group and you do not have access.');
+		}
 
-        return res.redirect(`/c/${commentPublicId}#${reply.public_id}`);
-    } catch (error) {
-        //
-        const isDiscoverMode = isDiscover(req);
+		const trimmedComment = processComment(req.body.text_content);
 
-        const comments = await getCommentComments(comment.path, getCurrentTimezone(req), finalUserId, isDiscoverMode, filterUserId);
+		const reply = await createCommentComment(comment.post_id, req.session.user.user_id, trimmedComment, comment.path, 'UTC');
 
-        res.render('single-comment', {
-            html: {
-                title: commentPublicId
-            },
-            post_public_id: comment.post_public_id,
-            comment,
-            comments,
-            error,
-            is_discover_mode: isDiscoverMode,
-            comment_reply_mode: getCurrentCommentReplyMode(req)
-        });
-    }
+		return res.redirect(`/c/${commentPublicId}#${reply.public_id}`);
+	} catch (error) {
+		//
+		const isDiscoverMode = isDiscover(req);
+
+		const comments = await getCommentComments(comment.path, getCurrentTimezone(req), finalUserId, isDiscoverMode, filterUserId);
+
+		res.render('single-comment', {
+			html: {
+				title: commentPublicId,
+			},
+			post_public_id: comment.post_public_id,
+			comment,
+			comments,
+			error,
+			isDiscoverMode,
+			comment_reply_mode: getCurrentCommentReplyMode(req),
+		});
+	}
 };

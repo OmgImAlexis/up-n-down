@@ -7,16 +7,16 @@ import { increasePostNumberOfComments } from '../post/increase-post-number-of-co
 
 /**
  * Create a comment on a post.
- * 
+ *
  * @param {string} postId The post's private ID.
  * @param {string} userId The user's ID.
  * @param {string} content The content of the comment.
  */
 export const createPostComment = async (postId, userId, content) => {
-    const path = `${parseInt(postId)}.*{1}`;
+	const path = `${parseInt(postId, 10)}.*{1}`;
 
-    // Get current comment count
-    const { rows: [{ count }] } = await query(sql`
+	// Get current comment count
+	const { rows: [{ count }] } = await query(sql`
         SELECT
             count(1) as count
         FROM
@@ -25,11 +25,11 @@ export const createPostComment = async (postId, userId, content) => {
             path ~ ${path}
     `);
 
-    // Update the amount of comments on this post
-    await increasePostNumberOfComments(postId);
+	// Update the amount of comments on this post
+	await increasePostNumberOfComments(postId);
 
-    // Save comment to database
-    await query(sql`
+	// Save comment to database
+	await query(sql`
         INSERT INTO ttest
             (post_id, user_id, text_content, path)
         VALUES

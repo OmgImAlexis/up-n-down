@@ -4,17 +4,17 @@ import { config } from 'dotenv';
 config();
 
 export const site = {
-    name: `Up 'n' Down`,
-    description: 'A link aggregation site',
-    theme: {
-        colours: {
-            primary: '#4B0082'
-        }
-    },
-    contact: {
-        email: ''
-    },
-    repo: 'https://github.com/omgimalexis/up-n-down'
+	name: 'Up \'n\' Down',
+	description: 'A link aggregation site',
+	theme: {
+		colours: {
+			primary: '#4B0082',
+		},
+	},
+	contact: {
+		email: '',
+	},
+	repo: 'https://github.com/omgimalexis/up-n-down',
 };
 
 export const eyesDefaultUsername = 'stink';
@@ -23,11 +23,11 @@ export const commentsPerPage = 200;
 
 // Database
 export const database = {
-    host: process.env.PGHOST ?? 'localhost',
-    user: process.env.PGUSER ?? 'postgres',
-    database: process.env.PGDATABASE ?? 'postgres',
-    password: process.env.PGPASSWORD ?? '',
-    port: process.env.PGPORT ?? 5432
+	host: process.env.PGHOST ?? 'localhost',
+	user: process.env.PGUSER ?? 'postgres',
+	database: process.env.PGDATABASE ?? 'postgres',
+	password: process.env.PGPASSWORD ?? '',
+	port: process.env.PGPORT ?? 5432,
 };
 
 // Time

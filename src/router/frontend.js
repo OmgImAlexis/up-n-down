@@ -1,4 +1,5 @@
 import createRouter from 'express-promise-router';
+import { serializeError } from 'serialize-error';
 import { body as validateBody } from 'express-validator';
 import { home } from '../routes/home.js';
 import { getSettings } from '../routes/settings/get.js';
@@ -31,7 +32,7 @@ import createHttpError from 'http-errors';
 import { getCurrentSiteMaxWidth } from '../common/settings/get-current-site-max-width.js';
 import { site } from '../config/index.js';
 import { compileMarkdown } from '../common/compile-markdown.js';
-// import { postSettingsGroup } from '../routes/settings/group/post.js';
+// Import { postSettingsGroup } from '../routes/settings/group/post.js';
 
 const { NotFound } = createHttpError;
 
@@ -40,23 +41,23 @@ const router = createRouter();
 
 // Add user to locals
 router.use((req, res, next) => {
-    res.locals.user = req.session.user;
-    next();
+	res.locals.user = req.session.user;
+	next();
 });
 
 // Add markdown parser to locals
 router.use((req, res, next) => {
-    res.locals.compileMarkdown = compileMarkdown;
-    next();
+	res.locals.compileMarkdown = compileMarkdown;
+	next();
 });
 
 // Add site details to locals
 router.use((req, res, next) => {
-    res.locals.site = {
-        ...site,
-        maxWidth: getCurrentSiteMaxWidth(req)
-    };
-    next();
+	res.locals.site = {
+		...site,
+		maxWidth: getCurrentSiteMaxWidth(req),
+	};
+	next();
 });
 
 // Static routes
@@ -67,17 +68,22 @@ router.route('/api').get(renderPage('static/api', { html: { title: 'API' } }));
 
 // Logout page
 router.get('/logout', (req, res) => {
-    req.session.destroy();
-    res.redirect('/');
+	req.session.destroy();
+	res.redirect('/');
 });
 
 // Validation middleware
 const usernameMiddleware = validateBody('username', 'Username must be 4-16 characters (letters, numbers and dashes only)').notEmpty().withMessage('Please fill in a username').matches(/^[a-z0-9-]{4,16}$/i);
 const passwordMiddleware = validateBody('password', 'Password must be 9-100 characters').notEmpty().withMessage('Please fill in a password').matches(/^.{9,100}$/);
 const mustBeAuthenticatedMiddleware = (req, res, next) => {
-    if (!req.session.user) res.redirect('/sign-up');
-    next();
+	if (!req.session.user) {
+		res.redirect('/sign-up');
+	}
+
+	next();
 };
+
+// eslint-disable-next-line camelcase
 const editPostLinkMiddleware = validateBody('link', 'link must be an http or https URL').optional().isURL({ protocols: ['http', 'https'], require_protocol: true });
 const editPostTextContentMiddleware = validateBody('text_content', 'Please write some content').optional();
 
@@ -92,7 +98,7 @@ router.post('/settings/username', mustBeAuthenticatedMiddleware, postSettingsUse
 router.get('/settings/groups', mustBeAuthenticatedMiddleware, getSettingsGroups);
 router.post('/settings/groups', mustBeAuthenticatedMiddleware, postSettingsGroups);
 router.get('/settings/group', mustBeAuthenticatedMiddleware, getSettingsGroup);
-// router.post('/settings/group', mustBeAuthenticatedMiddleware, postSettingsGroup);
+// Router.post('/settings/group', mustBeAuthenticatedMiddleware, postSettingsGroup);
 
 // Auth
 router.get('/sign-up', getSignup);
@@ -122,7 +128,7 @@ router.get('/following', mustBeAuthenticatedMiddleware, getFollowing);
 router.post('/following', mustBeAuthenticatedMiddleware, postFollowing);
 
 // Groups
-router.get(`/g/:groupId`, getGroups);
+router.get('/g/:groupId', getGroups);
 
 // Inbox
 router.get('/inbox', mustBeAuthenticatedMiddleware, getInbox);
@@ -130,42 +136,46 @@ router.get('/inbox', mustBeAuthenticatedMiddleware, getInbox);
 // Leaving
 router.get('/leaving', getLeaving);
 
-const createErrorHandlerMiddleware = (error) => (req, res) => {
-    const httpError = createHttpError(error);
-    const status = httpError.status;
-    
-    // Set status
-    res.status(status);
+const createErrorHandlerMiddleware = error => (req, res) => {
+	const httpError = createHttpError(error);
+	const { status } = httpError;
 
-    // Respond with HTML
-    if (req.accepts('html')) return res.render(status === 404 ? 'http/not-found' : 'http/error', {
-        html: {
-            title: httpError.message
-        },
-        error: httpError
-    });
+	// Set status
+	res.status(status);
 
-    const { message, stack } = serializeError(httpError);
+	// Respond with HTML
+	if (req.accepts('html')) {
+		return res.render(status === 404 ? 'http/not-found' : 'http/error', {
+			html: {
+				title: httpError.message,
+			},
+			error: httpError,
+		});
+	}
 
-    // Respond with JSON
-    if (req.accepts('json')) return res.json({
-        status,
-        error: {
-            message,
-            ...(process.env.NODE_ENV === 'production' ? {} : { stack })
-        }
-    });
+	const { message, stack } = serializeError(httpError);
 
-    // Default to plain-text
-    res.type('txt').send(message);
+	// Respond with JSON
+	if (req.accepts('json')) {
+		return res.json({
+			status,
+			error: {
+				message,
+				...(process.env.NODE_ENV === 'production' ? {} : { stack }),
+			},
+		});
+	}
+
+	// Default to plain-text
+	res.type('txt').send(message);
 };
 
 // 404
 router.use(createErrorHandlerMiddleware(new NotFound()));
 
 // 5XX
-router.use((error, req, res, next) => createErrorHandlerMiddleware(error)(req, res));
+router.use((error, req, res, _next) => createErrorHandlerMiddleware(error)(req, res));
 
 export {
-    router
+	router,
 };

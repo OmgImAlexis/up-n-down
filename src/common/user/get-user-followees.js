@@ -2,11 +2,11 @@ import sql from 'sql-tag';
 import { query } from '../../db/index.js';
 
 /**
- * 
- * @param {string} userId 
- * @returns 
+ *
+ * @param {string} userId
+ * @returns
  */
-export const getUserFollowees = (userId) => query(sql`
+export const getUserFollowees = userId => query(sql`
     SELECT
         u.user_id,
         u.username,

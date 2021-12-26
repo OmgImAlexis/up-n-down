@@ -5,7 +5,7 @@ mixin followLink(username, publicId)
     - const sortNameValue = (sort !== '') ? `sort=${sort}` : ''
     - const sortSeparator = (pagePart === '') ? '?' : '&'
     - const sortPart = (sortNameValue !== '') ? `${sortSeparator}${sortNameValue}` : ''
-    - const goto = encodeURIComponent(`${base_url}${pagePart}${sortPart}`)
+    - const goto = encodeURIComponent(`${baseUrl}${pagePart}${sortPart}`)
     a(href=`/following?follow=${publicId}${goto ? `&goto=${goto}` : ''}` class="follow" title=`follow ${username}`) +
 
 mixin unfollowLink(username, publicId)
@@ -13,20 +13,20 @@ mixin unfollowLink(username, publicId)
     - const sortNameValue = (sort !== '') ? `sort=${sort}` : ''
     - const sortSeparator = (pagePart === '') ? '?' : '&'
     - const sortPart = (sortNameValue !== '') ? `${sortSeparator}${sortNameValue}` : ''
-    - const goto = encodeURIComponent(`${base_url}${pagePart}${sortPart}`)
+    - const goto = encodeURIComponent(`${baseUrl}${pagePart}${sortPart}`)
     a(href=`/following?unfollow=${publicId}${goto ? `&goto=${goto}` : ''}` class="unfollow" title=`unfollow ${username}`) -
 
 block content
-    - const goto = (sort === '') ? base_url : `${base_url}?sort=${sort}`
+    - const goto = (sort === '') ? baseUrl : `${baseUrl}?sort=${sort}`
 
-    if page_tag
+    if pageTag
         h2.pageh1
-            |r/#{page_tag}
+            |r/#{pageTag}
             if user
                 | 
-                a(href=`/new?group=${page_tag}`) new post
+                a(href=`/new?group=${pageTag}`) new post
 
-    if is_discover_mode
+    if isDiscoverMode
         div(class="alert2o")
             span(class="alert2")
                 |Showing all posts. 
@@ -43,13 +43,13 @@ block content
         span.sort1
             |sort:
             | 
-            a(href=base_url) newest
+            a(href=baseUrl) newest
             | 
-            a(href=`${base_url}?sort=oldest`) oldest
+            a(href=`${baseUrl}?sort=oldest`) oldest
             | 
-            a(href=`${base_url}?sort=comments`) comments
+            a(href=`${baseUrl}?sort=comments`) comments
             | 
-            a(href=`${base_url}?sort=last`) last comment
+            a(href=`${baseUrl}?sort=last`) last comment
 
     if posts && posts.length > 0
         .posts
@@ -108,6 +108,6 @@ block content
         span no more posts
     div
         if page > 1
-            a(class="more" href=`${base_url}?p=${page - 1}${sort ? `&sort=${sort}` : ''}`) &pr; prev 
+            a(class="more" href=`${baseUrl}?p=${page - 1}${sort ? `&sort=${sort}` : ''}`) &pr; prev 
         if page > 0
-            a(class="more" href=`${base_url}?p=${page + 1}${sort ? `&sort=${sort}` : ''}`) more &gt;
+            a(class="more" href=`${baseUrl}?p=${page + 1}${sort ? `&sort=${sort}` : ''}`) more &gt;

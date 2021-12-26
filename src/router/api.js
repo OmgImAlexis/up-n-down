@@ -12,31 +12,31 @@ const router = createRouter();
 router.get('/v1/comment/:commentId', getComment);
 router.post('/v1/comment', postComment);
 
-const createErrorHandlerMiddleware = (error) => (req, res) => {
-    const httpError = createHttpError(error);
-    const status = httpError.status;
-    
-    // Set status
-    res.status(status);
+const createErrorHandlerMiddleware = error => (req, res) => {
+	const httpError = createHttpError(error);
+	const { status } = httpError;
 
-    const { message, stack } = serializeError(httpError);
+	// Set status
+	res.status(status);
 
-    // Respond with JSON
-    return res.json({
-        status,
-        error: {
-            message,
-            ...(process.env.NODE_ENV === 'production' ? {} : { stack })
-        }
-    });
+	const { message, stack } = serializeError(httpError);
+
+	// Respond with JSON
+	return res.json({
+		status,
+		error: {
+			message,
+			...(process.env.NODE_ENV === 'production' ? {} : { stack }),
+		},
+	});
 };
 
 // 404
 router.use(createErrorHandlerMiddleware(new NotFound()));
 
 // 5XX
-router.use((error, req, res, next) => createErrorHandlerMiddleware(error)(req, res));
+router.use((error, req, res, _next) => createErrorHandlerMiddleware(error)(req, res));
 
 export {
-    router
+	router,
 };

@@ -1,22 +1,17 @@
-import argon2 from 'argon2';
-import { eyesDefaultUsername } from '../config/index.js';
 import postgres from 'pg';
 
 const { Pool, types } = postgres;
 
 // Use raw timestamp instead of converting to a js Date object
-types.setTypeParser(1114, str => str)
+types.setTypeParser(1114, str => str);
 
 const pool = new Pool();
 
-export const query = (query, params) => {
-    // console.log(query);
-    return pool.query(query, params);
-}
+export const query = (query, params) =>
+// Console.log(query);
+	pool.query(query, params);
 
-
-
-// exports.getUsersWithoutPublicId = () => {
+// Exports.getUsersWithoutPublicId = () => {
 //     return query(`
 //         select
 //             user_id
@@ -25,7 +20,6 @@ export const query = (query, params) => {
 //         where
 //             public_id = ''`)
 // }
-
 
 // //
 // exports.genUserPublicId = (userId) => {
@@ -43,10 +37,6 @@ export const query = (query, params) => {
 //         ])
 // }
 
-
-
-
-
 // exports.getPostLinks = () => {
 //     return query(`
 //         select
@@ -57,9 +47,6 @@ export const query = (query, params) => {
 //         where
 //             link is not null`)
 // }
-
-
-
 
 // exports.updatePostDomainNameId = (postId, domainNameId) => {
 //     return query(`
@@ -88,7 +75,6 @@ export const query = (query, params) => {
 //         [])
 // }
 
-
 // exports.getDomainName = (domainName) => {
 //     return query(`
 //         select
@@ -99,11 +85,6 @@ export const query = (query, params) => {
 //             domain_name = $1`,
 //         [domainName])
 // }
-
-
-
-
-
 
 // exports.getInboxComments = (timeZone, userId, isDiscoverMode, filterUserId, page) => {
 //     const pageSize = 20
@@ -164,8 +145,6 @@ export const query = (query, params) => {
 //             isDiscoverMode, userId, filterUserId, filterUserId, pageSize, (page - 1)*pageSize])
 // }
 
-
-
 // //private group member
 // exports.createGroupMember = (groupId, userId) => {
 //     return query(`
@@ -189,8 +168,6 @@ export const query = (query, params) => {
 //     )
 // }
 
-
-
 // exports.deleteGroupMember = (privateGroupId, publicUserId) => {
 //     return query(`
 //         delete from
@@ -204,5 +181,4 @@ export const query = (query, params) => {
 //         [publicUserId, privateGroupId]
 //     )
 // }
-
 

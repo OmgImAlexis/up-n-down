@@ -1,109 +1,101 @@
 async (req, res) => {
+	//
+	if (req.session.user) {
+		//
+		const { rows: data1 } = await db.getPrivateGroupWithName(req.query.name);
 
-    //
-    if(req.session.user) {
+		//
+		if (data1.length) {
+			//
+			const privateGroup = data1[0];
 
-        //
-        const {rows:data1} = await db.getPrivateGroupWithName(req.query.name)
+			if (privateGroup.created_by == req.session.user.user_id) {
+				// Start delete member
+				const isDeleteMember = typeof req.body.deleteid !== 'undefined';
 
-        //
-        if(data1.length) {
+				if (isDeleteMember) {
+					await db.deleteGroupMember(
+						privateGroup.private_group_id,
+						req.body.deleteid);
 
-            //
-            const privateGroup = data1[0]
+					return res.redirect(`/settings/group?name=${req.query.name}`);
+				}
+				// End delete member
 
-            if(privateGroup.created_by == req.session.user.user_id) {
+				//
+				const errors = [];
+				let submittedUser = null;
 
-                // start delete member
-                const isDeleteMember = typeof req.body.deleteid !== 'undefined'
+				if (req.body.user === '') {
+					errors.push({ msg: 'Please fill in a username' });
+				}
 
-                if(isDeleteMember) {
-                    await db.deleteGroupMember(
-                        privateGroup.private_group_id,
-                        req.body.deleteid)
+				//
+				if (!errors.length) {
+					const { rows: data2 } = await db.getUserWithUsername(req.body.user);
 
-                    return res.redirect(`/settings/group?name=${req.query.name}`)
-                }
-                // end delete member
+					if (!data2.length) {
+						errors.push({ msg: 'No such user' });
+					} else {
+						submittedUser = data2[0];
+					}
+				}
 
-                //
-                const errors = []
-                let submittedUser = null
+				//
+				if (!errors.length) {
+					if (submittedUser.user_id == req.session.user.user_id) {
+						errors.push({ msg: 'You don\'t need to add yourself' });
+					}
+				}
 
-                if(req.body.user === '') {
-                    errors.push({msg: 'Please fill in a username'})
-                }
+				//
+				if (!errors.length) {
+					const { rows: data3 } = await db.getGroupMember(
+						privateGroup.private_group_id,
+						submittedUser.user_id);
 
-                //
-                if(!errors.length) {
-                    const {rows:data2} = await db.getUserWithUsername(req.body.user)
+					if (data3.length) {
+						errors.push({ msg: 'User is already a member' });
+					}
+				}
 
-                    if(!data2.length) {
-                        errors.push({msg: 'No such user'})
-                    }
-                    else {
-                        submittedUser = data2[0]
-                    }
-                }
+				//
+				if (errors.length) {
+					renderHtml(req, res, errors, privateGroup.private_group_id);
+				} else {
+					await db.createGroupMember(
+						privateGroup.private_group_id,
+						submittedUser.user_id);
 
-                //
-                if(!errors.length) {
-                    if(submittedUser.user_id == req.session.user.user_id) {
-                        errors.push({msg: "You don't need to add yourself"})
-                    }
-                }
+					renderHtml(
+						req,
+						res,
+						[{ msg: 'User successfully added to private group' }],
+						privateGroup.private_group_id);
+				}
+			} else {
+				res.send('hello...');
+			}
+		} else {
+			res.send('private group does not exist');
+		}
+	} else {
+		res.send('please log in');
+	}
+};
 
-                //
-                if(!errors.length) {
-                    const {rows:data3} = await db.getGroupMember(
-                        privateGroup.private_group_id,
-                        submittedUser.user_id)
-
-                    if(data3.length) {
-                        errors.push({msg: 'User is already a member'})
-                    }
-                }
-
-                //
-                if(errors.length) {
-                    renderHtml(req, res, errors, privateGroup.private_group_id)
-                }
-                else {
-                    await db.createGroupMember(
-                        privateGroup.private_group_id,
-                        submittedUser.user_id)
-
-                    renderHtml(
-                        req,
-                        res,
-                        [{msg: "User successfully added to private group"}],
-                        privateGroup.private_group_id)
-                }
-            }
-            else {
-                res.send('hello...')
-            }
-        }
-        else {
-            res.send('private group does not exist')
-        }
-    }
-    else {
-        res.send('please log in')
-    }
-}
 //
 async function renderHtml(req, res, errors, privateGroupId) {
-    const {rows:groupMembers} = await db.getGroupMembers(privateGroupId)
+	const { rows: groupMembers } = await db.getGroupMembers(privateGroupId);
 
-    //
-    res.render(
-        'my-settings-group',
-        {
-            html_title: htmlTitle,
-            user: req.session.user,
-            max_width: myMisc.getCurrSiteMaxWidth(req),
-            errors: errors,
-            group_members: groupMembers
-        })
+	//
+	res.render(
+		'my-settings-group',
+		{
+			html_title: htmlTitle,
+			user: req.session.user,
+			max_width: myMisc.getCurrSiteMaxWidth(req),
+			errors,
+			group_members: groupMembers,
+		});
 }

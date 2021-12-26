@@ -9,11 +9,11 @@ const router = createRouter();
 
 // Add x-request-id header to all requests
 router.use((req, res, next) => {
-    const requestId = v4();
-    req.id = requestId;
-    req.headers['X-Request-Id'] = requestId;
-    res.setHeader('X-Request-Id', requestId);
-    next();
+	const requestId = v4();
+	req.id = requestId;
+	req.headers['X-Request-Id'] = requestId;
+	res.setHeader('X-Request-Id', requestId);
+	next();
 });
 
 router.use(morgan('tiny'));
@@ -21,5 +21,5 @@ router.use('/api', api);
 router.use('/', frontend);
 
 export {
-    router
+	router,
 };

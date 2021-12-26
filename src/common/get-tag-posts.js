@@ -3,10 +3,12 @@ import { query } from '../db/index.js';
 import { getUserAllPrivateGroupIds } from './get-user-all-private-group-ids.js';
 
 // @todo: very similar to getPosts(), may want to combine
-export const getTagPosts = async (userId, timezone, page, tag, isDiscoverMode, filterUserId, sort) => {
-    const pageSize = 20;
-    const allowedPrivateIds = userId === -1 ? [] : await getUserAllPrivateGroupIds(userId);
-    return query(sql`
+export const getTagPosts = async (userId, {
+	timezone, page, tag, isDiscoverMode, filterUserId, sort,
+}) => {
+	const pageSize = 20;
+	const allowedPrivateIds = userId === -1 ? [] : await getUserAllPrivateGroupIds(userId);
+	return query(sql`
         SELECT
             p.public_id,
             p.title,

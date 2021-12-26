@@ -4,7 +4,10 @@
  * @returns
  */
 export const getCurrentCommentReplyMode = req => {
-    const defaultReplyMode = 'quick';
-    if (req.session.user) return req.session.user.comment_reply_mode ?? defaultReplyMode;
-    return defaultReplyMode;
+	const defaultReplyMode = 'quick';
+	if (req.session.user) {
+		return req.session.user.comment_reply_mode ?? defaultReplyMode;
+	}
+
+	return defaultReplyMode;
 };

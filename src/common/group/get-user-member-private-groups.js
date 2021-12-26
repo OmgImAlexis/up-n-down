@@ -1,7 +1,7 @@
 import sql from 'sql-tag';
 import { query } from '../../db/index.js';
 
-export const getUserMemberPrivateGroups = (userId) => query(sql`
+export const getUserMemberPrivateGroups = userId => query(sql`
     SELECT
         pg.name
     FROM

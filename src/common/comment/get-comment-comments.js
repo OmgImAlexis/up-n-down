@@ -4,14 +4,14 @@ import { commentsPerPage } from '../../config/index.js';
 
 /**
  * Get comment replies.
- * 
- * @param {string} path 
- * @param {string} timezone 
- * @param {string} userId 
- * @param {boolean} isDiscoverMode 
- * @param {string} filterUserId 
- * @param {string} page 
- * @returns 
+ *
+ * @param {string} path
+ * @param {string} timezone
+ * @param {string} userId
+ * @param {boolean} isDiscoverMode
+ * @param {string} filterUserId
+ * @param {string} page
+ * @returns
  */
 export const getCommentComments = (path, timezone, userId, isDiscoverMode, filterUserId, page) => query(sql`
     SELECT

@@ -2,11 +2,11 @@ import sql from 'sql-tag';
 import { query } from '../../db/index.js';
 
 /**
- * 
- * @param {string} publicId 
- * @returns 
+ *
+ * @param {string} publicId
+ * @returns
  */
-export const getUserWithPublicId = (publicId) => query(sql`
+export const getUserWithPublicId = publicId => query(sql`
     SELECT
         user_id,
         username,
@@ -21,4 +21,4 @@ export const getUserWithPublicId = (publicId) => query(sql`
         tuser
     WHERE
         public_id = ${publicId}
-`).then(({rows: [user]}) => user);
+`).then(({ rows: [user] }) => user);
