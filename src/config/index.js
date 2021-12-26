@@ -5,6 +5,12 @@ config();
 
 export const site = {
     name: `Up 'n' Down`,
+    description: 'A link aggregation site',
+    theme: {
+        colours: {
+            primary: '#4B0082'
+        }
+    },
     contact: {
         email: ''
     },

@@ -63,5 +63,5 @@ export const getCommentComments = (path, timezone, userId, isDiscoverMode, filte
     LIMIT
         ${commentsPerPage}
     OFFSET
-        ${(page - 1) * commentsPerPage}
-`);
+        ${((page ?? 1) - 1) * commentsPerPage}
+`).then(({ rows }) => rows);

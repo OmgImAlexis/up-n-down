@@ -2,4 +2,4 @@ extends layout
 
 block content
     span You are now leaving #{site.name}.<br>
-    span Click <a href="#{link.startsWith('http') ? link : 'http://' + link}">here</a> to continue.
+    span Click <a href="#{goto.startsWith('http') ? goto : 'http://' + goto}">here</a> to continue.

@@ -5,9 +5,6 @@ import cookieParser from 'cookie-parser';
 import { v4 } from 'uuid';
 import session from 'express-session';
 import connectRedis from 'connect-redis';
-import createDOMPurify from 'dompurify';
-import { JSDOM } from 'jsdom';
-import { marked } from 'marked';
 import { createClient } from 'redis';
 import { config } from 'dotenv';
 import { randomBytes } from 'crypto';
@@ -16,11 +13,8 @@ import { fileURLToPath } from 'url';
 import { importJson } from './common/utils/import-json.js';
 import { getCurrentSiteMaxWidth } from './common/settings/get-current-site-max-width.js';
 import { router } from './router/index.js';
-import { HttpError } from './errors/http-error.js';
 import { site } from './config/index.js';
-
-const jsdom = new JSDOM('');
-const { sanitize } = createDOMPurify(jsdom.window);
+import { compileMarkdown } from './common/compile-markdown.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -46,24 +40,7 @@ const createSessionMiddleware = client => session({
     }
 });
 
-const createErrorHandlerMiddleware = (error) => (req, res) => {
-    const realError = error instanceof HttpError ? (error.cause ?? error) : error;
-    const status = error.status;
-
-    console.log(error);
-    
-    // Set status
-    res.status(status);
-
-    // Respond with HTML
-    if (req.accepts('html')) return res.render(`http/${status}`, { html: { title: realError.cause ? realError.cause.message : realError.message }, error: realError });
-
-    // Respond with JSON
-    if (req.accepts('json')) return res.json(serializeError(realError));
-
-    // Default to plain-text
-    res.type('txt').send(message);
-};
+const publicAssetsPath = joinPath(__dirname, '../public');
 
 const main = async () => {
     // Create redis client
@@ -77,6 +54,10 @@ const main = async () => {
     // Create main express app
     const app = express();
 
+    // Setup body parsing
+    app.use(urlencoded({ extended: false }));
+    app.use(json());
+
     // Setup page rendering
     app.set('view engine', 'pug')
     app.set('views', joinPath(__dirname, 'views'));
@@ -88,41 +69,10 @@ const main = async () => {
     app.use(cookieParser());
 
     // Setup asset directory
-    app.use(createStaticMiddleware(joinPath(__dirname, '../public')));
-
-    // Setup body parsing
-    app.use(urlencoded({ extended: false }));
-    app.use(json());
-
-    // Add user to locals
-    app.use((req, res, next) => {
-        res.locals.user = req.session.user;
-        next();
-    });
-
-    // Add markdown parser to locals
-    app.use((req, res, next) => {
-        res.locals.compileMarkdown = (text) => marked.parse(sanitize(text, { ALLOWED_TAGS: ['div', 'br', 'a', 'b', 'i', 'span', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'img'] }));
-        next();
-    });
-
-    // Add site details to locals
-    app.use((req, res, next) => {
-        res.locals.site = {
-            ...site,
-            maxWidth: getCurrentSiteMaxWidth(req)
-        };
-        next();
-    });
+    app.use(createStaticMiddleware(publicAssetsPath));
 
     // Setup routes
     app.use(router);
-
-    // 404
-    app.use(createErrorHandlerMiddleware(new HttpError('Not Found', 404)));
-
-    // 5XX
-    app.use((error, req, res, next) => createErrorHandlerMiddleware(new HttpError('Internal Server Error', 500, error))(req, res));
 
     // Start web server
     const server = app.listen(process.env.HTTP_PORT ?? 0, () => {

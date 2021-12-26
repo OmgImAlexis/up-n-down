@@ -1,77 +1,60 @@
-async (req, res) => {
+import { validate as validateUUID } from 'uuid';
+import { getCommentWithPublic2 } from '../../../common/comment/get-comment-with-public-2.js';
+import { isUserAllowedToViewPost } from '../../../common/post/is-user-allowed-to-view-post.js';
+import { getCommentComments } from '../../../common/comment/get-comment-comments.js';
+import httpErrors from 'http-errors';
 
-    //
-    if(typeof req.query.commentid === 'undefined') {
-        return res.json(0)
+const { NotFound, Unauthorized, Forbidden } = httpErrors;
+
+/**
+ * 
+ * @param {import('express').Request} req 
+ * @param {import('express').Response} res 
+ * @returns 
+ */
+export const getComment = async (req, res) => {
+    const commentPublicId = req.params.commentId;
+    if (!validateUUID(commentPublicId)) throw new NotFound('Comment ID is not a valid UUID');
+
+    const userId = -1;
+    const filterUserId = 1;
+
+    const comment = await getCommentWithPublic2(commentPublicId, 'UTC', userId, filterUserId);
+    if (!comment) throw new NotFound('No comment found with that ID');
+
+    const isAllowed = await isUserAllowedToViewPost(comment.private_group_ids, userId);
+    if(!isAllowed) throw new Forbidden('You do not have permission to view this post');
+
+    const isDiscoverMode = false;
+    if (typeof req.query.viewmode !== 'undefined' && req.query.viewmode.toLowerCase() == 'discover') {
+        isDiscoverMode = true;
     }
 
-    //
-    const commentPublicId = req.query.commentid
-    const userId = -1
-    const filterUserId = 1
+    const comments = await getCommentComments(comment.path, 'UTC', userId, isDiscoverMode, filterUserId);
 
     //
-    const {rows} = await db.getCommentWithPublic2(
-        commentPublicId,
-        'UTC',
-        userId,
-        filterUserId)
+    let comments2 = []
+    const rootDotCount = (comment.path.match(/\./g)||[]).length
 
-    //
-    if(rows.length) {
+    for(const i in comments) {
+        const c = comments[i]
+        const dotCount = (c.path.match(/\./g)||[]).length
 
-        //
-        const isAllowed = await db.isUserAllowedToViewPost(
-            rows[0].private_group_ids,
-            userId)
-
-        if(!isAllowed) {
-            return res.json(0)
-        }
-
-        //
-        let isDiscoverMode = false
-
-        if(typeof req.query.viewmode !== 'undefined' &&
-            req.query.viewmode.toLowerCase() == 'discover')
-        {
-            isDiscoverMode = true
-        }
-
-        const{rows:comments} = await db.getCommentComments(
-            rows[0].path,
-            'UTC',
-            userId,
-            isDiscoverMode,
-            filterUserId)
-
-        //
-        let comments2 = []
-        const rootDotCount = (rows[0].path.match(/\./g)||[]).length
-
-        for(const i in comments) {
-            const c = comments[i]
-            const dotCount = (c.path.match(/\./g)||[]).length
-
-            comments2.push({
-                comment_text: c.is_visible ? c.text_content : false,
-                indent_level: dotCount - rootDotCount - 1,
-                by: c.username,
-                comment_time: c.created_on_raw,
-                comment_id: c.public_id
-            })
-        }
-        
-        let r = {
-            comment_text: rows[0].is_visible ? rows[0].text_content : false,
-            comment_time: rows[0].created_on_raw,
-            by: rows[0].username,
-            comments: comments2
-        }
-
-        res.json(r)
+        comments2.push({
+            comment_text: c.is_visible ? c.text_content : false,
+            indent_level: dotCount - rootDotCount - 1,
+            by: c.username,
+            comment_time: c.created_on_raw,
+            comment_id: c.public_id
+        })
     }
-    else {
-        res.json(0)
+    
+    let r = {
+        comment_text: comment.is_visible ? comment.text_content : false,
+        comment_time: comment.created_on_raw,
+        by: comment.username,
+        comments: comments2
     }
-}
+
+    res.json(r)
+};

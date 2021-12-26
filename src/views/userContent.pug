@@ -1,5 +1,5 @@
 mixin safeLink(link)
-    a(href=`/leaving?link=${link}`)
+    a(href=`/leaving?goto=${link}`)
 
 mixin ucFollowLink(pUsername, pUserPublicId, pGoto)
     a(href=`/following?follow=${pUserPublicId}&goto=${pGoto}` class="follow" title=`follow ${pUsername}`) +

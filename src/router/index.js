@@ -17,8 +17,8 @@ router.use((req, res, next) => {
 });
 
 router.use(morgan('tiny'));
-router.use('/', frontend);
 router.use('/api', api);
+router.use('/', frontend);
 
 export {
     router

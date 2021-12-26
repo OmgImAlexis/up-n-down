@@ -27,10 +27,37 @@ import { getSettingsGroups } from '../routes/settings/groups/get.js';
 import { postSettingsGroups } from '../routes/settings/groups/post.js';
 import { getSettingsGroup } from '../routes/settings/group/get.js';
 import { getUser } from '../routes/user/get.js';
+import createHttpError from 'http-errors';
+import { getCurrentSiteMaxWidth } from '../common/settings/get-current-site-max-width.js';
+import { site } from '../config/index.js';
+import { compileMarkdown } from '../common/compile-markdown.js';
 // import { postSettingsGroup } from '../routes/settings/group/post.js';
+
+const { NotFound } = createHttpError;
 
 // Create main router
 const router = createRouter();
+
+// Add user to locals
+router.use((req, res, next) => {
+    res.locals.user = req.session.user;
+    next();
+});
+
+// Add markdown parser to locals
+router.use((req, res, next) => {
+    res.locals.compileMarkdown = compileMarkdown;
+    next();
+});
+
+// Add site details to locals
+router.use((req, res, next) => {
+    res.locals.site = {
+        ...site,
+        maxWidth: getCurrentSiteMaxWidth(req)
+    };
+    next();
+});
 
 // Static routes
 router.route('/manual').get(renderPage('static/manual', { html: { title: 'Manual' } }));
@@ -102,6 +129,42 @@ router.get('/inbox', mustBeAuthenticatedMiddleware, getInbox);
 
 // Leaving
 router.get('/leaving', getLeaving);
+
+const createErrorHandlerMiddleware = (error) => (req, res) => {
+    const httpError = createHttpError(error);
+    const status = httpError.status;
+    
+    // Set status
+    res.status(status);
+
+    // Respond with HTML
+    if (req.accepts('html')) return res.render(status === 404 ? 'http/not-found' : 'http/error', {
+        html: {
+            title: httpError.message
+        },
+        error: httpError
+    });
+
+    const { message, stack } = serializeError(httpError);
+
+    // Respond with JSON
+    if (req.accepts('json')) return res.json({
+        status,
+        error: {
+            message,
+            ...(process.env.NODE_ENV === 'production' ? {} : { stack })
+        }
+    });
+
+    // Default to plain-text
+    res.type('txt').send(message);
+};
+
+// 404
+router.use(createErrorHandlerMiddleware(new NotFound()));
+
+// 5XX
+router.use((error, req, res, next) => createErrorHandlerMiddleware(error)(req, res));
 
 export {
     router

@@ -59,7 +59,7 @@ block content
                         if post.link === null
                             a(class="ptitle" href=`/p/${post.public_id}`) #{post.title}
                         else
-                            a(class="ptitle" href=`/leaving?link=${post.link}`)= post.title
+                            a(class="ptitle" href=`/leaving?goto=${post.link}`)= post.title
                             | 
                             span.domname1 (#{post.domain_name})
 

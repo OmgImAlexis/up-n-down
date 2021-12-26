@@ -1,11 +1,13 @@
 doctype html
-html
+html(lang="en")
   head
     meta(charset="utf-8")
     meta(name="viewport" content="width=device-width, initial-scale=1")
+    meta(name="description" content=site.description)
+    meta(name="theme-color" content=site.theme.colours.primary)
     title=(html && html.title) ? `${html.title} - ${site.name}` : site.name
-    link(rel='stylesheet', href='/cillmit99b/style.css')
-    link(rel="icon" href="/images/favicon-32.png" sizes="32x32")
+    link(rel='stylesheet', href='/assets/css/style.css')
+    link(rel="icon" href="/assets/images/favicon-32.png" sizes="32x32")
     block head
 
     if site.maxWidth !== null
