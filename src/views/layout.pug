@@ -7,8 +7,10 @@ html(lang="en")
     meta(name="theme-color" content=site.theme.colours.primary)
     title=(html && html.title) ? `${html.title} - ${site.name}` : site.name
     link(rel='stylesheet', href='/assets/css/style.css')
+    link(rel='stylesheet', href='/assets/css/toast.css')
     link(rel="icon" href="/assets/images/favicon-32.png" sizes="32x32")
     block head
+    script(src="/assets/js/toast.js")
 
     if site.maxWidth !== null
       style.

@@ -9,7 +9,7 @@ import { query } from '../../db/index.js';
  */
 export const updateUserUsername = (userId, username) => query(sql`
  UPDATE
-     tuser
+     "user"
  SET
      username = ${username}
  WHERE

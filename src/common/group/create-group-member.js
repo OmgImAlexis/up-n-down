@@ -8,7 +8,7 @@ import { query } from '../../db/index.js';
  * @returns
  */
 export const createGroupMember = (groupId, userId) => query(sql`
-    INSERT INTO tgroupmember
+    INSERT INTO groupmember
         (private_group_id, user_id)
     VALUES
         (${groupId}, ${userId})

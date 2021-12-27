@@ -10,10 +10,6 @@ export const validatePrivateGroup = async groupTag => {
 		throw new Error('Please enter a group name');
 	}
 
-	if (!groupName.startsWith('p-')) {
-		throw new Error('Private group names must start with "p-", e.g. "p-frogs"');
-	}
-
 	// Don't allow groups to be claimed twice
 	const group = await getPrivateGroupWithName(groupName);
 	if (group) {
@@ -21,6 +17,7 @@ export const validatePrivateGroup = async groupTag => {
 	}
 
 	// Don't allow public tags to be claimed
+	// @todo: split groups and tags
 	const tag = await getTag(groupName);
 	if (tag) {
 		throw new Error('This group already has public posts');

@@ -7,10 +7,10 @@ import { query } from '../../db/index.js';
  * @returns
  */
 export const createTag = tagName => query(sql`
-    INSERT INTO ttag
+    INSERT INTO tag
         (tag)
     VALUES
-        (lower(${tagName}))
+        (${tagName.toLowerCase()})
     RETURNING
         tag_id
 `).then(({ rows: [tag] }) => tag);

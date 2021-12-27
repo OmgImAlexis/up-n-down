@@ -11,9 +11,9 @@ export const getGroupMembers = groupId => query(sql`
         u.public_id,
         u.username
     FROM
-        tuser u
+        "user" u
     JOIN
-        tgroupmember gm on gm.user_id = u.user_id
+        groupmember gm on gm.user_id = u.user_id
     WHERE
         gm.private_group_id = ${groupId}
     ORDER BY

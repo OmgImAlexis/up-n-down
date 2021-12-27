@@ -13,7 +13,7 @@ import { getTagPosts } from '../../common/get-tag-posts.js';
  * @returns
  */
 export const getGroups = async (req, res) => {
-	const tag = req.params.groupId;
+	const groupName = req.params.groupId;
 	const finalUserId = req.session.user ? req.session.user.user_id : -1;
 
 	let page = 1;
@@ -22,32 +22,31 @@ export const getGroups = async (req, res) => {
 		page = parseInt(req.query.p, 10);
 
 		if (isNaN(page)) {
-			return res.redirect(`/g/${tag}`);
+			return res.redirect(`/g/${groupName}`);
 		}
 	}
 
-	const privateGroup = await getPrivateGroupWithName(tag);
+	const privateGroup = await getPrivateGroupWithName(groupName);
 
 	if (privateGroup) {
 		const ids = req.session.user ? await getUserAllPrivateGroupIds(req.session.user.user_id) : [];
 		const isAllowed = ids.includes(privateGroup.private_group_id);
 		if (!isAllowed) {
 			return res.render('message', {
-				title: tag,
+				title: groupName,
 				message: 'This group is private and you do not have access.',
 			});
 		}
 	}
 
 	const sort = getPostSort(req);
-
 	const isDiscoverMode = isDiscover(req);
 	const filterUserId = await getCurrentEyesId(req);
 
 	const posts = await getTagPosts(finalUserId, {
 		timezone: getCurrentTimezone(req),
 		page,
-		tag,
+		tag: groupName,
 		isDiscoverMode,
 		filterUserId,
 		sort,
@@ -55,13 +54,13 @@ export const getGroups = async (req, res) => {
 
 	res.render('posts/feed', {
 		html: {
-			title: tag,
+			title: groupName,
 		},
 		posts,
 		page,
-		baseUrl: `/g/${tag}`,
+		baseUrl: `/g/${groupName}`,
 		isDiscoverMode,
-		pageTag: tag,
+		groupName,
 		sort,
 	});
 };

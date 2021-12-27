@@ -9,7 +9,7 @@ import { query } from '../../db/index.js';
  */
 export const updateUser = (userId, settings) => query(sql`
     UPDATE
-        tuser
+        "user"
     SET
         time_zone = ${settings.timezone},
         post_mode = ${settings.postMode},

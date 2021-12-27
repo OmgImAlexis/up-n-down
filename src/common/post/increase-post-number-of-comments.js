@@ -8,7 +8,7 @@ import { query } from '../../db/index.js';
  */
 export const increasePostNumberOfComments = postId => query(sql`
     UPDATE
-        tpost
+        post
     SET
         num_comments = num_comments +1
     WHERE

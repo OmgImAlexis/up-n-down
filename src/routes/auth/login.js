@@ -1,5 +1,6 @@
 import { getUserWithUsername } from '../../common/user/get-user-with-username.js';
 import { validatePassword } from '../../common/auth/validate-password.js';
+import { pushToPrivateFirehose } from '../../common/firehouse.js';
 
 const title = 'Log In';
 
@@ -47,6 +48,12 @@ export const postLogin = async (req, res) => {
 		if (!await validatePassword(user.password, req.body.password)) {
 			throw new Error('Invalid username or password');
 		}
+
+		// Push reply to firehose
+		pushToPrivateFirehose(user.user_id, 'notification', {
+			title: 'Login detected on your account',
+			content: new Date(),
+		});
 
 		req.session.user = user;
 		return res.redirect('/');

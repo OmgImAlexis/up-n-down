@@ -12,9 +12,9 @@ export const getUserFollowees = userId => query(sql`
         u.username,
         u.public_id
     FROM
-        tfollower f
+        follower f
     JOIN
-        tuser u on u.user_id = f.followee_user_id
+        "user" u on u.user_id = f.followee_user_id
     WHERE
         f.user_id = ${userId}
     ORDER BY

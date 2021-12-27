@@ -5,13 +5,13 @@ export const getDomainName = domainName => query(sql`
     SELECT
         domain_name_id
     FROM
-        tdomainname
+        domainname
     WHERE
         domain_name = ${domainName}
 `).then(({ rows: [row] }) => row?.domain_name_id);
 
 const createDomainName = domainName => query(sql`
-    insert into tdomainname
+    insert into domainname
         (domain_name)
     VALUES
         (${domainName})

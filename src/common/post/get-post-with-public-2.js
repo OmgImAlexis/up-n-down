@@ -21,14 +21,14 @@ export const getPostWithPublic2 = (publicId, timeZone, userId, filterUserId) => 
             EXISTS(SELECT
                 1
             FROM
-                tfollower
+                follower
             WHERE
                 followee_user_id = u.user_id AND
                 user_id = ${filterUserId}) is_visible,
         EXISTS(SELECT
                 1
             FROM
-                tfollower
+                follower
             WHERE
                 followee_user_id = u.user_id AND
                 user_id = ${userId}) is_follow,
@@ -36,9 +36,9 @@ export const getPostWithPublic2 = (publicId, timeZone, userId, filterUserId) => 
             SELECT
                 t.tag
             FROM
-                ttag t
+                tag t
             JOIN
-                tposttag pt on pt.tag_id = t.tag_id
+                posttag pt on pt.tag_id = t.tag_id
             WHERE
                 pt.post_id = p.post_id
         ) as tags,
@@ -46,20 +46,20 @@ export const getPostWithPublic2 = (publicId, timeZone, userId, filterUserId) => 
             SELECT
                 pg.private_group_id
             FROM
-                tprivategroup pg
+                privategroup pg
             JOIN
-                ttag t on t.tag = pg.name
+                tag t on t.tag = pg.name
             JOIN
-                tposttag pt on pt.tag_id = t.tag_id
+                posttag pt on pt.tag_id = t.tag_id
             WHERE
                 pt.post_id = p.post_id
         ) as private_group_ids
     FROM
-        tpost p
+        post p
     JOIN
-        tuser u on u.user_id = p.user_id
+        "user" u on u.user_id = p.user_id
     LEFT JOIN
-        tdomainname dn on dn.domain_name_id = p.domain_name_id
+        domainname dn on dn.domain_name_id = p.domain_name_id
     WHERE
         p.public_id = ${publicId} AND
         not p.is_removed

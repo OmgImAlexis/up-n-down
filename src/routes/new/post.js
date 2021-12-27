@@ -27,6 +27,7 @@ export const postNew = async (req, res) => {
 		if (validationError) {
 			throw new Error(validationError.msg);
 		}
+		
 
 		// Process title
 		const title = processPostTitle(req.body.title);

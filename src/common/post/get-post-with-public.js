@@ -12,9 +12,9 @@ export const getPostWithPublic = publicId => query(sql`
             SELECT
                 t.tag
             FROM
-                ttag t
+                tag t
             JOIN
-                tposttag pt on pt.tag_id = t.tag_id
+                posttag pt on pt.tag_id = t.tag_id
             WHERE
                 pt.post_id = p.post_id
         ) as tags,
@@ -22,16 +22,16 @@ export const getPostWithPublic = publicId => query(sql`
             SELECT
                 pg.name
             FROM
-                tprivategroup pg
+                privategroup pg
             JOIN
-                ttag t on t.tag = pg.name
+                tag t on t.tag = pg.name
             JOIN
-                tposttag pt on pt.tag_id = t.tag_id
+                posttag pt on pt.tag_id = t.tag_id
             WHERE
                 pt.post_id = p.post_id
         ) as private_group_names
     FROM
-        tpost p
+        post p
     WHERE
         p.public_id = ${publicId}
 `).then(({ rows: [post] }) => post);

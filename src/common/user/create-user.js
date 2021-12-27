@@ -10,7 +10,7 @@ import { query } from '../../db/index.js';
  * @returns The newly created user.
  */
 export const createUser = async (username, password) => query(sql`
-    INSERT INTO tuser
+    INSERT INTO "user"
         (username, password)
     VALUES
         (${username}, ${await argon2.hash(password)})

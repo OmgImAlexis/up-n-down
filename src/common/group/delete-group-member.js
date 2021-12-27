@@ -9,9 +9,9 @@ import { query } from '../../db/index.js';
  */
 export const deleteGroupMember = (privateGroupId, publicUserId) => query(sql`
     DELETE FROM
-        tgroupmember gm
+        groupmember gm
     USING
-        tuser u
+        "user" u
     WHERE
         u.public_id = ${publicUserId} and
         gm.private_group_id = ${privateGroupId} and

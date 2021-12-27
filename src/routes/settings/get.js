@@ -55,7 +55,7 @@ export const getSettings = async (req, res) => {
 	}
 
 	const timezones = await getTimezones();
-	const availableEyes = await getAvailableEyes();
+	const availableEyes = getAvailableEyes();
 	const currentEyes = await getCurrentEyes(req);
 	const siteWidth = getCurrentSiteMaxWidth(req);
 

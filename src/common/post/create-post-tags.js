@@ -9,6 +9,6 @@ import { getTag } from '../tag/get-tag.js';
  * @returns
  */
 export const createPostTags = async (tags, postId) => Promise.all(tags.map(async tagText => {
-	const tag = await getTag(tagText).then(tag => tag?.tag_id) ?? await createTag(tagText).then(tag => tag.tag_id);
-	return createPostTag(tag.tag_id, postId);
+	const tagId = await getTag(tagText).then(tag => tag?.tag_id) ?? await createTag(tagText).then(tag => tag.tag_id);
+	return createPostTag(tagId, postId);
 }));

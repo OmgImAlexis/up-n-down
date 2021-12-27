@@ -7,16 +7,19 @@ types.setTypeParser(1114, str => str);
 
 const pool = new Pool();
 
-export const query = (query, params) =>
-// Console.log(query);
-	pool.query(query, params);
+// eslint-disable-next-line arrow-body-style
+export const query = (query, params) => {
+	// eslint-disable-next-line capitalized-comments
+	// console.log(query.text ? { text: query.text, values: query.values } : { text: query });
+	return pool.query(query, params);
+};
 
 // Exports.getUsersWithoutPublicId = () => {
 //     return query(`
 //         select
 //             user_id
 //         from
-//             tuser
+//             "user"
 //         where
 //             public_id = ''`)
 // }
@@ -25,7 +28,7 @@ export const query = (query, params) =>
 // exports.genUserPublicId = (userId) => {
 //     return query(`
 //         update
-//             tuser
+//             "user"
 //         set
 //             public_id = $1
 //         where
@@ -43,7 +46,7 @@ export const query = (query, params) =>
 //             post_id,
 //             link
 //         from
-//             tpost
+//             post
 //         where
 //             link is not null`)
 // }
@@ -51,7 +54,7 @@ export const query = (query, params) =>
 // exports.updatePostDomainNameId = (postId, domainNameId) => {
 //     return query(`
 //         update
-//             tpost
+//             post
 //         set
 //             domain_name_id = $1
 //         where
@@ -62,13 +65,13 @@ export const query = (query, params) =>
 // exports.setLastCommentTimes = () => {
 //     return query(`
 //         update
-//             tpost p
+//             post p
 //         set
 //             last_comment = (
 //                 select
 //                     max(created_on)
 //                 from
-//                     ttest
+//                     comment
 //                 where
 //                     post_id = p.post_id
 //             )`,
@@ -80,7 +83,7 @@ export const query = (query, params) =>
 //         select
 //             domain_name_id
 //         from
-//             tdomainname
+//             domainname
 //         where
 //             domain_name = $1`,
 //         [domainName])

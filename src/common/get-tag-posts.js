@@ -25,14 +25,14 @@ export const getTagPosts = async (userId, {
                 EXISTS(SELECT
                     1
                 FROM
-                    tfollower
+                    follower
                 WHERE
                     followee_user_id = u.user_id and
                     user_id = ${filterUserId}) is_visible,
             EXISTS(SELECT
                 1
             FROM
-                tfollower
+                follower
             WHERE
                 followee_user_id = u.user_id and
                 user_id = ${userId}) is_follow,
@@ -40,27 +40,27 @@ export const getTagPosts = async (userId, {
                 SELECT
                     t.tag
                 FROM
-                    ttag t
+                    tag t
                 JOIN
-                    tposttag pt on pt.tag_id = t.tag_id
+                    posttag pt on pt.tag_id = t.tag_id
                 WHERE
                     pt.post_id = p.post_id
             ) as tags
         FROM
-            tpost p
+            post p
         JOIN
-            tuser u on u.user_id = p.user_id
+            "user" u on u.user_id = p.user_id
         LEFT JOIN
-            tdomainname dn on dn.domain_name_id = p.domain_name_id
+            domainname dn on dn.domain_name_id = p.domain_name_id
         WHERE
             NOT is_removed AND
             EXISTS(
                 SELECT
                     1
                 FROM
-                    ttag t
+                    tag t
                 JOIN
-                    tposttag pt on pt.tag_id = t.tag_id
+                    posttag pt on pt.tag_id = t.tag_id
                 WHERE
                     t.tag = ${tag} and
                     pt.post_id = p.post_id
@@ -69,7 +69,7 @@ export const getTagPosts = async (userId, {
                 EXISTS(SELECT
                     1
                 FROM
-                    tfollower
+                    follower
                 WHERE
                     followee_user_id = u.user_id and
                     user_id = ${filterUserId})) and
@@ -77,11 +77,11 @@ export const getTagPosts = async (userId, {
                 SELECT
                     pg.private_group_id
                 FROM
-                    tprivategroup pg
+                    privategroup pg
                 JOIN
-                    ttag t on t.tag = pg.name
+                    tag t on t.tag = pg.name
                 JOIN
-                    tposttag pt on pt.tag_id = t.tag_id
+                    posttag pt on pt.tag_id = t.tag_id
                 where
                     pt.post_id = p.post_id) <@ ${allowedPrivateIds.length > 0 ? allowedPrivateIds : [-1]}::integer[])
         ORDER BY
@@ -98,5 +98,5 @@ export const getTagPosts = async (userId, {
             ${pageSize}
         OFFSET
             ${(page - 1) * pageSize}
-    `);
+    `).then(({ rows }) => rows);
 };

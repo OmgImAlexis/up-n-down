@@ -7,7 +7,7 @@ export const getPrivateGroupsWithNames = groupNames => query(sql`
         created_by,
         name
     FROM
-        tprivategroup
+        privategroup
     WHERE
         name in(${groupNames.join()})
 `).then(({ rows }) => rows);

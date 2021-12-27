@@ -5,7 +5,7 @@ export const getUserCreatedPrivateGroups = userId => query(sql`
     SELECT
         name
     FROM
-        tprivategroup
+        privategroup
     WHERE
         created_by = ${userId}
     ORDER BY

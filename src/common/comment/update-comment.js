@@ -9,7 +9,7 @@ import { query } from '../../db/index.js';
  */
 export const updateComment = (commentId, textContent) => query(sql`
     UPDATE
-        ttest
+        comment
     SET
         text_content = ${textContent}
     WHERE

@@ -11,7 +11,7 @@ export const getTag = tagName => query(sql`
         tag_id,
         num_posts
     FROM
-        ttag
+        tag
     WHERE
         tag = lower(${tagName})
 `).then(({ rows: [tag] }) => tag);

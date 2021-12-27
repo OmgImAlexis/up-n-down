@@ -1,65 +1,27 @@
+import sql from 'sql-tag';
 import { query } from '../../db/index.js';
 import { getUserAllPrivateGroupIds } from '../get-user-all-private-group-ids.js';
 
 /**
  *
  * @param {string} userId The user's ID.
- * @param {string} timeZone The timezone for the current session.
+ * @param {string} timezone The timezone for the current session.
  * @param {number} page The page number.
  * @param {boolean} isDiscoverMode Is discovery mode enabled.
  * @param {string} filterUserId
  * @param {*} sort
  * @returns
  */
-export const getPosts = async (userId, timeZone, page, isDiscoverMode, filterUserId, sort) => {
+export const getPosts = async (userId, timezone, page, isDiscoverMode, filterUserId, sort) => {
 	const pageSize = 20;
-	const numLeadingPlaceholders = 9;
-	const allowedPrivateIds = [];
-	const dynamicPlaceholders = [];
+	const allowedPrivateIds = userId === -1 ? [] : await getUserAllPrivateGroupIds(userId);
 
-	if (userId !== -1) {
-		//
-		const privateGroupIds = await getUserAllPrivateGroupIds(userId);
-
-		for (const private_group_id of privateGroupIds) {
-			allowedPrivateIds.push(private_group_id);
-		}
-
-		for (let i = 1; i <= allowedPrivateIds.length; ++i) {
-			const placeholderNum = numLeadingPlaceholders + i;
-			dynamicPlaceholders.push(`$${placeholderNum}`);
-		}
-	}
-
-	const pAfter = numLeadingPlaceholders + allowedPrivateIds.length + 1;
-
-	const beforeParams = [timeZone,
-		userId,
-		filterUserId,
-		filterUserId,
-		userId,
-		isDiscoverMode,
-		userId,
-		filterUserId,
-		filterUserId];
-
-	const afterParams = [sort,
-		sort,
-		sort,
-		sort,
-		sort,
-		sort,
-		pageSize,
-		((page < 1 ? 1 : page) - 1) * pageSize];
-
-	const finalParams = beforeParams.concat(allowedPrivateIds, afterParams);
-
-	return query(`
+	return query(sql`
         SELECT
             p.public_id,
             p.title,
             to_char(
-                timezone($1, p.created_on),
+                timezone(${timezone}, p.created_on),
                 'Mon FMDD, YYYY FMHH12:MIam') created_on,
             p.created_on created_on_raw,
             u.username,
@@ -68,72 +30,71 @@ export const getPosts = async (userId, timeZone, page, isDiscoverMode, filterUse
             p.link,
             p.num_comments,
             dn.domain_name,
-            u.user_id = $2 or u.user_id = $3 or
+            u.user_id = ${userId} or u.user_id = ${filterUserId} or
                 exists(SELECT
                     1
                 FROM
-                    tfollower
+                    follower
                 WHERE
                     followee_user_id = u.user_id and
-                    user_id = $4) is_visible,
+                    user_id = ${filterUserId}) is_visible,
             exists(select
                 1
             FROM
-                tfollower
+                follower
             WHERE
                 followee_user_id = u.user_id and
-                user_id = $5) is_follow,
+                user_id = ${userId}) is_follow,
             array(
                 SELECT
                     t.tag
                 FROM
-                    ttag t
+                    tag t
                 JOIN
-                    tposttag pt on pt.tag_id = t.tag_id
+                    posttag pt on pt.tag_id = t.tag_id
                 WHERE
                     pt.post_id = p.post_id
             ) as tags
         from
-            tpost p
+            post p
         join
-            tuser u on u.user_id = p.user_id
+            "user" u on u.user_id = p.user_id
         left join
-            tdomainname dn on dn.domain_name_id = p.domain_name_id
+            domainname dn on dn.domain_name_id = p.domain_name_id
         where
             not is_removed and
-            ($6 or u.user_id = $7 or u.user_id = $8 or
+            (${isDiscoverMode} or u.user_id = ${userId} or u.user_id = ${filterUserId} or
                 exists(select
                     1
                 from
-                    tfollower
+                    follower
                 where
                     followee_user_id = u.user_id and
-                    user_id = $9)) and
+                    user_id = ${filterUserId})) and
             (array(
                 select
                     pg.private_group_id
                 from
-                    tprivategroup pg
+                    privategroup pg
                 join
-                    ttag t on t.tag = pg.name
+                    tag t on t.tag = pg.name
                 join
-                    tposttag pt on pt.tag_id = t.tag_id
+                    posttag pt on pt.tag_id = t.tag_id
                 where
-                    pt.post_id = p.post_id) <@ Array[${dynamicPlaceholders.join()}]::integer[])
+                    pt.post_id = p.post_id) <@ ${allowedPrivateIds.length > 0 ? allowedPrivateIds : [-1]}::integer[])
         ORDER BY
-            case when $${pAfter} = '' then p.created_on end desc,
+            case when ${sort} = '' then p.created_on end desc,
 
-            case when $${pAfter + 1} = 'oldest' then p.created_on end asc,
+            case when ${sort} = 'oldest' then p.created_on end asc,
 
-            case when $${pAfter + 2} = 'comments' then p.num_comments end desc,
-            case when $${pAfter + 3} = 'comments' then p.created_on end desc,
+            case when ${sort} = 'comments' then p.num_comments end desc,
+            case when ${sort} = 'comments' then p.created_on end desc,
 
-            case when $${pAfter + 4} = 'last' then p.last_comment end desc nulls last,
-            case when $${pAfter + 5} = 'last' then p.created_on end desc
+            case when ${sort} = 'last' then p.last_comment end desc nulls last,
+            case when ${sort} = 'last' then p.created_on end desc
         LIMIT
-            $${pAfter + 6}
+            ${pageSize}
         OFFSET
-            $${pAfter + 7}`,
-	finalParams,
-	).then(({ rows }) => rows);
+            ${((page < 1 ? 1 : page) - 1) * pageSize}
+	`).then(({ rows }) => rows);
 };

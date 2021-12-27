@@ -18,7 +18,7 @@ export const getUserWithPublicId = publicId => query(sql`
         comment_reply_mode,
         site_width
     FROM
-        tuser
+        "user"
     WHERE
         public_id = ${publicId}
 `).then(({ rows: [user] }) => user);

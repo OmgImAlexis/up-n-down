@@ -11,7 +11,7 @@ export const getPrivateGroupWithName = groupName => query(sql`
         private_group_id,
         created_by
     FROM
-        tprivategroup
+        privategroup
     WHERE
         name = lower(${groupName})
 `).then(({ rows: [privateGroup] }) => privateGroup);

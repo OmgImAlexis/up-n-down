@@ -20,7 +20,7 @@ export const createPostComment = async (postId, userId, content) => {
         SELECT
             count(1) as count
         FROM
-            ttest
+            comment
         WHERE
             path ~ ${path}
     `);
@@ -30,7 +30,7 @@ export const createPostComment = async (postId, userId, content) => {
 
 	// Save comment to database
 	await query(sql`
-        INSERT INTO ttest
+        INSERT INTO comment
             (post_id, user_id, text_content, path)
         VALUES
             (${postId}, ${userId}, ${content}, ${postId + '.' + numberToOrderedAlpha(parseInt(count, 10) + 1)})

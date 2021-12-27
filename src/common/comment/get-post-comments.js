@@ -23,31 +23,31 @@ export const getPostComments = (postId, timeZone, userId, isDiscoverMode, filter
                 EXISTS(SELECT
                     1
                 FROM
-                    tfollower
+                    follower
                 WHERE
                     followee_user_id = u.user_id AND
                     user_id = ${filterUserId}) is_visible,
             EXISTS(SELECT
                     1
                 FROM
-                    tfollower
+                    follower
                 WHERE
                     followee_user_id = u.user_id AND
                     user_id = ${userId}) is_follow
         FROM
-            ttest c
+            comment c
         JOIN
-            tuser u on u.user_id = c.user_id
+            "user" u on u.user_id = c.user_id
         WHERE
             c.path <@ ${postId} AND
             (${isDiscoverMode} OR NOT exists(
                 select
                     1
                 from
-                    ttest c2
+                    comment c2
                 WHERE
                     c2.path @> c.path AND
-                    not exists(select 1 from tfollower WHERE user_id = ${filterUserId} AND followee_user_id = c2.user_id) AND
+                    not exists(select 1 from follower WHERE user_id = ${filterUserId} AND followee_user_id = c2.user_id) AND
                     c2.user_id != ${userId} AND
                     c2.user_id != ${filterUserId}))
         ORDER BY

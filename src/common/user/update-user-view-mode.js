@@ -3,7 +3,7 @@ import { query } from '../../db/index.js';
 
 export const updateUserViewMode = async (userId, postMode) => query(sql`
     update
-        tuser
+        "user"
     set
         post_mode = ${postMode}
     where

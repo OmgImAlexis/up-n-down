@@ -9,6 +9,7 @@ import { createCommentComment } from '../../../common/comment/create-comment-com
 import { increasePostNumberOfComments } from '../../../common/post/increase-post-number-of-comments.js';
 import { getCurrentTimezone } from '../../../common/settings/get-current-timezone.js';
 import { compileMarkdown } from '../../../common/compile-markdown.js';
+import { pushToPublicFirehose } from '../../../common/firehouse.js';
 
 const { Unauthorized, NotFound, Forbidden } = HttpErrors;
 
@@ -39,7 +40,7 @@ export const postComment = async (req, res) => {
 	const reply = await createCommentComment({
 		postId: comment.post_id,
 		userId: req.session.user.user_id,
-		comment: trimmedComment,
+		content: trimmedComment,
 		parentPath: comment.path,
 		timezone: getCurrentTimezone(req),
 	});
@@ -47,10 +48,15 @@ export const postComment = async (req, res) => {
 	// Increase number of comments on the associated post
 	await increasePostNumberOfComments(comment.post_id);
 
-	// Respond with comment
-	res.json({
+	const data = {
 		...reply,
 		text_content: compileFile(joinPath(__dirname, '../../../views/bbCodesOnly.pug'))({ compileMarkdown, text: reply.text_content }),
 		by: req.session.user.username,
-	});
+	};
+
+	// Push reply to firehose
+	pushToPublicFirehose('comment', data);
+
+	// Respond with comment
+	res.json(data);
 };

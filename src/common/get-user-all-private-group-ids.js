@@ -10,7 +10,7 @@ export const getUserAllPrivateGroupIds = userId => query(sql`
     SELECT
         private_group_id
     FROM
-        tprivategroup
+        privategroup
     WHERE
         created_by = ${userId}
 
@@ -19,9 +19,9 @@ export const getUserAllPrivateGroupIds = userId => query(sql`
     SELECT
         pg.private_group_id
     FROM
-        tprivategroup pg
+        privategroup pg
     JOIN
-        tgroupmember gm on gm.private_group_id = pg.private_group_id
+        groupmember gm on gm.private_group_id = pg.private_group_id
     WHERE
         gm.user_id = ${userId}
 `).then(({ rows }) => rows.map(row => row.private_group_id));

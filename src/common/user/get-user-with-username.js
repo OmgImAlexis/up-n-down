@@ -18,7 +18,7 @@ export const getUserWithUsername = username => query(sql`
         comment_reply_mode,
         site_width
     FROM
-        tuser
+        "user"
     WHERE
         lower(username) = lower(${username})
 `).then(({ rows: [user] }) => user);

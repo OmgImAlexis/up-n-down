@@ -5,7 +5,7 @@ export const isUserFollowing = (userId, followeeUserId) => query(sql`
     SELECT
         1
     FROM
-        tfollower f
+        follower f
     WHERE
         f.user_id = ${userId} and
         f.followee_user_id = ${followeeUserId}

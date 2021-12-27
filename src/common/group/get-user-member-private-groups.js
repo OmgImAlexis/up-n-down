@@ -5,9 +5,9 @@ export const getUserMemberPrivateGroups = userId => query(sql`
     SELECT
         pg.name
     FROM
-        tprivategroup pg
+        privategroup pg
     JOIN
-        tgroupmember gm on gm.private_group_id = pg.private_group_id
+        groupmember gm on gm.private_group_id = pg.private_group_id
     WHERE
         gm.user_id = ${userId}
     ORDER BY

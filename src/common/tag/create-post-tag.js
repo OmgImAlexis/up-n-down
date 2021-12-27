@@ -8,7 +8,7 @@ import { query } from '../../db/index.js';
  * @returns
  */
 export const createPostTag = (tagId, postId) => query(sql`
-    INSERT INTO tposttag
+    INSERT INTO posttag
         (tag_id, post_id)
     VALUES
         (${tagId}, ${postId})

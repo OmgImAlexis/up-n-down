@@ -19,14 +19,14 @@ export const getCommentWithPublic2 = (publicId, timezone, userId, filterUserId) 
             exists(SELECT
                 1
             FROM
-                tfollower
+                follower
             WHERE
                 followee_user_id = u.user_id and
                 user_id = ${filterUserId}) is_visible,
         exists(SELECT
                 1
             FROM
-                tfollower
+                follower
             WHERE
                 followee_user_id = u.user_id and
                 user_id = ${userId}) is_follow,
@@ -34,20 +34,20 @@ export const getCommentWithPublic2 = (publicId, timezone, userId, filterUserId) 
             SELECT
                 pg.private_group_id
             FROM
-                tprivategroup pg
+                privategroup pg
             JOIN
-                ttag t on t.tag = pg.name
+                tag t on t.tag = pg.name
             JOIN
-                tposttag pt on pt.tag_id = t.tag_id
+                posttag pt on pt.tag_id = t.tag_id
             WHERE
                 pt.post_id = p.post_id
         ) as private_group_ids
     FROM
-        ttest c
+        comment c
     JOIN
-        tuser u on u.user_id = c.user_id
+        "user" u on u.user_id = c.user_id
     JOIN
-        tpost p on p.post_id = c.post_id
+        post p on p.post_id = c.post_id
     WHERE
         not p.is_removed and
         c.public_id = ${publicId}

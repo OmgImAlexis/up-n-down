@@ -9,7 +9,7 @@ import { query } from '../../db/index.js';
  */
 export const removeFollower = (userId, followeeUserId) => query(sql`
     DELETE FROM
-        tfollower
+        follower
     WHERE
         user_id = ${userId} and
         followee_user_id = ${followeeUserId}

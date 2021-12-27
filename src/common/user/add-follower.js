@@ -8,7 +8,7 @@ import { query } from '../../db/index.js';
  * @returns
  */
 export const addFollower = (userId, followeeUserId) => query(sql`
-    INSERT INTO tfollower
+    INSERT INTO follower
         (user_id, followee_user_id)
     VALUES
         (${userId}, ${followeeUserId})

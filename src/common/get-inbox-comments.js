@@ -19,33 +19,33 @@ export const getInboxComments = (timezone, userId, isDiscoverMode, filterUserId,
                 exists(select
                     1
                 from
-                    tfollower
+                    follower
                 where
                     followee_user_id = u.user_id and
                     user_id = $4) is_visible,
             exists(select
                     1
                 from
-                    tfollower
+                    follower
                 where
                     followee_user_id = u.user_id and
                     user_id = $5) is_follow
         from
-            ttest c
+            comment c
         join
-            tuser u on u.user_id = c.user_id
+            "user" u on u.user_id = c.user_id
         join
-            tpost p on p.post_id = c.post_id
+            post p on p.post_id = c.post_id
         where
             (
                 (nlevel(c.path) = 2 and p.user_id = $6) or
-                (nlevel(c.path) > 2 and (select user_id from ttest where path = subpath(c.path, 0, -1)) = $7)
+                (nlevel(c.path) > 2 and (select user_id from comment where path = subpath(c.path, 0, -1)) = $7)
             ) and
             ($8 or c.user_id = $9 or c.user_id = $10 or
                 exists(select
                     1
                 from
-                    tfollower
+                    follower
                 where
                     followee_user_id = c.user_id and
                     user_id = $11))

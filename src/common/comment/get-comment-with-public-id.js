@@ -12,16 +12,16 @@ export const getCommentWithPublicId = publicId => query(sql`
             SELECT
                 pg.private_group_id
             FROM
-                tprivategroup pg
+                privategroup pg
             JOIN
-                ttag t on t.tag = pg.name
+                tag t on t.tag = pg.name
             JOIN
-                tposttag pt on pt.tag_id = t.tag_id
+                posttag pt on pt.tag_id = t.tag_id
             WHERE
                 pt.post_id = c.post_id
         ) as private_group_ids
     FROM
-        ttest c
+        comment c
     WHERE
         c.public_id = ${publicId}
 `).then(({ rows: [comment] }) => comment);

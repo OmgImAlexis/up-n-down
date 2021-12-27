@@ -11,7 +11,7 @@ import { query } from '../../db/index.js';
  * @returns {string} Post ID of newly created post.
  */
 export const createPost = async (userId, title, textContent, link, domainNameId) => query(sql`
-    INSERT INTO tpost
+    INSERT INTO post
         (user_id, title, text_content, link, domain_name_id)
     VALUES
         (${userId}, ${title}, ${textContent.trim() || null}, ${link || null}, ${domainNameId})

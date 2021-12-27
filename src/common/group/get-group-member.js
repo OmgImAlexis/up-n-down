@@ -11,7 +11,7 @@ export const getGroupMember = (groupId, userId) => query(sql`
     SELECT
         group_member_id
     FROM
-        tgroupmember
+        groupmember
     WHERE
         private_group_id = ${groupId} and
         user_id = ${userId}

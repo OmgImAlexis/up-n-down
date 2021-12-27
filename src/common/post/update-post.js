@@ -3,7 +3,7 @@ import { query } from '../../db/index.js';
 
 export const updatePost = (postId, title, textContent, link, domainNameId) => query(sql`
     UPDATE
-        tpost
+        post
     SET
         title = ${title},
         link = ${link},

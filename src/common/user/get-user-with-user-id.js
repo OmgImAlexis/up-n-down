@@ -11,7 +11,7 @@ export const getUserWithUserId = userId => query(sql`
         username,
         password
     FROM
-        tuser
+        "user"
     WHERE
         user_id = ${userId}
 `).then(({ rows }) => rows[0]);

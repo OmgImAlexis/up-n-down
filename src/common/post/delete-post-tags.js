@@ -3,7 +3,7 @@ import { query } from '../../db/index.js';
 
 export const deletePostTags = postId => query(sql`
     DELETE FROM
-        tposttag
+        posttag
     WHERE
         post_id = ${postId}
 `);

@@ -15,7 +15,7 @@ export const createCommentComment = async ({
         SELECT
             count(1) as count
         FROM
-            ttest
+            comment
         WHERE
             path ~ ${path}
     `);
@@ -25,7 +25,7 @@ export const createCommentComment = async ({
 
 	// Create reply
 	const { rows: [reply] } = await query(sql`
-        INSERT INTO ttest
+        INSERT INTO comment
             (post_id, user_id, text_content, path)
         VALUES
             (${postId}, ${userId}, ${content}, ${parentPath + '.' + numberToOrderedAlpha(parseInt(count, 10) + 1)})
