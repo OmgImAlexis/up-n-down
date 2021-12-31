@@ -41,8 +41,37 @@ jobs:
 
     - name: Run tests
       run: npm test
+
+  analyse:
+    name: Analyse
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [ 'javascript' ]
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v1
+      with:
+        languages: ${{ matrix.language }}
+
+    - name: Autobuild
+      uses: github/codeql-action/autobuild@v1
+
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v1
+
   deploy:
-    depends-on: build
+    needs: [build, analyse]
 
     runs-on: self-hosted
 
@@ -68,3 +97,4 @@ jobs:
 
     - name: Restart app
       run: pm2 restart up-n-down
+      
