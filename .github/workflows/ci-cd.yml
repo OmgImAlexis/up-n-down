@@ -43,7 +43,7 @@ jobs:
       run: npm test
 
   analyse:
-    name: Analyse
+    name: analyse
     runs-on: ubuntu-latest
     permissions:
       actions: read
@@ -71,7 +71,7 @@ jobs:
       uses: github/codeql-action/analyze@v1
 
   deploy:
-    needs: [build, analyse]
+    needs: [build]
 
     runs-on: self-hosted
 
