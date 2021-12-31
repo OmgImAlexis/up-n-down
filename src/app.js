@@ -61,13 +61,14 @@ const main = async () => {
 	});
 
 	// Add route logging
-	app.use((req, res, next) => {
-		if (process.env.HTTP_LOGGING) {
-			morgan('tiny')(req, res);
-		}
+	if (process.env.HTTP_LOGGING) {
+		app.use(morgan('tiny'));
+	}
 
-		next();
-	});
+	// Enable reverse proxy support
+	if (process.env.TRUST_PROXY) {
+		app.enable('trust proxy');
+	}
 
 	// Setup body parsing
 	app.use(urlencoded({ extended: false }));
