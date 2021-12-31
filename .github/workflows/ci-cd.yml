@@ -95,6 +95,9 @@ jobs:
     - name: Build package
       run: npm run build --if-present
 
+    - name: Load env for app
+      run: cp /root/config/up-n-down.env /root/actions-runner/_work/up-n-down/up-n-down/.env
+
     - name: Restart app
       run: export PM2_HOME=/root/.pm2 && pm2 restart up-n-down
       
