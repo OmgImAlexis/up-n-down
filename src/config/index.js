@@ -29,6 +29,7 @@ export const web = {
 
 // Database
 export const database = {
+	connectionString: process.env.DATABASE_URL,
 	host: process.env.PGHOST ?? 'localhost',
 	user: process.env.PGUSER ?? 'postgres',
 	database: process.env.PGDATABASE ?? 'postgres',

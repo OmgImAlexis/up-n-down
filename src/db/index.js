@@ -1,11 +1,20 @@
 import postgres from 'pg';
+import { database } from '../config/index.js';
 
 const { Pool, types } = postgres;
 
 // Use raw timestamp instead of converting to a js Date object
 types.setTypeParser(1114, str => str);
 
-export const pool = new Pool();
+export const pool = new Pool({
+	// Either use the connection string or the details
+	...(database.connectionString ? { connectionString: database.connectionString } : {
+		host: database.host,
+		database: database.database,
+		password: database.password,
+		user: database.user,
+	}),
+});
 
 // eslint-disable-next-line arrow-body-style
 export const query = (query, params) => {
