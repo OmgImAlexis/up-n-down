@@ -2,7 +2,12 @@
   "compilerOptions": {
     "target": "es2017",
     "module": "esnext",
-    "lib": ["dom", "es6", "es2017", "esnext.asynciterable"],
+    "lib": [
+      "dom",
+      "es6",
+      "es2017",
+      "esnext.asynciterable"
+    ],
     "skipLibCheck": true,
     "sourceMap": true,
     "outDir": "./dist",
@@ -18,16 +23,22 @@
     "noFallthroughCasesInSwitch": true,
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
-    "emitDecoratorMetadata": true,
+    "emitDecoratorMetadata": false,
     "experimentalDecorators": true,
     "resolveJsonModule": true,
     "baseUrl": ".",
-    "allowJs": true
+    "allowJs": true,
+    "typeRoots": [
+      "./src/types"
+    ],
+    "plugins": [{
+      "name": "typescript-sql-tagged-template-plugin"
+    }]
   },
   "exclude": [
     "node_modules"
   ],
   "include": [
     "src/**/*"
-  ],
+  ]
 }

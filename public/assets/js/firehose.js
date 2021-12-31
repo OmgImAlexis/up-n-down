@@ -7,5 +7,6 @@ window.firehose = firehose;
 
 // Prevent https://bugzilla.mozilla.org/show_bug.cgi?id=833462 in Firefox
 window.addEventListener('beforeunload', () => {
+	// Close event source
 	firehose.close();
 });

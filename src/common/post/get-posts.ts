@@ -1,22 +1,22 @@
-import sql from 'sql-tag';
+import { sql } from '../sql-tag.js';
 import { postsPerPage } from '../../config/index.js';
 import { query } from '../../db/index.js';
 import { getUserAllPrivateGroupIds } from '../get-user-all-private-group-ids.js';
 
 /**
  *
- * @param {string} userId The user's ID.
- * @param {string} timezone The timezone for the current session.
- * @param {number} page The page number.
- * @param {boolean} isDiscoverMode Is discovery mode enabled.
- * @param {string} filterUserId
- * @param {*} sort
+ * @param userId The user's ID.
+ * @param timezone The timezone for the current session.
+ * @param page The page number.
+ * @param isDiscoverMode Is discovery mode enabled.
+ * @param filterUserId
+ * @param sort
  * @returns
  */
-export const getPosts = async (userId, timezone, page, isDiscoverMode, filterUserId, sort) => {
+export const getPosts = async (userId: number, timezone: string, page: number, isDiscoverMode: boolean, filterUserId: string, sort: 'oldest' | 'comments' | 'last' | '') => {
 	const allowedPrivateIds = userId === -1 ? [] : await getUserAllPrivateGroupIds(userId);
 
-	return query(sql`
+	return query(sql('get-posts')`
         SELECT
             p.public_id,
             p.title,

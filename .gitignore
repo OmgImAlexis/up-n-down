@@ -5,3 +5,4 @@ doc/
 /test*.js
 .nyc_output
 coverage
+dist

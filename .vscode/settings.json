@@ -3,13 +3,5 @@
         "Unfollow",
         "unfollowed"
     ],
-    "files.exclude": {
-        "**/node_modules": true,
-        "**/.env": true,
-        "**/my-files/": true,
-        "**/doc/": true,
-        "test*.js": true,
-        "**/.nyc_output": true,
-        "**/coverage": true
-    }
+    "files.exclude": {}
 }
