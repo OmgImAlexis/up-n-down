@@ -33,7 +33,7 @@ import createHttpError from 'http-errors';
 import { getCurrentSiteMaxWidth } from '../common/settings/get-current-site-max-width.js';
 import { site, postsPerPage, commentsPerPage } from '../config.js';
 import { compileMarkdown } from '../common/compile-markdown.js';
-import type { Request, Response, NextFunction } from 'express';
+import { Request, Response, NextFunction, response } from 'express';
 // Import { postSettingsGroup } from '../routes/settings/group/post.js';
 
 const { NotFound, TooManyRequests } = createHttpError;
@@ -41,26 +41,22 @@ const { NotFound, TooManyRequests } = createHttpError;
 // Create main router
 const router = createRouter();
 
-// Add user to locals
-router.use((req, res, next) => {
-	res.locals.user = req.session.user;
-	next();
-});
-
-// Add markdown parser to locals
-router.use((_request, response, next) => {
-	response.locals.compileMarkdown = compileMarkdown;
-	next();
-});
-
-// Add site details to locals
+// Add items to locals
 router.use((request, response, next) => {
+	// Add user
+	response.locals.user = request.session.user;
+
+	// Add markdown parser
+	response.locals.compileMarkdown = compileMarkdown;
+
+	// Add site details
 	response.locals.site = {
 		...site,
 		maxWidth: getCurrentSiteMaxWidth(request),
 		postsPerPage,
 		commentsPerPage,
 	};
+
 	next();
 });
 
@@ -81,6 +77,9 @@ router.get('/privacy-policy', renderPage('static/privacy-policy', { html: { titl
 router.get('/contact-us', renderPage('static/contact-us', { html: { title: 'Contact Us' } }));
 router.get('/docs/site', renderPage('static/docs/site', { html: { title: 'Site Documentation' } }));
 router.get('/docs/api', renderPage('static/docs/api', { html: { title: 'API Documentation' } }));
+
+// Debug page
+router.get('/debug', renderPage('debug', { html: { title: 'Debug' } }));
 
 // Logout page
 router.get('/logout', (req, res) => {
