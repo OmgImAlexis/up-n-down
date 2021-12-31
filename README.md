@@ -6,7 +6,8 @@ Other features:
 
 * REST API
 * Public and Private Groups
-* [Instruction Manual](https://www.peachesnstink.com/manual)
+* [Site Documentation](https://up-n-down.xyz/docs/site)
+* [API Documentation](https://up-n-down.xyz/docs/api)
 
 ## Install
 
@@ -28,7 +29,6 @@ Set the following environment variables in a `.env` file.
 * `PGPASSWORD`: PostgreSQL password
 * `PGPORT`: PostgreSQL port
 * `HTTP_PORT`: Port this app will use
-* `REDIS_PORT`: Redis port
 * `SESSION_NAME`: `express-session` `name`
 * `SESSION_SECRET`: `express-session` `secret`
 * `NODE_ENV`: built-in node environment flag

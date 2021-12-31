@@ -1,10 +1,10 @@
-extends ../layout
+extends ../../layout
 
 append head
     link(rel='stylesheet', href='/assets/css/manual.css')
 
 block content
-    h2.pageh1 Instruction Manual
+    h2.pageh1 Site documentation
 
     ul
         li
@@ -103,33 +103,7 @@ block content
 
     h2#formatting Formatting
     p
-        |These are the available formatting rules for posts and comments:
-        ul.list1
-            li
-                |All newlines are automatically preserved.
-            li
-                |You can use 
-                i ```pre
-                | 
-                |and 
-                i ```
-                | 
-                |to preserve spaces/whitespace for a group of lines. 
-                i ```pre
-                | 
-                |must come first on its own line and 
-                i ```
-                | 
-                |must come last on its own line. 
-                |All whitespace in between will be preserved. 
-                |This is intended for writing computer programming source code.
-            li
-                |You can create hyperlinks by putting brackets before the URL. 
-                |For example like this: 
-                i []https://www.mysite.com
-                |. If you want to use custom text put it in the brackets, e.g.: 
-                i [green]http://colors.com/green
-                |.
+        | Markdown is supported.
 
     h2#groups Groups
     p
@@ -156,8 +130,7 @@ block content
         |where you can add and remove users.
 
     p
-        |All private groups must start with "p-", for example, "p-cheese". When you 
-        |first create a private group it must be empty of posts. 
+        |When you first create a private group it must be empty of posts. 
         |Private groups attached to posts cannot be edited like normal groups. 
         |It is possible to use multiple private groups on the same post. 
         |Posts and comments from private groups will properly show and hide throughout 
@@ -234,23 +207,16 @@ block content
 
     h2#open-source Open Source
     p.
-        The source code for #{site.name} is
-        #[a(href=site.repo) available on GitHub] under the MIT license.
+        The source code for #{site.name} is #[a(href=site.repo) available on GitHub] under the MIT license.
 
     h2#privacy-policy Privacy Policy
-    p
-        |Please see our 
-        a(href="/privacy-policy") privacy policy here
-        |.
+    p.
+        Please see our #[a(href="/privacy-policy") privacy policy].
 
     h2#contact-us How to Contact Us
-    p
-        |There are a couple contact methods listed on the 
-        a(href="/contact-us") contact us page
-        |.
+    p.
+        There are a couple contact methods listed on the #[a(href="/contact-us") contact us page].
 
     h2#api API
-    p
-        |We have an API, please see the 
-        a(href="/api") API documentation here
-        |.
+    p.
+        We have an API, please see the #[a(href="/docs/api") API documentation].

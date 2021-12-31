@@ -1,4 +1,4 @@
-extends ../layout
+extends ../../layout
 
 append head
     link(rel='stylesheet', href='/assets/css/api.css')
@@ -16,7 +16,7 @@ block content
         If #[em viewmode] is #[em "discover"] then the discover view mode is used.
         If any other value is used for #[em viewmode] then the following-only view mode is used.
         You can read more about how view mode works in the
-        #[a(href="/manual#settings") settings section of the instruction manual].
+        #[a(href="/docs/site#settings") settings section of the site documentation].
 
     p
         |Here is a description of each call:
@@ -30,7 +30,7 @@ block content
         #[em p] is for page and it starts at 1.
         #[em sort] can be either #[em newest], #[em oldest], #[em comments] or #[em last] -
         the default is #[em newest].
-        There is more info about post sorting in the #[a(href="/manual#posts") posts section] of the manual.
+        There is more info about post sorting in the #[a(href="/docs/site#posts") posts section] of the manual.
         Examples of this endpoint:
 
     p

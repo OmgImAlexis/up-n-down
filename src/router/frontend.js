@@ -76,10 +76,10 @@ router.use(rateLimit({
 }));
 
 // Static routes
-router.get('/manual', renderPage('static/manual', { html: { title: 'Manual' } }));
 router.get('/privacy-policy', renderPage('static/privacy-policy', { html: { title: 'Privacy Policy' } }));
 router.get('/contact-us', renderPage('static/contact-us', { html: { title: 'Contact Us' } }));
-router.get('/docs/api', renderPage('static/api', { html: { title: 'API' } }));
+router.get('/docs/site', renderPage('static/docs/site', { html: { title: 'Site Documentation' } }));
+router.get('/docs/api', renderPage('static/docs/api', { html: { title: 'API Documentation' } }));
 
 // Logout page
 router.get('/logout', (req, res) => {
