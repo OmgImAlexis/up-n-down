@@ -61,6 +61,10 @@ export const postLogin = async (req, res) => {
 			content: `IP: ${getRemoteIp(req)}<br>Time: ${new Date()}`,
 		});
 
+		// @todo: This needs to be fixed properly with the getUserWithUsername not returning it.
+		// 		  Instead there should be a function which checks the password and has it's own sql statement.
+		delete user.password;
+
 		req.session.user = user;
 		return res.redirect('/');
 	} catch (error) {
