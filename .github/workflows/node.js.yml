@@ -12,7 +12,7 @@ on:
 jobs:
   build:
 
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     strategy:
       matrix:
@@ -42,3 +42,6 @@ jobs:
 
     - name: Run tests
       run: npm test
+
+    # - name: Restart app
+    #   run: pm2 restart up-n-down
