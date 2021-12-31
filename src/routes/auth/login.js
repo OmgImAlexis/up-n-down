@@ -1,6 +1,7 @@
 import { getUserWithUsername } from '../../common/user/get-user-with-username.js';
 import { validatePassword } from '../../common/auth/validate-password.js';
 import { createPrivateNotification } from '../../common/firehose.js';
+import { getRemoteIp } from '../../common/get-remote-ip.js';
 
 const title = 'Log In';
 
@@ -49,7 +50,7 @@ export const postLogin = async (req, res) => {
 			// Notify user of failed login
 			createPrivateNotification(user.user_id, {
 				title: 'Failed login detected on your account',
-				content: `IP: ${req.socket.remoteAddress}<br>Time: ${new Date()}<br>Reason: "Invalid password"`,
+				content: `IP: ${getRemoteIp(req)}<br>Time: ${new Date()}<br>Reason: "Invalid password"`,
 			});
 			throw new Error('Invalid username or password');
 		}
@@ -57,7 +58,7 @@ export const postLogin = async (req, res) => {
 		// Notify user of successful login
 		createPrivateNotification(user.user_id, {
 			title: 'Successful login detected on your account',
-			content: `IP: ${req.socket.remoteAddress}<br>Time: ${new Date()}`,
+			content: `IP: ${getRemoteIp(req)}<br>Time: ${new Date()}`,
 		});
 
 		req.session.user = user;

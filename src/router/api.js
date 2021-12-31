@@ -1,4 +1,6 @@
 import createRouter from 'express-promise-router';
+import { getPosts } from '../routes/api/posts/get.js';
+import { getPost } from '../routes/api/post/get.js';
 import { getComment } from '../routes/api/comment/get.js';
 import { postComment } from '../routes/api/comment/post.js';
 import { serializeError } from 'serialize-error';
@@ -10,6 +12,10 @@ const { NotFound } = createHttpError;
 
 // Create main router
 const router = createRouter();
+
+// Posts
+router.get('/v1/post', getPosts);
+router.get('/v1/post/:postId', getPost);
 
 // Comments
 router.get('/v1/comment/:commentId', getComment);

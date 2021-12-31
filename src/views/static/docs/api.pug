@@ -21,7 +21,7 @@ block content
     p
         |Here is a description of each call:
 
-    h3 GET /api/v1/posts
+    h3 GET /api/v1/post
 
     p.
         This returns all posts.
@@ -34,24 +34,24 @@ block content
         Examples of this endpoint:
 
     p
-        a(href="/api/v1/posts") /api/v1/posts
+        a(href="/api/v1/post") /api/v1/post
 
     p
-        a(href="/api/v1/posts?p=2") /api/v1/posts?p=2
+        a(href="/api/v1/post?p=2") /api/v1/post?p=2
 
     p
-        a(href="/api/v1/posts?viewmode=discover") /api/v1/posts?viewmode=discover
+        a(href="/api/v1/post?viewmode=discover") /api/v1/post?viewmode=discover
 
     p
-        a(href="/api/v1/posts?viewmode=discover&p=2") /api/v1/posts?viewmode=discover&p=2
+        a(href="/api/v1/post?viewmode=discover&p=2") /api/v1/post?viewmode=discover&p=2
 
     p
-        a(href="/api/v1/posts?sort=comments") /api/v1/posts?sort=comments
+        a(href="/api/v1/post?sort=comments") /api/v1/post?sort=comments
 
     p
-        a(href="/api/v1/posts?sort=last&viewmode=discover&p=2") /api/v1/posts?sort=last&viewmode=discover&p=2
+        a(href="/api/v1/post?sort=last&viewmode=discover&p=2") /api/v1/post?sort=last&viewmode=discover&p=2
 
-    h3 GET /api/v1/post
+    h3 GET /api/v1/post/:postId
 
     p.
         This call will return a single post and its comments.
@@ -60,7 +60,7 @@ block content
         Examples of this endpoint:
 
     p
-        a(href="/api/v1/post?postid=SxqYZnDk26oisgSCS9bTjN") /api/v1/post?postid=SxqYZnDk26oisgSCS9bTjN
+        a(href="/api/v1/post/f1ae7450-2f3f-4125-822b-293c5bcd96f8") /api/v1/post/f1ae7450-2f3f-4125-822b-293c5bcd96f8
 
     h3 GET /api/v1/comment
 
@@ -71,4 +71,4 @@ block content
         Examples of this endpoint:
 
     p
-        a(href="/api/v1/comment?commentid=utePeJTWFGjstaQfbVntPn") /api/v1/comment?commentid=utePeJTWFGjstaQfbVntPn
+        a(href="/api/v1/comment/99df5505-2fd8-49a1-a425-be86907253c8") /api/v1/comment/99df5505-2fd8-49a1-a425-be86907253c8

@@ -1,6 +1,7 @@
 import { validationResult } from 'express-validator';
 import { createUser } from '../../common/user/create-user.js';
 import { createPrivateNotification } from '../../common/firehose.js';
+import { getRemoteIp } from '../../common/get-remote-ip.js';
 
 const title = 'Sign Up';
 
@@ -62,7 +63,7 @@ export const postSignup = async (req, res) => {
 			// Notify user of login
 			createPrivateNotification(user.user_id, {
 				title: 'Successful login detected on your account',
-				content: `IP: ${req.socket.remoteAddress}<br>Time: ${new Date()}`,
+				content: `IP: ${getRemoteIp(req)}<br>Time: ${new Date()}`,
 			});
 
 			req.session.user = user;
