@@ -1,5 +1,5 @@
 import sql from 'sql-tag';
-import { query } from '../../db/index.js';
+import { query } from '../../db.js';
 import { commentsPerPage } from '../../config.js';
 
 export const getPostComments = (postId, timeZone, userId, isDiscoverMode, filterUserId, page) => {

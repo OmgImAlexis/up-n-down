@@ -29,7 +29,7 @@
     "baseUrl": ".",
     "allowJs": true,
     "typeRoots": [
-      "./src/types"
+      "./src/types/libs"
     ],
     "plugins": [{
       "name": "typescript-sql-tagged-template-plugin"

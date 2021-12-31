@@ -1,12 +1,12 @@
 import { sql } from './sql-tag.js';
-import { query } from '../db/index.js';
+import { query } from '../db.js';
 
 /**
  *
  * @param userId The user's ID.
  * @returns
  */
-export const getUserAllPrivateGroupIds = (userId: number) => query(sql('get-user-all-private-group-ids')`
+export const getUserAllPrivateGroupIds = (userId: number) => query<{ private_group_id: string; }>(sql('get-user-all-private-group-ids')`
     SELECT
         private_group_id
     FROM

@@ -1,8 +1,19 @@
-import sql from 'sql-tag';
-import { query } from '../db/index.js';
+import { query } from '../db.js';
 import { postsPerPage } from '../config.js';
+import { sql } from './sql-tag.js';
+import { SiteSettings } from 'src/types/site.js';
 
-export const getInboxComments = (timezone, userId, isDiscoverMode, filterUserId, page) => query(sql`
+export const getInboxComments = ({ timezone, userId, isDiscoverMode, filterUserId, page }: SiteSettings<{ userId: number; page: number; }>) => query<{
+    text_context: string;
+    path: string;
+    username: string;
+    user_public_id: string;
+    created_on: string;
+    public_id: string;
+    is_removed: boolean;
+    is_visible: boolean;
+    is_follow: boolean;
+}>(sql('get-inbox-comments')`
     SELECT
         c.text_content,
         c.path,

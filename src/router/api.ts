@@ -1,3 +1,4 @@
+import type Express from 'express';
 import createRouter from 'express-promise-router';
 import { getPosts } from '../routes/api/posts/get.js';
 import { getPost } from '../routes/api/post/get.js';
@@ -25,17 +26,17 @@ router.post('/v1/comment', postComment);
 router.get('/v1/firehose', firehose);
 router.delete('/v1/notification/:id', deleteNotification);
 
-const createErrorHandlerMiddleware = error => (req, res) => {
+const createErrorHandlerMiddleware = (error: Error) => (_request: Express.Request, response: Express.Response) => {
 	const httpError = createHttpError(error);
 	const { status } = httpError;
 
 	// Set status
-	res.status(status);
+	response.status(status);
 
 	const { message, stack } = serializeError(httpError);
 
 	// Respond with JSON
-	return res.json({
+	return response.json({
 		status,
 		error: {
 			message,
@@ -48,7 +49,7 @@ const createErrorHandlerMiddleware = error => (req, res) => {
 router.use(createErrorHandlerMiddleware(new NotFound()));
 
 // 5XX
-router.use((error, req, res, _next) => createErrorHandlerMiddleware(error)(req, res));
+router.use((error: Error, request: Express.Request, response: Express.Response, _next: Express.NextFunction) => createErrorHandlerMiddleware(error)(request, response));
 
 export {
 	router,

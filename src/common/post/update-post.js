@@ -1,5 +1,5 @@
 import sql from 'sql-tag';
-import { query } from '../../db/index.js';
+import { query } from '../../db.js';
 
 export const updatePost = (postId, title, textContent, link, domainNameId) => query(sql`
     UPDATE

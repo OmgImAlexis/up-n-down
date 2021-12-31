@@ -1,7 +1,7 @@
-import sql from 'sql-tag';
-import { query } from '../db/index.js';
+import { query } from '../db.js';
+import { sql } from './sql-tag.js';
 
-export const getDomainName = domainName => query(sql`
+export const getDomainName = (domainName: string) => query<{ domain_name_id: string; }>(sql('get-domain-name')`
     SELECT
         domain_name_id
     FROM
@@ -10,7 +10,7 @@ export const getDomainName = domainName => query(sql`
         domain_name = ${domainName}
 `).then(({ rows: [row] }) => row?.domain_name_id);
 
-const createDomainName = domainName => query(sql`
+const createDomainName = (domainName: string) => query<{ domain_name_id: string; }>(sql('create-domain-name')`
     insert into domainname
         (domain_name)
     VALUES
@@ -19,7 +19,7 @@ const createDomainName = domainName => query(sql`
         domain_name_id
 `).then(({ rows: [row] }) => row?.domain_name_id);
 
-export const getDomainNameId = async domainName => {
+export const getDomainNameId = async (domainName: string) => {
 	// If the domain already exists return it's ID
 	const domainNameId = await getDomainName(domainName);
 	if (domainNameId) {

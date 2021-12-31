@@ -1,22 +1,34 @@
+import type { Response, Request } from 'express';
 import { v4 } from 'uuid';
 import httpErrors from 'http-errors';
 
 const { ServiceUnavailable } = httpErrors;
 
-const cache = new Map();
-const users = new Map();
+interface Client {
+	response: Response;
+	request: Request;
+}
+
+interface Message {
+	id: string;
+	event: 'notification' | 'clear-notification' | 'post' | 'comment';
+	data: Record<string, unknown>;
+}
+
+const cache = new Map<number, Map<string, Message>>();
+const users = new Map<number, Map<string, Client>>();
 let totalClients = 0;
 
 const generateId = () => Math.random().toString(36).substr(2, 9);
 
-const writeToClient = (client, { id, event, data }) => {
-	client.res.write(`id: ${id}\n`);
-	client.res.write(`event: ${event}\n`);
-	client.res.write(`data: ${JSON.stringify({ id, ...data })}\n\n`);
-	client.res.flushHeaders();
+const writeToClient = (client: Client, { id, event, data }: Message) => {
+	client.response.write(`id: ${id}\n`);
+	client.response.write(`event: ${event}\n`);
+	client.response.write(`data: ${JSON.stringify({ id, ...data })}\n\n`);
+	client.response.flushHeaders();
 };
 
-const cacheEvent = (userId, { id, event, data }) => {
+const cacheEvent = (userId: number, { id, event, data }: Message) => {
 	// Get cache or create it
 	const firehoseCache = cache.get(userId);
 	if (!firehoseCache) {
@@ -27,10 +39,10 @@ const cacheEvent = (userId, { id, event, data }) => {
 	console.log('caching', { id, event, data });
 
 	// Save data for reconnection
-	cache.get(userId).set(id, { id, event, data });
+	cache.get(userId)?.set(id, { id, event, data });
 };
 
-export const deleteCachedEvent = (userId, id) => {
+export const deleteCachedEvent = (userId: number, id: string) => {
 	const firehoseCache = cache.get(userId);
 	if (!firehoseCache) {
 		return;
@@ -45,7 +57,7 @@ export const deleteCachedEvent = (userId, id) => {
 	}, false);
 };
 
-export const pushToPrivateFirehose = (userId, event, data, shouldCache = true) => {
+export const pushToPrivateFirehose = (userId: number, event: Message['event'], data: Message['data'], shouldCache = true) => {
 	const id = generateId();
 
 	// Save event for reconnection
@@ -65,7 +77,7 @@ export const pushToPrivateFirehose = (userId, event, data, shouldCache = true) =
 	});
 };
 
-export const pushToConnectedClientsFirehose = (event, data = {}, shouldCache = true) => {
+export const pushToConnectedClientsFirehose = (event: Message['event'], data: Message['data'], shouldCache = true) => {
 	const id = generateId();
 
 	users.forEach((user, userId) => {
@@ -80,7 +92,7 @@ export const pushToConnectedClientsFirehose = (event, data = {}, shouldCache = t
 	});
 };
 
-export const createPrivateNotification = (userId, { title, link, content }, shouldCache = true) => {
+export const createPrivateNotification = (userId: number, { title, link, content }: Message['data'], shouldCache = true) => {
 	pushToPrivateFirehose(userId, 'notification', {
 		title,
 		link,
@@ -88,7 +100,7 @@ export const createPrivateNotification = (userId, { title, link, content }, shou
 	}, shouldCache);
 };
 
-export const createPublicNotification = ({ title, link, content }, shouldCache = true) => {
+export const createPublicNotification = ({ title, link, content }: Message['data'], shouldCache = true) => {
 	// |
 	// pushToPublicFireHose('notification', {
 	// 	title,
@@ -96,7 +108,7 @@ export const createPublicNotification = ({ title, link, content }, shouldCache =
 	// }, shouldCache);
 };
 
-export const createConnectedClientsNotification = ({ title, link, content }, shouldCache = true) => {
+export const createConnectedClientsNotification = ({ title, link, content }: Message['data'], shouldCache = true) => {
 	pushToConnectedClientsFirehose('notification', {
 		title,
 		link,
@@ -104,8 +116,8 @@ export const createConnectedClientsNotification = ({ title, link, content }, sho
 	}, shouldCache);
 };
 
-export const firehose = async (req, res) => {
-	const userId = req.session.user?.user_id ?? -1;
+export const firehose = async (request: Request, response: Response) => {
+	const userId = request.session.user?.user_id ?? -1;
 	const requestId = v4();
 
 	// If we hit our limit of connections throw an error
@@ -114,7 +126,7 @@ export const firehose = async (req, res) => {
 	}
 
 	// Start an event-stream
-	res.writeHead(200, {
+	response.writeHead(200, {
 		'Cache-Control': 'no-cache, no-transform',
 		'Content-Type': 'text/event-stream',
 		'X-Request-Id': requestId,
@@ -122,31 +134,31 @@ export const firehose = async (req, res) => {
 	});
 
 	// Tell client to retry if connection drops
-	res.write('retry: 30\n');
+	response.write('retry: 30\n');
 
 	// Check if we have cached data
 	const privateCache = cache.get(userId);
 	if (privateCache) {
 		privateCache.forEach(event => {
-			res.write(`id: ${event.id}\n`);
-			res.write(`event: ${event.event}\n`);
-			res.write(`data: ${JSON.stringify({ id: event.id, ...event.data })}\n\n`);
+			response.write(`id: ${event.id}\n`);
+			response.write(`event: ${event.event}\n`);
+			response.write(`data: ${JSON.stringify({ id: event.id, ...event.data })}\n\n`);
 		});
 	}
 
 	// Create user store
 	if (!users.has(userId)) {
-		users.set(userId, new Map());
+		users.set(userId, new Map<string, Client>());
 	}
 
 	// Add this session to the user's store
 	totalClients++;
-	users.get(userId).set(requestId, { req, res });
+	users.get(userId)?.set(requestId, { request, response });
 	console.log('[firehose] userId: %s status: %s', userId, 'connected');
 	console.log('[firehose] connected: %s/100', totalClients);
 
 	// If client closes connection, stop sending events
-	res.on('close', () => {
+	response.on('close', () => {
 		const user = users.get(userId);
 		if (!user) {
 			return;
@@ -158,8 +170,8 @@ export const firehose = async (req, res) => {
 		}
 
 		totalClients--;
-		client.res.end();
-		users.get(userId).delete(requestId);
+		client.response.end();
+		users.get(userId)?.delete(requestId);
 		console.log('[firehose] userId: %s status: %s', userId, 'disconnected');
 		console.log('[firehose] connected: %s/100', totalClients);
 	});

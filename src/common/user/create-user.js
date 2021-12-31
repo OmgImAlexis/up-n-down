@@ -1,6 +1,6 @@
 import sql from 'sql-tag';
 import argon2 from 'argon2';
-import { query } from '../../db/index.js';
+import { query } from '../../db.js';
 
 /**
  * Create a user.

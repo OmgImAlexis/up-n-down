@@ -1,5 +1,5 @@
 import sql from 'sql-tag';
-import { query } from '../../db/index.js';
+import { query } from '../../db.js';
 
 export const deletePostTags = postId => query(sql`
     DELETE FROM

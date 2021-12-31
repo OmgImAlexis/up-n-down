@@ -1,6 +1,7 @@
-import { query } from '../../db/index.js';
+import { query } from '../../db.js';
+import { sql } from '../sql-tag.js';
 
-export const getTimezones = () => query(`
+export const getTimezones = () => query<{ name: string; utc_offset: number; }>(sql('get-timezones')`
     select
         name,
         utc_offset

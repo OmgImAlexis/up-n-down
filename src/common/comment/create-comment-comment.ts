@@ -1,5 +1,5 @@
 import sql from 'sql-tag';
-import { query } from '../../db/index.js';
+import { query } from '../../db.js';
 import { increasePostNumberOfComments } from '../post/increase-post-number-of-comments.js';
 import { numberToOrderedAlpha } from '../utils/number-to-ordered-alpha.js';
 

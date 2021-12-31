@@ -1,5 +1,5 @@
-import postgres from 'pg';
-import { database } from '../config.js';
+import postgres, { QueryConfig } from 'pg';
+import { database } from './config.js';
 
 const { Pool, types } = postgres;
 
@@ -16,11 +16,10 @@ export const pool = new Pool({
 	}),
 });
 
-// eslint-disable-next-line arrow-body-style
-export const query = (query, params) => {
+export const query = <Result>(query: QueryConfig, params?: any) => {
 	// eslint-disable-next-line capitalized-comments
 	// console.log(query.text ? { text: query.text, values: query.values } : { text: query });
-	return pool.query(query, params);
+	return pool.query<Partial<Result>>(query, params);
 };
 
 // Exports.getUsersWithoutPublicId = () => {

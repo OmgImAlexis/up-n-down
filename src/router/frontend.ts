@@ -33,6 +33,7 @@ import createHttpError from 'http-errors';
 import { getCurrentSiteMaxWidth } from '../common/settings/get-current-site-max-width.js';
 import { site, postsPerPage, commentsPerPage } from '../config.js';
 import { compileMarkdown } from '../common/compile-markdown.js';
+import type { Request, Response, NextFunction } from 'express';
 // Import { postSettingsGroup } from '../routes/settings/group/post.js';
 
 const { NotFound, TooManyRequests } = createHttpError;
@@ -47,16 +48,16 @@ router.use((req, res, next) => {
 });
 
 // Add markdown parser to locals
-router.use((req, res, next) => {
-	res.locals.compileMarkdown = compileMarkdown;
+router.use((_request, response, next) => {
+	response.locals.compileMarkdown = compileMarkdown;
 	next();
 });
 
 // Add site details to locals
-router.use((req, res, next) => {
-	res.locals.site = {
+router.use((request, response, next) => {
+	response.locals.site = {
 		...site,
-		maxWidth: getCurrentSiteMaxWidth(req),
+		maxWidth: getCurrentSiteMaxWidth(request),
 		postsPerPage,
 		commentsPerPage,
 	};
@@ -83,16 +84,17 @@ router.get('/docs/api', renderPage('static/docs/api', { html: { title: 'API Docu
 
 // Logout page
 router.get('/logout', (req, res) => {
-	req.session.destroy();
-	res.redirect('/');
+	req.session.destroy(() => {
+		res.redirect('/');
+	});
 });
 
 // Validation middleware
 const usernameMiddleware = validateBody('username', 'Username must be 4-16 characters (letters, numbers and dashes only)').notEmpty().withMessage('Please fill in a username').matches(/^[a-z0-9-]{4,16}$/i);
 const passwordMiddleware = validateBody('password', 'Password must be 9-100 characters').notEmpty().withMessage('Please fill in a password').matches(/^.{9,100}$/);
-const mustBeAuthenticatedMiddleware = (req, res, next) => {
-	if (!req.session.user) {
-		res.redirect('/sign-up');
+const mustBeAuthenticatedMiddleware = (request: Request, response: Response, next: NextFunction) => {
+	if (!request.session.user) {
+		response.redirect('/sign-up');
 	}
 
 	next();
@@ -150,16 +152,16 @@ router.get('/inbox', mustBeAuthenticatedMiddleware, getInbox);
 // Leaving
 router.get('/leaving', getLeaving);
 
-const createErrorHandlerMiddleware = error => (req, res) => {
+const createErrorHandlerMiddleware = (error: Error) => (request: Request, response: Response) => {
 	const httpError = createHttpError(error);
 	const { status } = httpError;
 
 	// Set status
-	res.status(status);
+	response.status(status);
 
 	// Respond with HTML
-	if (req.accepts('html')) {
-		return res.render(status === 404 ? 'http/not-found' : 'http/error', {
+	if (request.accepts('html')) {
+		return response.render(status === 404 ? 'http/not-found' : 'http/error', {
 			html: {
 				title: httpError.message,
 			},
@@ -171,8 +173,8 @@ const createErrorHandlerMiddleware = error => (req, res) => {
 	const { message, stack } = serializeError(httpError);
 
 	// Respond with JSON
-	if (req.accepts('json')) {
-		return res.json({
+	if (request.accepts('json')) {
+		return response.json({
 			status,
 			error: {
 				message,
@@ -182,14 +184,14 @@ const createErrorHandlerMiddleware = error => (req, res) => {
 	}
 
 	// Default to plain-text
-	res.type('txt').send(message);
+	response.type('txt').send(message);
 };
 
 // 404
 router.use(createErrorHandlerMiddleware(new NotFound()));
 
 // 5XX
-router.use((error, req, res, _next) => createErrorHandlerMiddleware(error)(req, res));
+router.use((error: Error, request: Request, response: Response, _next: NextFunction) => createErrorHandlerMiddleware(error)(request, response));
 
 export {
 	router,

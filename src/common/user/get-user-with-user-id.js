@@ -1,5 +1,5 @@
 import sql from 'sql-tag';
-import { query } from '../../db/index.js';
+import { query } from '../../db.js';
 
 /**
  * Get a user from the database based on it's user_id

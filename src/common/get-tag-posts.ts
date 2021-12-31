@@ -1,14 +1,28 @@
-import sql from 'sql-tag';
-import { query } from '../db/index.js';
+import { query } from '../db.js';
 import { postsPerPage } from '../config.js';
 import { getUserAllPrivateGroupIds } from './get-user-all-private-group-ids.js';
+import { sql } from './sql-tag.js';
+import { SiteSettings } from 'src/types/site.js';
 
 // @todo: very similar to getPosts(), may want to combine
-export const getTagPosts = async (userId, {
+export const getTagPosts = async (userId: number, {
 	timezone, page, tag, isDiscoverMode, filterUserId, sort,
-}) => {
+}: SiteSettings<{ page: number; tag: string; }>) => {
 	const allowedPrivateIds = userId === -1 ? [] : await getUserAllPrivateGroupIds(userId);
-	return query(sql`
+	return query<{
+        public_id: string;
+        title: string;
+        created_on: string;
+        username: string;
+        user_id: string;
+        user_public_id: string;
+        link: string;
+        num_comments: number;
+        domain_name: string;
+        is_visible: boolean;
+        is_follow: boolean;
+        tags: string[];
+    }>(sql('get-tag-posts')`
         SELECT
             p.public_id,
             p.title,
