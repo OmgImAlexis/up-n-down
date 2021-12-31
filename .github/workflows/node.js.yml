@@ -11,8 +11,7 @@ on:
 
 jobs:
   build:
-
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
 
     strategy:
       matrix:
@@ -42,6 +41,30 @@ jobs:
 
     - name: Run tests
       run: npm test
+  deploy:
+    depends-on: build
 
-    # - name: Restart app
-    #   run: pm2 restart up-n-down
+    runs-on: self-hosted
+
+    strategy:
+      matrix:
+        node-version: 16.x
+
+    steps:
+    - name: Checkout commit
+      uses: actions/checkout@v2
+
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v2
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Build package
+      run: npm run build --if-present
+
+    - name: Restart app
+      run: pm2 restart up-n-down
