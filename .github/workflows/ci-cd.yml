@@ -96,5 +96,5 @@ jobs:
       run: npm run build --if-present
 
     - name: Restart app
-      run: pm2 restart up-n-down
+      run: export PM2_HOME=/root/.pm2 && pm2 restart up-n-down
       
