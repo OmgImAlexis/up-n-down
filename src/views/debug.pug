@@ -1,0 +1,6 @@
+extends layout
+
+block content
+    if locals
+      - delete locals._locals;
+      pre #{JSON.stringify(locals, null, 2)}
