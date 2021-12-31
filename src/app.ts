@@ -38,7 +38,7 @@ const createSessionMiddleware = () => session({
 	cookie: {
 		httpOnly: true,
 		path: '/',
-		secure: process.env.COOKIE_SECURE === 'true',
+		secure: Boolean(process.env.COOKIE_SECURE),
 	},
 });
 
