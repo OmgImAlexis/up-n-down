@@ -10,7 +10,10 @@ html(lang="en")
     link(rel='stylesheet', href='/assets/css/toast.css')
     link(rel="icon" href="/assets/images/favicon-32.png" sizes="32x32")
     block head
+    script(src="/assets/js/firehose.js")
     script(src="/assets/js/toast.js")
+    script(src="/assets/js/lib/javascript-time-ago.js")
+    script(src="/assets/js/relative-timestamps.js")
 
     if site.maxWidth !== null
       style.

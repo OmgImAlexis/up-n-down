@@ -8,6 +8,11 @@
     width: 250px;
 }
 
+
+#toast-container a {
+    color: white;
+}
+
 #toast-container>div {
     font-size: 12px;
     font-family: 'Verdana, sans-serif';

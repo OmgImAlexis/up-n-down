@@ -1,6 +1,6 @@
 import { getUserWithUsername } from '../../common/user/get-user-with-username.js';
 import { validatePassword } from '../../common/auth/validate-password.js';
-import { pushToPrivateFirehose } from '../../common/firehouse.js';
+import { createPrivateNotification } from '../../common/firehose.js';
 
 const title = 'Log In';
 
@@ -46,13 +46,18 @@ export const postLogin = async (req, res) => {
 
 		// Password doesn't match the database
 		if (!await validatePassword(user.password, req.body.password)) {
+			// Notify user of failed login
+			createPrivateNotification(user.user_id, {
+				title: 'Failed login detected on your account',
+				content: `IP: ${req.socket.remoteAddress}<br>Time: ${new Date()}<br>Reason: "Invalid password"`,
+			});
 			throw new Error('Invalid username or password');
 		}
 
-		// Push reply to firehose
-		pushToPrivateFirehose(user.user_id, 'notification', {
-			title: 'Login detected on your account',
-			content: new Date(),
+		// Notify user of successful login
+		createPrivateNotification(user.user_id, {
+			title: 'Successful login detected on your account',
+			content: `IP: ${req.socket.remoteAddress}<br>Time: ${new Date()}`,
 		});
 
 		req.session.user = user;

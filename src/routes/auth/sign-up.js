@@ -1,5 +1,6 @@
 import { validationResult } from 'express-validator';
 import { createUser } from '../../common/user/create-user.js';
+import { createPrivateNotification } from '../../common/firehose.js';
 
 const title = 'Sign Up';
 
@@ -58,6 +59,12 @@ export const postSignup = async (req, res) => {
 		// If the user ticked auto login then
 		// authenticate them and redirect them to the homepage
 		if (req.body.auto_login === 'yes') {
+			// Notify user of login
+			createPrivateNotification(user.user_id, {
+				title: 'Successful login detected on your account',
+				content: `IP: ${req.socket.remoteAddress}<br>Time: ${new Date()}`,
+			});
+
 			req.session.user = user;
 			return res.redirect('/');
 		}

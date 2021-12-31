@@ -1,4 +1,7 @@
 extends layout
 
 block content
-    span !{message}
+    if message
+        span !{message}
+    if error
+        span #{error.message}

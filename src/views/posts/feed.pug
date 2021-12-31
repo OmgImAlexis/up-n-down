@@ -64,7 +64,7 @@ block content
                         else
                             a(class="ptitle" href=`/leaving?goto=${post.link}`)= post.title
                             | 
-                            span.domname1 (#{post.domain_name})
+                            span.domname1(title=`Domain score: ${post.domain_score || 'Not enough posts to generate a score yet'}`) (#{post.domain_name})
 
                         div.pinfo1
                             span(class="puser") by #[a(href=`/u/${post.username}`) #{post.username}]
@@ -77,7 +77,7 @@ block content
                                     +followLink(post.username, post.user_public_id)
 
                             | 
-                            span(class="pdate") on #{post.created_on}
+                            span(class="pdate", datetime=post.created_on_raw) on #{post.created_on}
 
                             if post.tags.length
                                 | 
@@ -104,13 +104,15 @@ block content
                                 +followLink(post.username, post.user_public_id)
 
                         | 
-                        span(class="pdate2") on #{post.created_on}
+                        span(class="pdate2", datetime=post.created_on_raw) on #{post.created_on}
                         | 
                         a(class="pcount2" href=`/p/${post.public_id}`) comments(#{post.num_comments})
     else
         span no more posts
     div
+        //- Show the previous button if we're on at least page 1
         if page > 1
-            a(class="more" href=`${baseUrl}?p=${page - 1}${sort ? `&sort=${sort}` : ''}`) &pr; prev 
-        if page > 0
+            a(class="prev" href=`${baseUrl}?p=${page - 1}${sort ? `&sort=${sort}` : ''}`) &pr; prev 
+        //- Show the next button if we have enough posts to require it
+        if page > 0  && posts.length === site.postsPerPage
             a(class="more" href=`${baseUrl}?p=${page + 1}${sort ? `&sort=${sort}` : ''}`) more &gt;

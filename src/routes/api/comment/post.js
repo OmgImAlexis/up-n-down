@@ -9,7 +9,7 @@ import { createCommentComment } from '../../../common/comment/create-comment-com
 import { increasePostNumberOfComments } from '../../../common/post/increase-post-number-of-comments.js';
 import { getCurrentTimezone } from '../../../common/settings/get-current-timezone.js';
 import { compileMarkdown } from '../../../common/compile-markdown.js';
-import { pushToPublicFirehose } from '../../../common/firehouse.js';
+import { pushToConnectedClientsFirehose } from '../../../common/firehose.js';
 
 const { Unauthorized, NotFound, Forbidden } = HttpErrors;
 
@@ -55,7 +55,7 @@ export const postComment = async (req, res) => {
 	};
 
 	// Push reply to firehose
-	pushToPublicFirehose('comment', data);
+	pushToConnectedClientsFirehose('comment', data);
 
 	// Respond with comment
 	res.json(data);

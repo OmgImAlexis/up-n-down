@@ -3,18 +3,18 @@ import express, { static as createStaticMiddleware, urlencoded, json } from 'exp
 import cookieParser from 'cookie-parser';
 import { v4 } from 'uuid';
 import session from 'express-session';
-import connectRedis from 'connect-redis';
-import { createClient } from 'redis';
+import createPostgresSession from 'connect-pg-simple';
 import { config } from 'dotenv';
 import { randomBytes } from 'crypto';
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
+import morgan from 'morgan';
 import { importJson } from './common/utils/import-json.js';
 import { router } from './router/index.js';
+import { web } from './config/index.js';
+import { pool } from './db/index.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-
-const RedisStore = connectRedis(session);
 
 // Import package.json name field
 const { name } = importJson(joinPath(__dirname, '../package.json'));
@@ -22,13 +22,19 @@ const { name } = importJson(joinPath(__dirname, '../package.json'));
 // Load .env into process.env
 config();
 
-const createSessionMiddleware = client => session({
+const PostgresSession = createPostgresSession(session);
+
+const store = new PostgresSession({
+	pool,
+});
+
+const createSessionMiddleware = () => session({
 	genid: () => v4(),
 	name: process.env.SESSION_NAME ?? `${name}-session`,
 	secret: process.env.SESSION_SECRET ?? randomBytes(64).toString(),
 	resave: false,
 	saveUninitialized: false,
-	store: new RedisStore({ client }),
+	store,
 	cookie: {
 		httpOnly: true,
 		path: '/',
@@ -39,16 +45,29 @@ const createSessionMiddleware = client => session({
 const publicAssetsPath = joinPath(__dirname, '../public');
 
 const main = async () => {
-	// Create redis client
-	const redisClient = createClient({
-		legacyMode: true,
-	});
-
-	// Wait for redis to connect
-	await redisClient.connect();
-
 	// Create main express app
 	const app = express();
+
+	// Disable x-powered-by header
+	app.disable('x-powered-by');
+
+	// Add x-request-id header to all requests
+	app.use((req, res, next) => {
+		const requestId = v4();
+		req.id = requestId;
+		req.headers['X-Request-Id'] = requestId;
+		res.setHeader('X-Request-Id', requestId);
+		next();
+	});
+
+	// Add route logging
+	app.use((req, res, next) => {
+		if (process.env.HTTP_LOGGING) {
+			morgan('tiny')(req, res);
+		}
+
+		next();
+	});
 
 	// Setup body parsing
 	app.use(urlencoded({ extended: false }));
@@ -59,7 +78,7 @@ const main = async () => {
 	app.set('views', joinPath(__dirname, 'views'));
 
 	// Setup session
-	app.use(createSessionMiddleware(redisClient));
+	app.use(createSessionMiddleware());
 
 	// Setup cookies
 	app.use(cookieParser());
@@ -71,7 +90,7 @@ const main = async () => {
 	app.use(router);
 
 	// Start web server
-	const server = app.listen(process.env.HTTP_PORT ?? 0, () => {
+	const server = app.listen(web.port, () => {
 		const address = server.address();
 		console.info(`${name} is listening at ${typeof address === 'string' ? address : `http://localhost:${address.port}`}`);
 	});
@@ -79,5 +98,6 @@ const main = async () => {
 
 // Start app
 main().catch(error => {
+	console.log(error);
 	console.error('Failed starting app with "%s', error.message);
 });

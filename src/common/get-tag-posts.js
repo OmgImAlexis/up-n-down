@@ -1,12 +1,12 @@
 import sql from 'sql-tag';
 import { query } from '../db/index.js';
+import { postsPerPage } from '../config/index.js';
 import { getUserAllPrivateGroupIds } from './get-user-all-private-group-ids.js';
 
 // @todo: very similar to getPosts(), may want to combine
 export const getTagPosts = async (userId, {
 	timezone, page, tag, isDiscoverMode, filterUserId, sort,
 }) => {
-	const pageSize = 20;
 	const allowedPrivateIds = userId === -1 ? [] : await getUserAllPrivateGroupIds(userId);
 	return query(sql`
         SELECT
@@ -95,8 +95,8 @@ export const getTagPosts = async (userId, {
             case when ${sort} = 'last' then p.last_comment end desc nulls last,
             case when ${sort} = 'last' then p.created_on end desc
         LIMIT
-            ${pageSize}
+            ${postsPerPage}
         OFFSET
-            ${(page - 1) * pageSize}
+            ${(page - 1) * postsPerPage}
     `).then(({ rows }) => rows);
 };

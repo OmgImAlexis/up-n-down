@@ -3,7 +3,7 @@ import { getComment } from '../routes/api/comment/get.js';
 import { postComment } from '../routes/api/comment/post.js';
 import { serializeError } from 'serialize-error';
 import createHttpError from 'http-errors';
-import { firehose } from '../common/firehouse.js';
+import { firehose } from '../common/firehose.js';
 import { deleteNotification } from '../routes/api/notification/delete.js';
 
 const { NotFound } = createHttpError;

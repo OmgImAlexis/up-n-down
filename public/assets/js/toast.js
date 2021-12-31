@@ -13,16 +13,26 @@ const initToasts = () => {
 	// Append toast container at end of body
 	body.insertAdjacentElement('beforeend', toastContainer);
 
-	window.dispatchEvent(new Event('live'));
+	if (window.firehose) {
+		window.firehose.addEventListener('notification', ({ data }) => {
+			window.createToast(JSON.parse(data));
+		});
+
+		window.firehose.addEventListener('clear-notification', ({ data }) => {
+			window.clearToast(JSON.parse(data));
+		});
+	}
 };
 
 const createToast = options => {
 	const { id } = options ?? {};
 	const content = options.content ?? '';
 	const title = options.title ?? '';
+	const link = options.link ?? '';
 	const toast = {
 		id,
 		content,
+		link,
 		title,
 	};
 
@@ -52,7 +62,7 @@ const clearToast = options => {
 // eslint-disable-next-line no-undef
 window.clearToast = clearToast;
 
-const renderToast = ({ id, title, content }) => {
+const renderToast = ({ id, title, link, content }) => {
 	// eslint-disable-next-line no-undef
 	const toastContainer = document.getElementById('toast-container');
 
@@ -70,7 +80,36 @@ const renderToast = ({ id, title, content }) => {
 	toastContent.className = 'toast-body';
 
 	// Set title
-	toastTitle.innerHTML = title;
+	if (link) {
+		const linkElement = document.createElement('a');
+
+		// Clear notification on click
+		linkElement.addEventListener('click', async function (event) {
+			const { href } = this;
+			event.preventDefault();
+
+			// Send request to server to remove notification
+			await fetch(`/api/v1/notification/${id}`, { method: 'DELETE' }).catch(console.error);
+
+			// Redirect the user
+			window.location.href = href;
+		});
+
+		// Set link
+		linkElement.setAttribute('href', link);
+
+		// Set link title
+		linkElement.setAttribute('title', title);
+
+		// Set link content
+		linkElement.innerHTML = title;
+
+		// Set title content
+		toastTitle.appendChild(linkElement);
+	} else {
+		// Set title content
+		toastTitle.innerHTML = title;
+	}
 
 	// Set content
 	toastContent.innerHTML = content;

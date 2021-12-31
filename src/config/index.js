@@ -19,7 +19,13 @@ export const site = {
 
 export const eyesDefaultUsername = 'stink';
 
+export const postsPerPage = 20;
 export const commentsPerPage = 200;
+
+// Web
+export const web = {
+	port: process.env.WEB_PORT ?? process.env.PORT ?? 0,
+};
 
 // Database
 export const database = {

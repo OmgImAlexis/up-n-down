@@ -1,4 +1,5 @@
 import createRouter from 'express-promise-router';
+import rateLimit from 'express-rate-limit';
 import { serializeError } from 'serialize-error';
 import { body as validateBody } from 'express-validator';
 import { home } from '../routes/home.js';
@@ -30,11 +31,11 @@ import { getSettingsGroup } from '../routes/settings/group/get.js';
 import { getUser } from '../routes/user/get.js';
 import createHttpError from 'http-errors';
 import { getCurrentSiteMaxWidth } from '../common/settings/get-current-site-max-width.js';
-import { site } from '../config/index.js';
+import { site, postsPerPage, commentsPerPage } from '../config/index.js';
 import { compileMarkdown } from '../common/compile-markdown.js';
 // Import { postSettingsGroup } from '../routes/settings/group/post.js';
 
-const { NotFound } = createHttpError;
+const { NotFound, TooManyRequests } = createHttpError;
 
 // Create main router
 const router = createRouter();
@@ -56,9 +57,23 @@ router.use((req, res, next) => {
 	res.locals.site = {
 		...site,
 		maxWidth: getCurrentSiteMaxWidth(req),
+		postsPerPage,
+		commentsPerPage,
 	};
 	next();
 });
+
+// Rate limiting
+router.use(rateLimit({
+	windowMs: 60 * 1_000, // 60 seconds
+	onLimitReached() {},
+	max: 1_000, // Limit each IP to 1k requests per `window` (here, per 1 minute)
+	standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+	legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+	handler() {
+		throw new TooManyRequests('Too many requests, please try again in a few minutes.');
+	},
+}));
 
 // Static routes
 router.route('/manual').get(renderPage('static/manual', { html: { title: 'Manual' } }));
@@ -149,6 +164,7 @@ const createErrorHandlerMiddleware = error => (req, res) => {
 				title: httpError.message,
 			},
 			error: httpError,
+			HttpError: createHttpError,
 		});
 	}
 

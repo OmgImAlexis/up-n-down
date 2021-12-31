@@ -5,7 +5,7 @@ const { Pool, types } = postgres;
 // Use raw timestamp instead of converting to a js Date object
 types.setTypeParser(1114, str => str);
 
-const pool = new Pool();
+export const pool = new Pool();
 
 // eslint-disable-next-line arrow-body-style
 export const query = (query, params) => {

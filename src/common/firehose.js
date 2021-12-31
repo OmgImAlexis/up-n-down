@@ -1,9 +1,13 @@
-import cacheManager from 'cache-manager';
 import { v4 } from 'uuid';
+import httpErrors from 'http-errors';
+
+const { ServiceUnavailable } = httpErrors;
 
 const cache = new Map();
 const users = new Map();
 let totalClients = 0;
+
+const generateId = () => Math.random().toString(36).substr(2, 9);
 
 const writeToClient = (client, { id, event, data }) => {
 	client.res.write(`id: ${id}\n`);
@@ -16,8 +20,11 @@ const cacheEvent = (userId, { id, event, data }) => {
 	// Get cache or create it
 	const firehoseCache = cache.get(userId);
 	if (!firehoseCache) {
+		console.log('making cache for ' + userId);
 		cache.set(userId, new Map());
 	}
+
+	console.log('caching', { id, event, data });
 
 	// Save data for reconnection
 	cache.get(userId).set(id, { id, event, data });
@@ -39,7 +46,7 @@ export const deleteCachedEvent = (userId, id) => {
 };
 
 export const pushToPrivateFirehose = (userId, event, data, shouldCache = true) => {
-	const id = Math.random().toString(36).substr(2, 9);
+	const id = generateId();
 
 	// Save event for reconnection
 	if (shouldCache) {
@@ -58,42 +65,66 @@ export const pushToPrivateFirehose = (userId, event, data, shouldCache = true) =
 	});
 };
 
-export const pushToPublicFirehose = (event, data = {}, shouldCache = true) => {
-	const id = Math.random().toString(36).substr(2, 9);
+export const pushToConnectedClientsFirehose = (event, data = {}, shouldCache = true) => {
+	const id = generateId();
 
-	// Save event for reconnection
-	if (shouldCache) {
-		cacheEvent('public', { id, event, data });
-	}
-
-	users.forEach(user => {
+	users.forEach((user, userId) => {
 		user.forEach(client => {
+			// Save event for reconnection
+			if (shouldCache) {
+				cacheEvent(userId, { id, event, data });
+			}
+
 			writeToClient(client, { id, event, data });
 		});
 	});
+};
+
+export const createPrivateNotification = (userId, { title, link, content }, shouldCache = true) => {
+	pushToPrivateFirehose(userId, 'notification', {
+		title,
+		link,
+		content,
+	}, shouldCache);
+};
+
+export const createPublicNotification = ({ title, link, content }, shouldCache = true) => {
+	// |
+	// pushToPublicFireHose('notification', {
+	// 	title,
+	// 	content,
+	// }, shouldCache);
+};
+
+export const createConnectedClientsNotification = ({ title, link, content }, shouldCache = true) => {
+	pushToConnectedClientsFirehose('notification', {
+		title,
+		link,
+		content,
+	}, shouldCache);
 };
 
 export const firehose = async (req, res) => {
 	const userId = req.session.user?.user_id ?? -1;
 	const requestId = v4();
 
+	// If we hit our limit of connections throw an error
+	if (totalClients > 99) {
+		throw new ServiceUnavailable('Too many clients connected!');
+	}
+
+	// Start an event-stream
 	res.writeHead(200, {
 		'Cache-Control': 'no-cache, no-transform',
 		'Content-Type': 'text/event-stream',
+		'X-Request-Id': requestId,
 		Connection: 'keep-alive',
 	});
 
-	// Check if we have public cached data
-	const publicCache = cache.get('public');
-	if (publicCache) {
-		publicCache.forEach(event => {
-			res.write(`id: ${event.id}\n`);
-			res.write(`event: ${event.event}\n`);
-			res.write(`data: ${JSON.stringify({ id: event.id, ...event.data })}\n\n`);
-		});
-	}
+	// Tell client to retry if connection drops
+	res.write('retry: 30\n');
 
-	// Check if we have private cached data
+	// Check if we have cached data
 	const privateCache = cache.get(userId);
 	if (privateCache) {
 		privateCache.forEach(event => {
@@ -111,7 +142,8 @@ export const firehose = async (req, res) => {
 	// Add this session to the user's store
 	totalClients++;
 	users.get(userId).set(requestId, { req, res });
-	console.log('[firehose] New Client for user %s. Total clients = %s', userId, totalClients);
+	console.log('[firehose] userId: %s status: %s', userId, 'connected');
+	console.log('[firehose] connected: %s/100', totalClients);
 
 	// If client closes connection, stop sending events
 	res.on('close', () => {
@@ -128,6 +160,7 @@ export const firehose = async (req, res) => {
 		totalClients--;
 		client.res.end();
 		users.get(userId).delete(requestId);
-		console.log('[firehose] Lost Client for user %s. Remaining clients =', userId, totalClients);
+		console.log('[firehose] userId: %s status: %s', userId, 'disconnected');
+		console.log('[firehose] connected: %s/100', totalClients);
 	});
 };

@@ -35,7 +35,7 @@ block content
                         +ucFollowLink(post.username, post.user_public_id, followGoto)
 
                 | 
-                span(class="pdate") on #{post.created_on}
+                span(class="pdate", datetime=post.created_on_raw) on #{post.created_on}
 
                 if post.tags.length
                     | 
@@ -67,7 +67,7 @@ block content
                     +ucFollowLink(post.username, post.user_public_id, followGoto)
 
             | 
-            span(class="pdate2") on #{post.created_on}
+            span(class="pdate2", datetime=post.created_on_raw) on #{post.created_on}
             | 
             a(class="pcount2" href=`/p/${post.public_id}`) comments(#{post.num_comments})
 

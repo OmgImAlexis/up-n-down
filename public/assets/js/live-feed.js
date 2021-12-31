@@ -1,25 +1,16 @@
 const initFirehose = () => {
-	const stream = new EventSource('/api/v1/firehose');
-
-	stream.addEventListener('comment', ({ data }) => window.createToast({
+	window.firehose.addEventListener('comment', ({ data }) => window.createToast({
 		event: 'comment',
 		...JSON.parse(data),
 	}));
 
-	stream.addEventListener('post', ({ data }) => console.log({
+	window.firehose.addEventListener('post', ({ data }) => console.log({
 		event: 'post',
 		...JSON.parse(data),
 	}));
-
-	stream.addEventListener('notification', ({ data }) => {
-		window.createToast(JSON.parse(data));
-	});
-
-	stream.addEventListener('clear-notification', ({ data }) => {
-		window.clearToast(JSON.parse(data));
-	});
 };
 
-window.addEventListener('live', () => {
+document.addEventListener('DOMContentLoaded', () => {
 	initFirehose();
 });
+
