@@ -1,6 +1,6 @@
 import sql from 'sql-tag';
 import { query } from '../db/index.js';
-import { postsPerPage } from '../config/index.js';
+import { postsPerPage } from '../config.js';
 
 export const getInboxComments = (timezone, userId, isDiscoverMode, filterUserId, page) => query(sql`
     SELECT

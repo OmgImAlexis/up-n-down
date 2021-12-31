@@ -1,5 +1,5 @@
 import { getUserWithUsername } from '../user/get-user-with-username.js';
-import { eyesDefaultUsername } from '../../config/index.js';
+import { eyesDefaultUsername } from '../../config.js';
 
 /**
  * Get the current eyes.

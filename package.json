@@ -3,6 +3,9 @@
   "version": "0.3.0",
   "private": false,
   "type": "module",
+  "repository": {
+    "url": "https://github.com/omgimalexis/up-n-down"
+  },
   "scripts": {
     "start": "NODE_ENV=production node ./src/app.js",
     "build": "tsup ./src/app.ts --format esm --clean --minify --env.NODE_ENV production",

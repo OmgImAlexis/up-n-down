@@ -7,7 +7,7 @@ import { isUserAllowedToViewPost } from '../../common/post/is-user-allowed-to-vi
 import { getPostComments } from '../../common/comment/get-post-comments.js';
 import { processComment } from '../../common/comment/process-comment.js';
 import { createPostComment } from '../../common/comment/create-post-comment.js';
-import { commentsPerPage } from '../../config/index.js';
+import { commentsPerPage } from '../../config.js';
 
 /**
  * Add a comment to this post.

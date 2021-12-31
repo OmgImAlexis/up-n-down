@@ -1,5 +1,5 @@
 import { sql } from '../sql-tag.js';
-import { postsPerPage } from '../../config/index.js';
+import { postsPerPage } from '../../config.js';
 import { query } from '../../db/index.js';
 import { getUserAllPrivateGroupIds } from '../get-user-all-private-group-ids.js';
 

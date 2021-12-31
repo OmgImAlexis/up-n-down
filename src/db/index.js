@@ -1,5 +1,5 @@
 import postgres from 'pg';
-import { database } from '../config/index.js';
+import { database } from '../config.js';
 
 const { Pool, types } = postgres;
 

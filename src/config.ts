@@ -1,3 +1,4 @@
+import { repository } from '../package.json';
 import { config } from 'dotenv';
 
 // Load .env into process.env
@@ -14,7 +15,7 @@ export const site = {
 	contact: {
 		email: '',
 	},
-	repo: 'https://github.com/omgimalexis/up-n-down',
+	repo: repository
 };
 
 export const eyesDefaultUsername = 'stink';

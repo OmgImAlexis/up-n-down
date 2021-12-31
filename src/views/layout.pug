@@ -74,7 +74,8 @@ html(lang="en")
                 a(href="/manual") manual
               li
                 a(href="/logout") log out
-              li #{user.username}
+              li
+                a(href=`/u/${user.username}`) #{user.username}
             else
               li
                 a(href="/sign-up") sign up
@@ -94,6 +95,6 @@ html(lang="en")
             li
               a(href="/contact-us") contact us
             li
-              a(href="/api") API
+              a(href="/docs/api") API
             li
-              a(href="https://github.com/omgimalexis/up-n-down") GitHub
+              a(href=site.repo.url) GitHub

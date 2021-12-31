@@ -1,9 +1,9 @@
-import { eyesDefaultUsername } from '../../config/index.js';
+import { eyesDefaultUsername } from '../../config.js';
 import { updateUserViewMode } from '../../common/user/update-user-view-mode.js';
 import { getTimezones } from '../../common/utils/get-timezones.js';
 import { getUserWithUserId } from '../../common/user/get-user-with-user-id.js';
 import { getAvailableEyes } from '../../common/get-available-eyes.js';
-import { cookieMaxAge } from '../../config/index.js';
+import { cookieMaxAge } from '../../config.js';
 import { getCurrentTimezone } from '../../common/settings/get-current-timezone.js';
 import { getCurrentPostMode } from '../../common/settings/get-current-post-mode.js';
 import { getCurrentCommentReplyMode } from '../../common/settings/get-current-comment-reply-mode.js';

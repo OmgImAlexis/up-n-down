@@ -11,7 +11,7 @@ import { fileURLToPath } from 'url';
 import morgan from 'morgan';
 import { importJson } from './common/utils/import-json.js';
 import { router } from './router/index.js';
-import { web } from './config/index.js';
+import { web } from './config.js';
 import { pool } from './db/index.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
