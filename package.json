@@ -10,7 +10,7 @@
     "start": "NODE_ENV=production node ./src/app.js",
     "build": "tsup ./src/app.ts --format esm --clean --minify --env.NODE_ENV production",
     "postbuild": "cpy ./views ../dist --cwd=src --parents",
-    "dev": "tsup ./src/app.ts --format esm --clean --minify --env.NODE_ENV development --watch --onSuccess 'npm run post-dev'",
+    "dev": "tsup ./src/app.ts --format esm --env.NODE_ENV development --clean --watch --onSuccess 'npm run post-dev'",
     "post-dev": "npm run postbuild && node ./dist/app.js",
     "lint": "eslint ./src",
     "migrate": "node ./scripts/migrate.js",

@@ -2,11 +2,23 @@ import { query } from '../../db.js';
 import { commentsPerPage } from '../../config.js';
 import { sql } from '../sql-tag.js';
 
-export const getPostComments = (postId, timeZone, userId, isDiscoverMode, filterUserId, page) => {
+export const getPostComments = (postId: string, timezone: string, userId: number, isDiscoverMode: boolean, filterUserId: number, page: number) => {
 	const limit = commentsPerPage;
 	const offset = (page - 1) * commentsPerPage;
 
-	return query(sql('get-post-comments')`
+	return query<{
+        text_content: string;
+        path: string;
+        username: string;
+        user_id: number;
+        user_public_id: string;
+        created_on: string;
+        created_on_raw: string;
+        public_id: string;
+        id_removed: boolean;
+        is_visible: boolean;
+        is_follow: boolean;
+    }>(sql('get-post-comments')`
         SELECT
             c.text_content,
             c.path,
@@ -14,7 +26,7 @@ export const getPostComments = (postId, timeZone, userId, isDiscoverMode, filter
             u.user_id,
             u.public_id as user_public_id,
             to_char(
-                timezone(${timeZone}, c.created_on),
+                timezone(${timezone}, c.created_on),
                 'Mon FMDD, YYYY FMHH12:MIam') created_on,
             c.created_on created_on_raw,
             c.public_id,

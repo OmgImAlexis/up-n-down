@@ -5,6 +5,7 @@ export const getPostWithPublic2 = (publicId: string, timezone: string, userId: n
     post_id: string;
     title: string;
     created_on: string;
+    created_on_raw: string;
     text_content: string;
     username: string;
     user_id: string;

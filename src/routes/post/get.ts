@@ -15,7 +15,7 @@ const isUUID = (text: string) => /^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]
  */
 export const getPost = async (request: Request, response: Response) => {
 	const postPublicId = request.params.postId;
-	const userId = request.session.user.user_id ?? -1;
+	const userId = request.session.user?.user_id ?? -1;
 	const filterUserId = await getCurrentEyesId(request);
 
 	// Bail if this isn't a UUID

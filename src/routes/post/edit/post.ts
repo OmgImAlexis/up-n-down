@@ -17,7 +17,7 @@ export const postPostEdit = async (request: Request, response: Response) => {
 		throw new Error('Unknown post.');
 	}
 
-	if (post.user_id !== request.session.user.user_id) {
+	if (post.user_id !== request.session.user?.user_id) {
 		throw new Error('Permission denied!');
 	}
 

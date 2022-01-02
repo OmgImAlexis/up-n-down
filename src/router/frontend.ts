@@ -83,8 +83,8 @@ router.get('/debug', renderPage('debug', { html: { title: 'Debug' } }));
 
 // Logout page
 router.get('/logout', (request: Request, response: Response) => {
-	req.session.destroy(() => {
-		res.redirect('/');
+	request.session.destroy(() => {
+		response.redirect('/');
 	});
 });
 
@@ -99,7 +99,7 @@ const mustBeAuthenticatedMiddleware = (request: Request, response: Response, nex
 	next();
 };
 
-const editPostLinkMiddleware = validateBody('link', 'link must be an http or https URL').optional().isURL({ protocols: ['http', 'https'], require_protocol: true });
+const editPostLinkMiddleware = validateBody('link', 'link must be an http or https URL').optional({ checkFalsy: true }).isURL({ protocols: ['http', 'https'], require_protocol: true });
 const editPostTextContentMiddleware = validateBody('text_content', 'Please write some content').optional();
 
 // Homepage

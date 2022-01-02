@@ -15,43 +15,8 @@ block content
     div.the-post
 
         if post.is_visible
-            if post.link === null
-                h3
-                    a(href=`/p/${post.public_id}`)=post.title
-            else
-                h3
-                    a(href=post.link)=post.title
-                    | 
-                    span.domname1 (#{post.domain_name})
-
-            div
-                span(class="puser") by #{post.username}
-                | 
-
-                if !user || (post.user_id != user.user_id)
-                    if post.is_follow
-                        +ucUnfollowLink(post.username, post.user_public_id, followGoto)
-                    else
-                        +ucFollowLink(post.username, post.user_public_id, followGoto)
-
-                | 
-                span(class="pdate", datetime=post.created_on_raw) on #{post.created_on}
-
-                if post.tags.length
-                    | 
-                    |to
-
-                    each tag in post.tags
-                        | 
-                        a(href=`/g/${tag}` class="tag1")=tag
-
-                | 
-                span.plinks
-                    a(href=`/p/${post.public_id}`) comments(#{post.num_comments})
-
-                    if user && post.user_id === user.user_id
-                        | 
-                        a(href=`/p/${post.public_id}/edit`) edit
+            include ./post-snippet.pug
+            +postSnippet(post)
 
             if post.text_content !== null
                 div.the-post-content

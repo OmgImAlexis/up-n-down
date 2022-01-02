@@ -4,76 +4,55 @@ import { isUserAllowedToViewPost } from '../../../common/post/is-user-allowed-to
 import { getPostComments } from '../../../common/comment/get-post-comments.js';
 
 export const getPost = async (request: Request, response: Response) => {
-	//
-	if (typeof req.query.postid === 'undefined') {
-		return res.json(0);
+	if (typeof request.query.postid === 'undefined') {
+		return response.json(0);
 	}
 
-	//
-	const postPublicId = req.query.postid;
+	const postPublicId = request.query.postid as string;
 	const userId = -1;
 	const filterUserId = 1;
-
-	//
-	const { rows } = await getPostWithPublic2(
+	const post = await getPostWithPublic2(
 		postPublicId,
 		'UTC',
 		userId,
 		filterUserId);
 
-	//
-	if (rows.length) {
-		//
-		const isAllowed = await isUserAllowedToViewPost(
-			rows[0].private_group_ids,
-			userId);
+	if (!post) return response.json(0);
 
-		if (!isAllowed) {
-			return res.json(0);
-		}
+	const isAllowed = await isUserAllowedToViewPost(
+		post.private_group_ids,
+		userId);
 
-		//
-		let isDiscoverMode = false;
-
-		if (typeof req.query.viewmode !== 'undefined'
-            && req.query.viewmode.toLowerCase() === 'discover') {
-			isDiscoverMode = true;
-		}
-
-		const { rows: comments } = await getPostComments(
-			rows[0].post_id,
-			'UTC',
-			userId,
-			isDiscoverMode,
-			filterUserId);
-
-		//
-		const comments2 = [];
-
-		for (const c of comments) {
-			const dotCount = (c.path.match(/\./g) || []).length;
-
-			comments2.push({
-				comment_text: c.is_visible ? c.text_content : false,
-				indent_level: dotCount - 1,
-				by: c.username,
-				comment_time: c.created_on_raw,
-				comment_id: c.public_id,
-			});
-		}
-
-		const r = {
-			title: rows[0].is_visible ? rows[0].title : false,
-			link: rows[0].is_visible ? rows[0].link : false,
-			post_text: rows[0].is_visible ? rows[0].text_content : false,
-			post_time: rows[0].created_on_raw,
-			by: rows[0].username,
-			comments: comments2,
-			groups: rows[0].tags,
-		};
-
-		res.json(r);
-	} else {
-		res.json(0);
+	if (!isAllowed) {
+		return response.json(0);
 	}
+
+	const isDiscoverMode = typeof request.query.viewmode === 'string' && request.query.viewmode.toLowerCase() === 'discover';
+
+	const comments = await getPostComments(
+		post.post_id,
+		'UTC',
+		userId,
+		isDiscoverMode,
+		filterUserId, 1);
+
+	return response.json({
+		title: post.is_visible ? post.title : false,
+		link: post.is_visible ? post.link : false,
+		post_text: post.is_visible ? post.text_content : false,
+		post_time: post.created_on_raw,
+		by: post.username,
+		comments: comments.map(comment => {
+			const dotCount = (comment.path.match(/\./g) || []).length;
+
+			return {
+				comment_text: comment.is_visible ? comment.text_content : false,
+				indent_level: dotCount - 1,
+				by: comment.username,
+				comment_time: comment.created_on_raw,
+				comment_id: comment.public_id,
+			};
+		}),
+		groups: post.tags,
+	});
 };

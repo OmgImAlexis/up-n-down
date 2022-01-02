@@ -17,7 +17,7 @@ export const getLeaving = async (request: Request, response: Response) => {
 	const goto = requestedRaw ? requestedGoto : (await cache.get(requestedGoto) ?? await tall(requestedGoto, {
 		method: 'HEAD',
 		maxRedirects: 10,
-	}));
+	}).catch(() => requestedGoto));
 
 	// Redirect to homepage if goto is missing
 	if (!goto) {

@@ -55,58 +55,10 @@ block content
             a(href=`${baseUrl}?sort=last`) last comment
 
     if posts && posts.length > 0
+        include ./post-snippet.pug
         .posts
             each post in posts
-                div
-                    if true
-                        if post.link === null
-                            a(class="ptitle" href=`/p/${post.public_id}`) #{post.title}
-                        else
-                            a(class="ptitle" href=`/leaving?goto=${post.link}`)= post.title
-                            | 
-                            span.domname1(title=`Domain score: ${post.domain_score || 'Not enough posts to generate a score yet'}`) (#{post.domain_name})
-
-                        div.pinfo1
-                            span(class="puser") by #[a(href=`/u/${post.username}`) #{post.username}]
-                            | 
-
-                            if !user || (post.user_id != user.user_id)
-                                if post.is_follow
-                                    +unfollowLink(post.username, post.user_public_id)
-                                else
-                                    +followLink(post.username, post.user_public_id)
-
-                            | 
-                            span(class="pdate", datetime=post.created_on_raw) on #{post.created_on}
-
-                            if post.tags.length
-                                | 
-                                |to
-                                each tag in post.tags
-                                    | 
-                                    a(href=`/g/${tag}` class="tag1")=tag
-
-                            | 
-                            span.plinks
-                                a(href=`/p/${post.public_id}`) comments(#{post.num_comments})
-
-                                if user && user.user_id === post.user_id
-                                    | 
-                                    a(href=`/p/${post.public_id}/edit`) edit
-                    else
-                        span(class="puser2") by #{post.username}
-                        | 
-
-                        if !user || (post.user_id != user.user_id)
-                            if post.is_follow
-                                +unfollowLink(post.username, post.user_public_id)
-                            else
-                                +followLink(post.username, post.user_public_id)
-
-                        | 
-                        span(class="pdate2", datetime=post.created_on_raw) on #{post.created_on}
-                        | 
-                        a(class="pcount2" href=`/p/${post.public_id}`) comments(#{post.num_comments})
+                +postSnippet(post)
     else
         span no more posts
     div

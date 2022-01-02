@@ -1,0 +1,36 @@
+mixin postSnippet(post)
+    div
+        if post.link
+            a(class="ptitle" href=`/leaving?goto=${post.link}`)= post.title
+            | 
+            span.domname1(title=`Domain score: ${post.domain_score || 'Not enough posts to generate a score yet'}`) (#{post.domain_name})                    
+        else
+            a(class="ptitle" href=`/p/${post.public_id}`) #{post.title}
+
+        div.pinfo1
+            span(class="puser") by #[a(href=`/u/${post.username}`) #{post.username}]
+            | 
+
+            if !user || (post.user_id != user.user_id)
+                if post.is_follow
+                    +unfollowLink(post.username, post.user_public_id)
+                else
+                    +followLink(post.username, post.user_public_id)
+
+            | 
+            span(class="pdate", datetime=post.created_on_raw) on #{post.created_on}
+
+            if post.tags.length
+                | 
+                |to
+                each tag in post.tags
+                    | 
+                    a(href=`/g/${tag}` class="tag1")=tag
+
+            | 
+            span.plinks
+                a(href=`/p/${post.public_id}`) comments(#{post.num_comments})
+
+                if user && user.user_id === post.user_id
+                    | 
+                    a(href=`/p/${post.public_id}/edit`) edit
