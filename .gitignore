@@ -5,4 +5,5 @@ doc/
 /test*.js
 .nyc_output
 coverage
+coverage-ts
 dist
