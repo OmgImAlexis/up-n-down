@@ -6,7 +6,7 @@ import { SiteSettings } from 'src/types/site.js';
 
 // @todo: very similar to getPosts(), may want to combine
 export const getTagPosts = async (userId: number, {
-	timezone, page, tag, isDiscoverMode, filterUserId, sort,
+	timezone, page, tag, is_discover_mode: isDiscoverMode, filter_user_id: filterUserId, sort,
 }: SiteSettings<{ page: number; tag: string; }>) => {
 	const allowedPrivateIds = userId === -1 ? [] : await getUserAllPrivateGroupIds(userId);
 	return query<{

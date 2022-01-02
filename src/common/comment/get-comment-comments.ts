@@ -1,19 +1,22 @@
-import sql from 'sql-tag';
 import { query } from '../../db.js';
 import { commentsPerPage } from '../../config.js';
+import { sql } from '../sql-tag.js';
 
 /**
  * Get comment replies.
- *
- * @param {string} path
- * @param {string} timezone
- * @param {string} userId
- * @param {boolean} isDiscoverMode
- * @param {string} filterUserId
- * @param {string} page
- * @returns
  */
-export const getCommentComments = (path, timezone, userId, isDiscoverMode, filterUserId, page) => query(sql`
+export const getCommentComments = (path: string, timezone: string, userId: number, isDiscoverMode: boolean, filterUserId: number, page?: number) => query<{
+    text_content: string;
+    path: string;
+    username: string;
+    user_id: number;
+    user_public_id: number;
+    created_on: string;
+    created_on_raw: string;
+    public_id: string;
+    is_visible: boolean;
+    is_follow: boolean;
+}>(sql('get-comment-replies')`
     SELECT
         c.text_content,
         c.path,

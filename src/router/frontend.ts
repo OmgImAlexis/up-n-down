@@ -33,7 +33,7 @@ import createHttpError from 'http-errors';
 import { getCurrentSiteMaxWidth } from '../common/settings/get-current-site-max-width.js';
 import { site, postsPerPage, commentsPerPage } from '../config.js';
 import { compileMarkdown } from '../common/compile-markdown.js';
-import { Request, Response, NextFunction, response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 // Import { postSettingsGroup } from '../routes/settings/group/post.js';
 
 const { NotFound, TooManyRequests } = createHttpError;
@@ -82,7 +82,7 @@ router.get('/docs/api', renderPage('static/docs/api', { html: { title: 'API Docu
 router.get('/debug', renderPage('debug', { html: { title: 'Debug' } }));
 
 // Logout page
-router.get('/logout', (req, res) => {
+router.get('/logout', (request: Request, response: Response) => {
 	req.session.destroy(() => {
 		res.redirect('/');
 	});

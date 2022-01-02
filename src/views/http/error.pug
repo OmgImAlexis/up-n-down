@@ -2,5 +2,5 @@ extends ../layout
 
 block content
     if error
-        | #{error.cause ? error.cause.message : error.message}
-        //- pre #{error.cause ? error.cause.stack : error.stack}
+        //- | #{error.cause ? error.cause.message : error.message}
+        pre #{error.cause ? error.cause.stack : error.stack}

@@ -13,10 +13,24 @@ import { getUserAllPrivateGroupIds } from '../get-user-all-private-group-ids.js'
  * @param sort
  * @returns
  */
-export const getPosts = async (userId: number, timezone: string, page: number, isDiscoverMode: boolean, filterUserId: string, sort: 'oldest' | 'comments' | 'last' | '') => {
+export const getPosts = async (userId: number, timezone: string, page: number, isDiscoverMode: boolean, filterUserId: number, sort: 'oldest' | 'comments' | 'last' | '') => {
 	const allowedPrivateIds = userId === -1 ? [] : await getUserAllPrivateGroupIds(userId);
 
-	return query(sql('get-posts')`
+	return query<{
+        public_id: string;
+        title: string;
+        created_on: string;
+        created_on_raw: string;
+        username: string;
+        user_id: number;
+        user_public_id: string;
+        link?: string;
+        num_comments: number;
+        domain_name: string;
+        is_visible: boolean;
+        is_follow: boolean;
+        tags: string[];
+    }>(sql('get-posts')`
         SELECT
             p.public_id,
             p.title,

@@ -1,11 +1,11 @@
-import type Express from 'express';
+import type { Request } from 'express';
 
 const validSortValues = ['oldest', 'comments', 'last', ''] as const;
 
 /**
  * Get the post sort
  */
-export const getPostSort = (request: Express.Request<unknown, unknown, unknown, { sort?: typeof validSortValues[number] }>): 'oldest' | 'comments' | 'last' | '' => {
+export const getPostSort = (request: Request<unknown, unknown, unknown, { sort?: typeof validSortValues[number] }>): typeof validSortValues[number] => {
 	if (request.query.sort && validSortValues.includes(request.query.sort)) {
 		return request.query.sort;
 	}

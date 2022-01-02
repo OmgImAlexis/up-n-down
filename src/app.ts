@@ -52,11 +52,11 @@ const main = async () => {
 	app.disable('x-powered-by');
 
 	// Add x-request-id header to all requests
-	app.use((req, res, next) => {
+	app.use((request, response, next) => {
 		const requestId = v4();
-		req.id = requestId;
-		req.headers['X-Request-Id'] = requestId;
-		res.setHeader('X-Request-Id', requestId);
+		request.id = requestId;
+		request.headers['X-Request-Id'] = requestId;
+		response.setHeader('X-Request-Id', requestId);
 		next();
 	});
 
@@ -93,7 +93,7 @@ const main = async () => {
 	// Start web server
 	const server = app.listen(web.port, () => {
 		const address = server.address();
-		console.info(`${name} is listening at ${typeof address === 'string' ? address : `http://localhost:${address.port}`}`);
+		console.info(`${name} is listening at ${typeof address === 'string' ? address : `http://localhost:${address?.port}`}`);
 	});
 };
 

@@ -19,7 +19,7 @@ export const pool = new Pool({
 export const query = <Result>(query: QueryConfig, params?: any) => {
 	// eslint-disable-next-line capitalized-comments
 	// console.log(query.text ? { text: query.text, values: query.values } : { text: query });
-	return pool.query<Partial<Result>>(query, params);
+	return pool.query<Result>(query, params);
 };
 
 // Exports.getUsersWithoutPublicId = () => {

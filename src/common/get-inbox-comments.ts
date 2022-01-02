@@ -3,7 +3,7 @@ import { postsPerPage } from '../config.js';
 import { sql } from './sql-tag.js';
 import { SiteSettings } from 'src/types/site.js';
 
-export const getInboxComments = ({ timezone, userId, isDiscoverMode, filterUserId, page }: SiteSettings<{ userId: number; page: number; }>) => query<{
+export const getInboxComments = ({ timezone, userId, isDiscoverMode, filterUserId, page }: SiteSettings<{ isDiscoverMode: boolean; filterUserId: number; userId: number; page: number; }>) => query<{
     text_context: string;
     path: string;
     username: string;
